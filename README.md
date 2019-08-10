@@ -28,14 +28,22 @@
 #   }
 # }
 
-# wyciąganie wszystkich punktow z ich lokalizacjami z bazy
+# # wyciąganie wszystkich punktow z ich lokalizacjami z bazy
 # query {
 #   points {
 #     id,
 #     name,
-#     coordinates {
+#     coordinate {
 #       location
 #     }
+#   }
+# }
+
+# #wyciaganie wszystkich koordynatow
+# query {
+#   coordinates {
+#     id,
+#     location
 #   }
 # }
 

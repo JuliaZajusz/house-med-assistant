@@ -1,15 +1,16 @@
 type Query {
     points: [Point]
+    coordinatePoints(coordinateId: ID!): [Point]
 }
 
 type Point {
     id: ID!
     name: String
-    coordinates: Coordinate
+    coordinate: Coordinate
 }
 
 type Mutation {
-    newPoint(name: String) : Point!
+    newPoint(name: String, location: [Float]) : Point!
     deletePoint(id: ID!) : Boolean
     #    updatePoint(id:ID!, location: [Float]) : Point!
 }

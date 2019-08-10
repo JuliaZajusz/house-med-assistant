@@ -7,18 +7,27 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class PointMutationResolver(private val pointRepository: PointRepository, val coordinateMutationResolver: CoordinateMutationResolver) : GraphQLMutationResolver {
+class PointMutationResolver(private val pointRepository: PointRepository, val coordinateMutationResolver: CoordinateMutationResolver, val pointQueryResolver: PointQueryResolver) : GraphQLMutationResolver {
 
-    fun newPoint(name: String): Point {
-        val point = Point(name, null)
+    fun newPoint(name: String, location: List<Float>): Point {
+        val coordinate = coordinateMutationResolver.newCoordinate(location)
+        val point = Point(name, coordinate)
         point.id = UUID.randomUUID().toString()
         pointRepository.save(point)
         return point
     }
 
     fun deletePoint(id: String): Boolean {
-        pointRepository.deleteById(id)
-        return true
+        val point = pointRepository.findById(id)
+        if (point.isPresent) {
+            val coordinateId = point.get().coordinate.id;
+            pointRepository.deleteById(id)
+            if (pointQueryResolver.coordinatePoints(coordinateId).isEmpty()) {
+                coordinateMutationResolver.deleteCoordinate(point.get().coordinate.id);
+            }
+            return true
+        }
+        return false;
     }
 
 //    fun updatePoint(id: String, coordinates: List<Coordinate>): Point {
