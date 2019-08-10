@@ -1,0 +1,12 @@
+extend type Query {
+    coordinates(pointId: ID!): [Coordinate]
+}
+
+type Coordinate {
+    pointId: ID!
+    location: [Float]
+}
+
+extend type Mutation {
+    newCoordinate(pointId: ID!, location: [Float]) : Coordinate!
+}

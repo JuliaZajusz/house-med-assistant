@@ -1,0 +1,20 @@
+type Query {
+    points: [Point]
+}
+
+type Point {
+    id: ID!
+    name: String
+    coordinates: Coordinate
+}
+
+type Mutation {
+    newPoint(name: String) : Point!
+    deletePoint(id: ID!) : Boolean
+    #    updatePoint(id:ID!, location: [Float]) : Point!
+}
+
+#input CoordinateInput {
+#    pointId: String,
+#    location: [Float]
+#}
