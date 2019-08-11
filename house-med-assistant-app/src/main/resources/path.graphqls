@@ -1,0 +1,19 @@
+extend type Query {
+    paths: [Path]
+}
+
+type Path {
+    id: ID!
+    points: [Coordinate]
+}
+
+extend type Mutation {
+    newPath(points: [CoordinateInput]) : Path!
+    deletePath(id: ID!) : Boolean
+    #    updatePath(id:ID!, location: [Float]) : Path!
+}
+
+input CoordinateInput {
+    id: ID!,
+    location: [Float]
+}

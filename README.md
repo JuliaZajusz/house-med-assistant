@@ -1,5 +1,3 @@
-# house-med-assistant
-
 # mutation {
 #   newSnack(name: "French Fries", amount: 40.5) {
 #     id
@@ -28,54 +26,80 @@
 #   }
 # }
 
-# # wyciąganie wszystkich punktow z ich lokalizacjami z bazy
-# query {
-#   points {
-#     id,
-#     name,
+# wyciąganie wszystkich punktow z ich lokalizacjami z bazy
+query punkty{
+  points {
+    id,
+    name,
+    coordinate {
+      location
+    }
+  }
+}
+
+#wyciaganie wszystkich koordynatow
+query koordynaty{
+  coordinates {
+    id,
+    location
+  }
+}
+
+
+#wyciaganie wszystkich scieżek
+query sciezki{
+	paths {
+  points {
+    id,
+    location
+  }
+  }
+}
+
+
+
+# #tworzenie nowego punktu
+# mutation {
+#   newPoint(name: "Wieża Eifflea", location: [4.0, 5.6]) {
+#     id
+#     name
 #     coordinate {
+#       id,
 #       location
 #     }
 #   }
 # }
 
-# #wyciaganie wszystkich koordynatow
-# query {
-#   coordinates {
-#     id,
-#     location
-#   }
-# }
 
-
-# mutation {
-#   newPoint(name: "Wieża Eifflea") {
-#     id
-#     name
-#   }
-# }
-
-
+# #tworzenie nowego koordynatu
 # mutation {
 #     newCoordinate(
-#       pointId:"a8c361a5-ab21-4908-b3bf-1ffc4406172d",
-#     	location: [1.0, 2.0]
+#     	location: [2.0, 2.0]
 #     ){
-#         pointId, location
+#         id, location
 #     }
 # }
 
-# mutation {
-#     updatePoint(
-#       id:"a8c361a5-ab21-4908-b3bf-1ffc4406172d",
-#         location: [4.0, 3.0]
-#     ){
-#         id,
-#     		name,
-#     		coordinates {
-#           location
-#         }
-#     }
-# }
+#tworzenie nowej scieżki
+mutation nowaSciezka{
+  newPath(points: [      {
+        id: "d3535453-1975-4b4e-a42e-30aaf976dac1",
+        location: [
+          2,
+          2
+        ]
+      },
+      {
+        id: "00abfc6f-76d5-4509-9705-89bdbcf018eb",
+        location: [
+          4,
+          5.6
+        ]
+      }]) {
+    id
+    # points
+  }
+}
+
 
 
