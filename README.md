@@ -56,29 +56,31 @@ query sciezki{
   }
 }
 
+#tworzenie nowego koordynatu
+mutation nowyKoordynat {
+    newCoordinate(
+    	location: [2.0, 2.0]
+    ){
+        id, location
+    }
+}
 
 
-# #tworzenie nowego punktu
-# mutation {
-#   newPoint(name: "Wieża Eifflea", location: [4.0, 5.6]) {
-#     id
-#     name
-#     coordinate {
-#       id,
-#       location
-#     }
-#   }
-# }
+
+#tworzenie nowego punktu
+mutation nowyPunkt{
+  newPoint(name: "Wieża Eifflea", location: [4.0, 5.6]) {
+    id
+    name
+    coordinate {
+      id,
+      location
+    }
+  }
+}
 
 
-# #tworzenie nowego koordynatu
-# mutation {
-#     newCoordinate(
-#     	location: [2.0, 2.0]
-#     ){
-#         id, location
-#     }
-# }
+
 
 #tworzenie nowej scieżki
 mutation nowaSciezka{
@@ -96,8 +98,31 @@ mutation nowaSciezka{
           5.6
         ]
       }]) {
-    id
-    # points
+  points {
+    id,
+    location
+  }
+  }
+}
+
+#tworzenie nowej scieżki bez wczesniej utworzonych punktow
+mutation nowaSciezka2{
+  newPath(points: [      {
+        location: [
+          2.3,
+          2.4
+        ]
+      },
+      {
+        location: [
+          44,
+          55.6
+        ]
+      }]) {
+  points {
+    id,
+    location
+  }
   }
 }
 
