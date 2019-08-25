@@ -3,10 +3,11 @@ package com.shacky.housemedassistant.entity
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
-@Document(collection = "path")
-data class Path(
+@Document(collection = "salesmanSet")
+data class SalesmanSet(
         var places: List<Coordinate> = ArrayList(),
-        var value: Number = -1
+        var neighborhoodMatrix: Map<String, Map<String, Number>> = HashMap(),  //distance between places - key: coordinate object id
+        var paths: List<Path> = ArrayList()
 ) {
     @Id
     var id: String = ""

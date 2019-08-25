@@ -1,10 +1,15 @@
 package com.shacky.housemedassistant.resolvers
 
+//import com.mongodb.client.model.geojson.Point
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import com.shacky.housemedassistant.entity.Coordinate
 import com.shacky.housemedassistant.repository.CoordinateRepository
+import org.springframework.data.geo.Point
 import org.springframework.data.mongodb.core.MongoOperations
+import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Component
+
 
 @Component
 class CoordinateQueryResolver(val coordinateRepository: CoordinateRepository, val mongoOperations: MongoOperations) : GraphQLQueryResolver {
@@ -18,7 +23,12 @@ class CoordinateQueryResolver(val coordinateRepository: CoordinateRepository, va
     }
 
     fun findById(id: String): Coordinate {
-//        return coordinateRepository.findById(id).orElseThrow{NoSuchElementException(id)};
         return coordinateRepository.findById(id).orElseThrow { NoSuchElementException(id) };
+    }
+
+    fun findCoordinatesByDistance(x: Number, y: Number, distanceInKm: Number): List<Coordinate> {
+        val distanceInRad: Double = distanceInKm.toDouble() / 6371
+        val point = Point(x.toDouble(), y.toDouble())
+        return mongoOperations.find(Query(Criteria.where("location").nearSphere(point).maxDistance(distanceInRad)), Coordinate::class.java);
     }
 }

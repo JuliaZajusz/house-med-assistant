@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "coordinate")
 data class Coordinate(
-//        @GeoSpatialIndexed
         @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
         var location: List<Float> = ArrayList()
 ) {

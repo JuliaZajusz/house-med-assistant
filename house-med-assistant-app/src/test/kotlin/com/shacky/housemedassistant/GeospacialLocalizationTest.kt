@@ -10,6 +10,7 @@ import com.mongodb.client.model.geojson.Position
 import com.shacky.housemedassistant.entity.Coordinate
 import com.shacky.housemedassistant.entity.Place
 import com.shacky.housemedassistant.repository.PlaceRepository
+import com.shacky.housemedassistant.resolvers.CoordinateQueryResolver
 import com.shacky.housemedassistant.resolvers.PlaceMutationResolver
 import com.shacky.housemedassistant.resolvers.PlaceQueryResolver
 import org.bson.Document
@@ -44,6 +45,9 @@ class GeospatialLiveTest {
 
     @Autowired
     lateinit var placeRepository: PlaceRepository
+
+    @Autowired
+    lateinit var coordinateQueryResolver: CoordinateQueryResolver
 
     @Before
     fun setup() {
@@ -80,6 +84,13 @@ class GeospatialLiveTest {
         val result = collection!!.find(Filters.geoWithinCenterSphere("coordinate.location", a.coordinate.location[0].toDouble(), a.coordinate.location[1].toDouble(), distanceInRad))
         assertNotNull(result.first())
         assertEquals("Big Ben", result.first()!!["name"])
+    }
+
+    @Test
+    fun checkFindCoordinatesByDistance() {
+        val result = coordinateQueryResolver.findCoordinatesByDistance(-0.1435083f, 51.4990956f, 5)
+        assertNotNull(result.first())
+        assertEquals(listOf(-0.1268194f, 51.50073f), result.first()!!.location)  //BigBen
     }
 
 
