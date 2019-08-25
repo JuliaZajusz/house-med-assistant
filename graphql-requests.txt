@@ -237,3 +237,25 @@ query findByName{
   }
 }
 
+query findCoordinateByLocation{
+  findOneByLocation(location: [-0.1268194, 51.50073]) {
+    id,
+    location
+  }
+}
+
+
+query getAllSalesmanSets {
+  salesmanSets {
+    id,
+    places {
+      id,
+      location
+    }
+    neighborhoodMatrix {
+      coordinate_1_id,
+      coordinate_2_id,
+      value
+    }
+  }
+}

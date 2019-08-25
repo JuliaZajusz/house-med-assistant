@@ -1,0 +1,40 @@
+extend type Query {
+    salesmanSets: [SalesmanSet]
+}
+
+type Distance {
+    coordinate_1_id: String
+    coordinate_2_id: String
+    value: Float
+}
+
+#type DistanceRowEntry {
+#    key: String!
+#    value: [DistanceCellEntry!]
+#}
+#
+#type DistanceCellEntry {
+#    key: String!
+#    value: Float!
+#}
+
+#Unable to match type definition (ListType{type=NonNullType{type=TypeName{name='DistanceRowEntry'}}}) with java type (java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Number>>): Java class is not a List or generic type information was lost: java.util.Map<java.lang.String, java.util.Map<java.lang.String, java.lang.Number>>
+
+type SalesmanSet {
+    id: ID!
+    places: [Coordinate]
+    #    neighborhoodMatrix: [DistanceRowEntry!]
+    neighborhoodMatrix: [Distance]
+}
+
+scalar ObjectScalar
+
+extend type Mutation {
+    newSalesmanSet(coordinates: [CoordinateInput]) : SalesmanSet!
+    deleteSalesmanSet(id: ID!) : Boolean
+}
+
+input CoordinateInput {
+    id: ID,
+    location: [Float]
+}

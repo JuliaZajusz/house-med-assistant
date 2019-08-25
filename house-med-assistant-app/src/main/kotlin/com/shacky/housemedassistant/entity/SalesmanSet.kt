@@ -6,9 +6,11 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "salesmanSet")
 data class SalesmanSet(
         var places: List<Coordinate> = ArrayList(),
-        var neighborhoodMatrix: Map<String, Map<String, Number>> = HashMap(),  //distance between places - key: coordinate object id
-        var paths: List<Path> = ArrayList()
+        var neighborhoodMatrix: List<Distance> = ArrayList() //distance between places - key: coordinate object id
+//        var neighborhoodMatrix: Map<String, Map<String, Number>> = HashMap()  //distance between places - key: coordinate object id
+//        var paths: List<Path> = ArrayList()
 ) {
     @Id
     var id: String = ""
+    var paths: List<Path> = ArrayList()
 }
