@@ -27,11 +27,6 @@ import org.springframework.test.context.junit4.SpringRunner
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GeospatialLiveTest {
-//class GeospatialLiveTest(
-//        @Autowired val coordinateMutationResolver: CoordinateMutationResolver,
-//        @Autowired val coordinateQueryResolver: CoordinateQueryResolver,
-//        @Autowired val coordinateRepository: CoordinateRepository
-//) {
 
     private var mongoClient: MongoClient? = null
     private var db: MongoDatabase? = null
@@ -59,14 +54,6 @@ class GeospatialLiveTest {
         placeMutationResolver.newPlace("Big Ben", listOf(-0.1268194f, 51.5007292f))
     }
 
-
-    @Test
-    fun getInsertedObjects() {
-//        val result = coordinateRepository.findAll();
-//        val result = coordinateQueryResolver.coordinates();
-//        println(result[0])
-    }
-
     @Test
     fun givenNearbyLocation_whenSearchNearby_thenFound() {
         val currentLoc = Point(Position(-0.126821, 51.495885))
@@ -78,7 +65,6 @@ class GeospatialLiveTest {
 
     @Test
     fun givenNearbyLocation_whenSearchWithinCircleSphere_thenFound() {
-//            val a = placeMutationResolver.newPlace("Westminster, Londyn ", listOf(-0.1435083f, 51.4990956f))
         val a = Place("Westminster, Londyn ", Coordinate(listOf(-0.1435083f, 51.4990956f)))
         val distanceInRad = 5.0 / 6371
         val result = collection!!.find(Filters.geoWithinCenterSphere("coordinate.location", a.coordinate.location[0].toDouble(), a.coordinate.location[1].toDouble(), distanceInRad))
@@ -90,8 +76,14 @@ class GeospatialLiveTest {
     fun checkFindCoordinatesByDistance() {
         val result = coordinateQueryResolver.findCoordinatesByDistance(-0.1435083f, 51.4990956f, 5)
         assertNotNull(result.first())
-        assertEquals(listOf(-0.1268194f, 51.50073f), result.first()!!.location)  //BigBen
+        assertEquals(listOf(-0.1268194f, 51.50073f), result.first().location)  //BigBen
     }
 
+    @Test
+    fun checkFindDistanceBetweenCoordinates() {
+        val result = coordinateQueryResolver.findDistanceBetweenCoordinates(0, 0, 1, 1)
+        println(result)
+        assertEquals(157.24938127194397, result, 0.0)
+    }
 
 }
