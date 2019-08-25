@@ -10,14 +10,14 @@ import java.util.*
 
 @Component
 class PathMutationResolver(private val pathRepository: PathRepository, val coordinateRepository: CoordinateRepository) : GraphQLMutationResolver {
-    fun newPath(points: List<Coordinate>): Path {
-        for (item in points) {
+    fun newPath(places: List<Coordinate>): Path {
+        for (item in places) {
             if (item.id.isEmpty()) {
                 item.id = UUID.randomUUID().toString()
             }
         }
-        coordinateRepository.saveAll(points)
-        val path = Path(points)
+        coordinateRepository.saveAll(places)
+        val path = Path(places)
         path.id = UUID.randomUUID().toString()
         pathRepository.save(path)
         return path

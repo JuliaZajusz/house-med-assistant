@@ -5,11 +5,13 @@ import com.mongodb.MongoClient
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters
+import com.mongodb.client.model.geojson.Point
+import com.mongodb.client.model.geojson.Position
 import com.shacky.housemedassistant.entity.Coordinate
-import com.shacky.housemedassistant.entity.Point
-import com.shacky.housemedassistant.repository.PointRepository
-import com.shacky.housemedassistant.resolvers.PointMutationResolver
-import com.shacky.housemedassistant.resolvers.PointQueryResolver
+import com.shacky.housemedassistant.entity.Place
+import com.shacky.housemedassistant.repository.PlaceRepository
+import com.shacky.housemedassistant.resolvers.PlaceMutationResolver
+import com.shacky.housemedassistant.resolvers.PlaceQueryResolver
 import org.bson.Document
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -35,21 +37,22 @@ class GeospatialLiveTest {
     private var collection: MongoCollection<Document>? = null
 
     @Autowired
-    lateinit var pointMutationResolver: PointMutationResolver
+    lateinit var placeMutationResolver: PlaceMutationResolver
 
     @Autowired
-    lateinit var pointQueryResolver: PointQueryResolver
+    lateinit var placeQueryResolver: PlaceQueryResolver
 
     @Autowired
-    lateinit var pointRepository: PointRepository
+    lateinit var placeRepository: PlaceRepository
 
     @Before
     fun setup() {
         if (mongoClient == null) {
             mongoClient = MongoClient()
             db = mongoClient!!.getDatabase("kotlin-graphql")
-            collection = db!!.getCollection("point")
+            collection = db!!.getCollection("place")
         }
+        placeMutationResolver.newPlace("Big Ben", listOf(-0.1268194f, 51.5007292f))
     }
 
 
@@ -62,17 +65,17 @@ class GeospatialLiveTest {
 
     @Test
     fun givenNearbyLocation_whenSearchNearby_thenFound() {
-//        val currentLoc = Point(Position(-0.126821, 51.495885))
-//        val result = collection!!.find(Filters.near("location", currentLoc, 1000.0, 10.0))
-//
-//        assertNotNull(result.first())
-//        assertEquals("Big Ben", result.first()!!["name"])
+        val currentLoc = Point(Position(-0.126821, 51.495885))
+        val result = collection!!.find(Filters.near("coordinate.location", currentLoc, 1000.0, 10.0))
+
+        assertNotNull(result.first())
+        assertEquals("Big Ben", result.first()!!["name"])
     }
 
     @Test
     fun givenNearbyLocation_whenSearchWithinCircleSphere_thenFound() {
-//            val a = pointMutationResolver.newPoint("Westminster, Londyn ", listOf(-0.1435083f, 51.4990956f))
-        val a = Point("Westminster, Londyn ", Coordinate(listOf(-0.1435083f, 51.4990956f)))
+//            val a = placeMutationResolver.newPlace("Westminster, Londyn ", listOf(-0.1435083f, 51.4990956f))
+        val a = Place("Westminster, Londyn ", Coordinate(listOf(-0.1435083f, 51.4990956f)))
         val distanceInRad = 5.0 / 6371
         val result = collection!!.find(Filters.geoWithinCenterSphere("coordinate.location", a.coordinate.location[0].toDouble(), a.coordinate.location[1].toDouble(), distanceInRad))
         assertNotNull(result.first())

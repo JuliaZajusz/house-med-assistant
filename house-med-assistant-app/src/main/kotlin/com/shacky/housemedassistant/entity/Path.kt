@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "path")
 data class Path(
 //        @GeoSpatialIndexed
-        var points: List<Coordinate> = ArrayList()
+        var places: List<Coordinate> = ArrayList()
 ) {
     @Id
     var id: String = ""

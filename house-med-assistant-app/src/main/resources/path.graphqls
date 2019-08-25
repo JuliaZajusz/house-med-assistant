@@ -4,11 +4,11 @@ extend type Query {
 
 type Path {
     id: ID!
-    points: [Coordinate]
+    places: [Coordinate]
 }
 
 extend type Mutation {
-    newPath(points: [CoordinateInput]) : Path!
+    newPath(places: [CoordinateInput]) : Path!
     deletePath(id: ID!) : Boolean
     #    updatePath(id:ID!, location: [Float]) : Path!
 }
