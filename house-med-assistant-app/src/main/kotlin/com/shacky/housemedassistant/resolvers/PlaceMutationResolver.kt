@@ -7,13 +7,17 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class PlaceMutationResolver(private val placeRepository: PlaceRepository, val coordinateMutationResolver: CoordinateMutationResolver, val placeQueryResolver: PlaceQueryResolver) : GraphQLMutationResolver {
+class PlaceMutationResolver(private val placeRepository: PlaceRepository,
+                            val coordinateMutationResolver: CoordinateMutationResolver,
+                            val placeQueryResolver: PlaceQueryResolver) : GraphQLMutationResolver {
 
     fun newPlace(name: String, location: List<Float>): Place {
         val coordinate = coordinateMutationResolver.newCoordinate(location)
         val place = Place(name, coordinate)
-//        val existed = placeRepository.findOne(Example.of(place));
-        val existed = placeRepository.findOneByName(name);
+        val existed = placeRepository.findOneByNameAndCoordinate(name, coordinate);
+        if (existed != null) {
+            return existed
+        }
         place.id = UUID.randomUUID().toString()
         placeRepository.save(place)
         return place

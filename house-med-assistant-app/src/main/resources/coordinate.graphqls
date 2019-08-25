@@ -1,5 +1,6 @@
 extend type Query {
     coordinates: [Coordinate]
+    findOneByLocation(location: [Float]): Coordinate
 }
 
 type Coordinate {

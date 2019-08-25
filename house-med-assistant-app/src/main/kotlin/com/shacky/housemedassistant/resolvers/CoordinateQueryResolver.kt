@@ -12,4 +12,13 @@ class CoordinateQueryResolver(val coordinateRepository: CoordinateRepository, va
         val list = coordinateRepository.findAll()
         return list;
     }
+
+    fun findOneByLocation(location: List<Float>): Coordinate? {
+        return coordinateRepository.findOneByLocation(location);
+    }
+
+    fun findById(id: String): Coordinate {
+//        return coordinateRepository.findById(id).orElseThrow{NoSuchElementException(id)};
+        return coordinateRepository.findById(id).orElseThrow { NoSuchElementException(id) };
+    }
 }

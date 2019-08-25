@@ -7,11 +7,15 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class CoordinateMutationResolver(private val coordinateRepository: CoordinateRepository) : GraphQLMutationResolver {
+class CoordinateMutationResolver(private val coordinateRepository: CoordinateRepository,
+                                 val coordinateQueryResolver: CoordinateQueryResolver) : GraphQLMutationResolver {
     fun newCoordinate(location: List<Float>): Coordinate {
-        val coordinate = Coordinate(location)
-        coordinate.id = UUID.randomUUID().toString()
-        coordinateRepository.save(coordinate)
+        var coordinate = coordinateQueryResolver.findOneByLocation(location);
+        if (coordinate == null) {
+            coordinate = Coordinate(location)
+            coordinate.id = UUID.randomUUID().toString()
+            coordinateRepository.save(coordinate)
+        }
         return coordinate
     }
 
