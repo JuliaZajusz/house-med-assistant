@@ -259,3 +259,46 @@ query getAllSalesmanSets {
     }
   }
 }
+
+
+mutation newSalesmanSet {
+  newSalesmanSet(
+    coordinates: [
+    {
+       location: [
+          2.3,
+          2.4
+        ]
+      },
+      {
+        location: [
+          44,
+          55.6
+        ]
+      },
+          {
+       location: [
+          0,
+          0
+        ]
+      },
+      {
+        location: [
+          1,
+          1
+        ]
+    }
+  ]
+  ) {
+    id,
+    places {
+      id,
+      location
+    }
+    neighborhoodMatrix {
+      coordinate_1_id,
+      coordinate_2_id,
+      value
+    }
+  }
+}
