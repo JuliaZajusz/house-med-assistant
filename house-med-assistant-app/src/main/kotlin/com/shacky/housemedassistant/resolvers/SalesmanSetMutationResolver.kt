@@ -8,6 +8,7 @@ import com.shacky.housemedassistant.entity.SalesmanSet
 import com.shacky.housemedassistant.repository.SalesmanSetRepository
 import org.springframework.stereotype.Component
 import java.util.*
+import kotlin.concurrent.schedule
 
 @Component
 class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSetRepository,
@@ -92,15 +93,23 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
     }
 
 
-    fun findBestPathUsingGeneticAlgorythm(id: String, timeInSec: Int): Path {
+    fun findBestPathUsingGeneticAlgorythm(id: String, timeInSec: Int, populationSize: Int): Path {
         val salesmanSet = salesmanSetRepository.findById(id);
         val pathPlaces: MutableList<Coordinate> = mutableListOf();
         if (salesmanSet.isPresent) {
 
+            Timer().schedule(2000) {
+                salesmanSet = doGenetic(salesmanSet.get(), populationSize)
+            }
         }
         var pathValue: Float = pathMutationResolver.calcPathValue(pathPlaces)
         val path: Path = Path(pathPlaces, pathValue);
         return path;
     }
+
+//    fun doGenetic(salesmanSet: SalesmanSet,  populationSize: Int): SalesmanSet {
+//        val newSalesmanSet = salesmanSet
+//        newSalesmanSet.population
+//    }
 
 }
