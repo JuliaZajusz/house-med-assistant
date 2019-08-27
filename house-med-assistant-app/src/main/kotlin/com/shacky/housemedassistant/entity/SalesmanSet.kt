@@ -13,4 +13,5 @@ data class SalesmanSet(
     @Id
     var id: String = ""
     var paths: List<Path> = ArrayList()
+    var population: List<Path> = ArrayList()
 }

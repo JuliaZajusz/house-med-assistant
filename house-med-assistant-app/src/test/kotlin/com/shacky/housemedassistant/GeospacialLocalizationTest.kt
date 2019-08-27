@@ -52,6 +52,12 @@ class GeospatialLiveTest {
     @Autowired
     lateinit var salesmanSetQueryResolver: SalesmanSetQueryResolver
 
+    @Autowired
+    lateinit var pathMutationResolver: PathMutationResolver
+
+    @Autowired
+    lateinit var pathQueryResolver: PathQueryResolver
+
     @Before
     fun setup() {
         if (mongoClient == null) {
@@ -102,7 +108,7 @@ class GeospatialLiveTest {
     }
 
     @Test
-    fun checkGetSalesmanSetByCoordinates() {
+    fun checkGetSalesmanSetByCoordinates() {        //nie działa, bo nie zaimplementowane
         salesmanSetQueryResolver.getSalesmanSetByCoordinates(
                 listOf(Coordinate(listOf(2.3f, 2.4f)),
                         Coordinate(listOf(44f, 55.6f)),
@@ -125,18 +131,37 @@ class GeospatialLiveTest {
                 coordinateQueryResolver.findOneByLocation(listOf(2.3f, 2.4f)),
                 coordinateQueryResolver.findOneByLocation(listOf(1f, 1f)),
                 coordinateQueryResolver.findOneByLocation(listOf(0f, 0f)),
-                coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f)))?.let { Path(it as List<Coordinate>, -1) }
+                coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
+        )?.let { Path(it as List<Coordinate>) }
+        path1.value = pathMutationResolver.calcPathValue(path1.places)
 
         assertEquals(result1.places, path1.places)
+        assertEquals(result1.value, path1.value)
 
         val result2 = salesmanSetMutationResolver.findGreedyPath(salesmanSet!!.id, coordinateQueryResolver.findOneByLocation(listOf(0f, 0f))!!.id)
         val path2: Path = listOf(
                 coordinateQueryResolver.findOneByLocation(listOf(0f, 0f)),
                 coordinateQueryResolver.findOneByLocation(listOf(1f, 1f)),
                 coordinateQueryResolver.findOneByLocation(listOf(2.3f, 2.4f)),
-                coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f)))?.let { Path(it as List<Coordinate>, -1) }
+                coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
+        )?.let { Path(it as List<Coordinate>) }
+        path2.value = pathMutationResolver.calcPathValue(path2.places)
 
         assertEquals(result2.places, path2.places)
+        assertEquals(result2.value, path2.value)
+    }
+
+    @Test
+    fun findBestPathUsingGeneticAlgorythmTest() {
+        val salesmanSet = salesmanSetMutationResolver.newSalesmanSet(
+                listOf(Coordinate(listOf(2.3f, 2.4f)),
+                        Coordinate(listOf(44f, 55.6f)),
+                        Coordinate(listOf(0f, 0f)),
+                        Coordinate(listOf(1f, 1f))
+                )
+        )
+        val result = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 2)
+
     }
 
 }

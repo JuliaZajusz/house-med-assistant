@@ -36,4 +36,39 @@ class PathMutationResolver(private val pathRepository: PathRepository,
         pathRepository.deleteById(id)
         return true
     }
+
+    fun updatePath(path: Path): Path {
+        return pathRepository.save(path)
+    }
+
+    fun updatePath(id: String, value: Float): Path {
+        val path = pathRepository.findById(id)
+        path.ifPresent {
+            it.value = value
+            pathRepository.save(it)
+        }
+        return path.get()
+    }
+
+    fun updatePath(id: String, places: List<Coordinate>): Path {
+        val path = pathRepository.findById(id)
+        path.ifPresent {
+            it.places = places
+            it.value = calcPathValue(places)
+            pathRepository.save(it)
+        }
+        return path.get()
+    }
+
+    fun calcPathValue(places: List<Coordinate>): Float {
+        var value = 0.0;
+        for (i in places.indices) {
+            if (places.size - 1 > i) {
+                value += coordinateQueryResolver.findDistanceBetweenCoordinates(places[i], places[i + 1])
+            } else {
+                value += coordinateQueryResolver.findDistanceBetweenCoordinates(places[i], places[0])
+            }
+        }
+        return value.toFloat()
+    }
 }

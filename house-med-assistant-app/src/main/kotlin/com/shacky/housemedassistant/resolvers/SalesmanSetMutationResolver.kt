@@ -12,7 +12,8 @@ import java.util.*
 @Component
 class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSetRepository,
                                   val coordinateMutationResolver: CoordinateMutationResolver,
-                                  val coordinateQueryResolver: CoordinateQueryResolver
+                                  val coordinateQueryResolver: CoordinateQueryResolver,
+                                  val pathMutationResolver: PathMutationResolver
 ) : GraphQLMutationResolver {
     fun newSalesmanSet(coordinates: List<Coordinate>): SalesmanSet? {
         var newCoordinates: MutableList<Coordinate> = mutableListOf();
@@ -54,14 +55,14 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         val salesmanSet = salesmanSetRepository.findById(id);
         val visited: MutableList<String> = mutableListOf();
         val pathPlaces: MutableList<Coordinate> = mutableListOf();
-        val pathValue: Number = 0;
-        var startElementIndex = 0;
+
         if (salesmanSet.isPresent) {
             val places = salesmanSet.get().places
             val neighborhoodMatrix = salesmanSet.get().neighborhoodMatrix
-
+            var startElement: Coordinate = places[0];
+            var startElementIndex = 0;
             if (startCoordinateId.isNotEmpty()) {
-                val startElement = coordinateQueryResolver.findById(startCoordinateId)
+                startElement = coordinateQueryResolver.findById(startCoordinateId)
                 startElementIndex = places.indexOf(startElement)
             }
 
@@ -85,7 +86,21 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                 }
             }
         }
+        var pathValue: Float = pathMutationResolver.calcPathValue(pathPlaces)
         val path: Path = Path(pathPlaces, pathValue);
         return path;
     }
+
+
+    fun findBestPathUsingGeneticAlgorythm(id: String, timeInSec: Int): Path {
+        val salesmanSet = salesmanSetRepository.findById(id);
+        val pathPlaces: MutableList<Coordinate> = mutableListOf();
+        if (salesmanSet.isPresent) {
+
+        }
+        var pathValue: Float = pathMutationResolver.calcPathValue(pathPlaces)
+        val path: Path = Path(pathPlaces, pathValue);
+        return path;
+    }
+
 }

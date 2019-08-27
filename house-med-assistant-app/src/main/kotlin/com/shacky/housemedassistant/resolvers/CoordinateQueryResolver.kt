@@ -60,4 +60,8 @@ class CoordinateQueryResolver(val coordinateRepository: CoordinateRepository, va
         var c = 2 * atan2(sqrt(a), sqrt(1 - a));
         return earthRadiusKm * c;
     }
+
+    fun findDistanceBetweenCoordinates(startCoordinate: Coordinate, endCoordinate: Coordinate): Double {
+        return findDistanceBetweenCoordinates(startCoordinate.location[0], startCoordinate.location[1], endCoordinate.location[0], endCoordinate.location[1])
+    }
 }
