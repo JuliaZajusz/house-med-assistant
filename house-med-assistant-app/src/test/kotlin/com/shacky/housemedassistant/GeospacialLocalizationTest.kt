@@ -160,8 +160,8 @@ class GeospatialLiveTest {
                         Coordinate(listOf(1f, 1f))
                 )
         )
-        val result = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 2)
-
+        val result = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)
+        println(result)
     }
 
 }

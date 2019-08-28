@@ -14,6 +14,10 @@ class SalesmanSetQueryResolver(val salesmanSetRepository: SalesmanSetRepository,
         return list;
     }
 
+    fun findById(id: String): SalesmanSet {
+        return salesmanSetRepository.findById(id).orElseThrow { NoSuchElementException(id) }
+    }
+
     fun getSalesmanSetByCoordinates(coordinates: List<Coordinate>): SalesmanSet? {
         val places: MutableList<Coordinate> = mutableListOf()
         coordinates.forEach { coordinate ->
