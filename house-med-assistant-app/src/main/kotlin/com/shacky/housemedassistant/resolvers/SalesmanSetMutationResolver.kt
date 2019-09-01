@@ -107,12 +107,12 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         return path;
     }
 
-    fun doGenetic(salesmanSet: SalesmanSet, populationSize: Int, parentPopulationSize: Int): SalesmanSet {
-        val newSalesmanSet = salesmanSet
+    fun doGenetic(salesmanSet: SalesmanSet, populationSize: Int, parentPopulationSize: Int, mutationsProbability: Int = 1, swapsInMutation: Int = 10): SalesmanSet {
+        var newSalesmanSet = salesmanSet
         //create population
         var genomPath = newSalesmanSet.places
         for (i in newSalesmanSet.population.size..populationSize) {
-            genomPath = mutateGenomPathBySwithingElements(genomPath)
+            genomPath = getRandomGenom(genomPath)
             val value = pathMutationResolver.calcPathValue(genomPath)
             newSalesmanSet.population.add(Path(genomPath, value))
         }
@@ -131,7 +131,11 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 //        wybierz populację rodzicielską (ruletka, turniej)
                 newSalesmanSet.parentPopulation = chooseParentPopulationByRouletteMethod(newSalesmanSet.population, parentPopulationSize)
 //        krzyżuj
+                newSalesmanSet = reproducePopulation(newSalesmanSet, mutationsProbability, swapsInMutation)
 //        mutuj
+//                for (i in 0 until newSalesmanSet.population.size) {
+//
+//                }
 
                 i++;
             } else { //jesli zostal osiagniety
@@ -145,11 +149,99 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         return newSalesmanSet
     }
 
-    private fun mutateGenomPathBySwithingElements(genomPath: List<Coordinate>): List<Coordinate> {
+    private fun reproducePopulation(salesmanSet: SalesmanSet, mutationsProbability: Int, swapsInMutation: Int): SalesmanSet {
+        var updatedSalesmanSet = salesmanSet
+        val populationSize = salesmanSet.population.size
+        val parentPopulationSize = salesmanSet.parentPopulation.size
+        val parentCouples = salesmanSet.parentPopulation.size / 2;
+        val pathSize = salesmanSet.places.size;
+        for (i in 0 until parentCouples)
+        //dla kazdej pary rodzicow utworz pare dzieci
+        {
+            val crossPoint1: Int = ThreadLocalRandom.current().nextInt(0, pathSize - 1)
+            val crossPoint2: Int = ThreadLocalRandom.current().nextInt(crossPoint1 + 1, pathSize - crossPoint1 - 1)
+
+            var a = crossover(salesmanSet.parentPopulation[2 * i], salesmanSet.parentPopulation[2 * i + 1], crossPoint1, crossPoint2)  //dziecko1
+            var b = crossover(salesmanSet.parentPopulation[2 * i + 1], salesmanSet.parentPopulation[2 * i], crossPoint1, crossPoint2)  //dziecko2
+            a = mutate(a, mutationsProbability, swapsInMutation)
+            b = mutate(b, mutationsProbability, swapsInMutation)
+            updatedSalesmanSet.population.add(a)
+            updatedSalesmanSet.population.add(b)
+        }
+        return updatedSalesmanSet;
+    }
+
+    private fun crossover(parentOneGenom: Path, parentTwoGenom: Path, crossPoint1: Int, crossPoint2: Int): Path {
+        val pathSize = parentOneGenom.places.size
+        val childListOfCoordinates: MutableList<Coordinate?> = parentTwoGenom.places.toMutableList()  //środek
+        val checkForRepeat = mutableListOf<Coordinate>()
+
+        for (i in crossPoint1 until crossPoint2)                //srodek
+        {
+            checkForRepeat.add(parentTwoGenom.places[i])
+        }
+
+        for (i in 0 until crossPoint1)                //poczatek
+        {
+            val zm = parentOneGenom.places[i];
+
+            if (!checkForRepeat.contains(zm)) {
+                childListOfCoordinates[i] = zm;
+                checkForRepeat.add(zm);
+            } else {
+                childListOfCoordinates[i] = null;
+            }
+        }
+
+        for (i in crossPoint2 until pathSize)            //koniec
+        {
+            val zm = parentOneGenom.places[i];
+
+            if (!checkForRepeat.contains(zm)) {
+                childListOfCoordinates[i] = zm;
+                checkForRepeat.add(zm);
+            } else {
+                childListOfCoordinates[i] = null;
+            }
+        }
+
+        for (i in 0 until pathSize) {
+            if (childListOfCoordinates[i] == null) {
+                for (j in 0 until pathSize) {
+                    if (!checkForRepeat.contains(parentOneGenom.places[j])) {
+                        childListOfCoordinates[i] = parentOneGenom.places[j];
+                        checkForRepeat.add(parentOneGenom.places[j]);
+                        break;
+                    }
+                }
+
+            }
+        }
+        val child: Path = Path(childListOfCoordinates.filterNotNull());
+        return child;
+    }
+
+    private fun mutate(genomPath: Path, mutationsProbability: Int, swapsInMutation: Int): Path {
+        val chance = ThreadLocalRandom.current().nextInt(0, 100)
+        val updatedGenomPath = genomPath.places.toMutableList()
+
+        if (chance <= mutationsProbability) {
+            for (i in 0 until swapsInMutation) {
+                val city1 = ThreadLocalRandom.current().nextInt(0, genomPath.places.size)
+                val city2 = ThreadLocalRandom.current().nextInt(0, genomPath.places.size)
+                updatedGenomPath[city1] = genomPath.places[city2];
+                updatedGenomPath[city2] = genomPath.places[city1];
+            }
+        }
+        return Path(updatedGenomPath)
+    }
+
+
+    private fun getRandomGenom(genomPath: List<Coordinate>): List<Coordinate> {
         return genomPath.shuffled()
     }
 
-    fun chooseParentPopulationByRouletteMethod(population: List<Path>, parentPopulationSize: Int): List<Path> {
+    private fun chooseParentPopulationByRouletteMethod(population: List<Path>, parentPopulationSize: Int): List<Path> {
         var parentPopulation: MutableList<Path> = mutableListOf<Path>()
         var populationValueSum: Float = 0.0f;
         population.forEach { genomPath -> populationValueSum += 1 / genomPath.value.toFloat() }
