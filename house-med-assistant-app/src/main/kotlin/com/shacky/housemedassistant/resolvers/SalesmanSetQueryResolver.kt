@@ -2,6 +2,7 @@ package com.shacky.housemedassistant.resolvers
 
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import com.shacky.housemedassistant.entity.Coordinate
+import com.shacky.housemedassistant.entity.Distance
 import com.shacky.housemedassistant.entity.SalesmanSet
 import com.shacky.housemedassistant.repository.CoordinateRepository
 import com.shacky.housemedassistant.repository.SalesmanSetRepository
@@ -22,11 +23,15 @@ class SalesmanSetQueryResolver(val salesmanSetRepository: SalesmanSetRepository,
         val places: MutableList<Coordinate> = mutableListOf()
         coordinates.forEach { coordinate ->
             val coordinateDBO = coordinateRepository.findOneByLocation(coordinate.location)
-            if (coordinateDBO == null) {  //to dziwne, najwidoczniej już przy tworzneiu obiektu ustawiane jest id...
+            if (coordinateDBO == null) {
                 return null
             }
             places.add(coordinateDBO)
         }
         return salesmanSetRepository.findSalesmanSetByPlaces(places)
+    }
+
+    fun getSalesmanSetByDistances(neighborhoodMatrix: List<Distance>): SalesmanSet? {
+        return salesmanSetRepository.findSalesmanSetByNeighborhoodMatrix(neighborhoodMatrix)
     }
 }

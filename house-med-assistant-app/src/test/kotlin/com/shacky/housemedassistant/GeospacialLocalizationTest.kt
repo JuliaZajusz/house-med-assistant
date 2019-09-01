@@ -66,6 +66,15 @@ class GeospatialLiveTest {
             collection = db!!.getCollection("place")
         }
         placeMutationResolver.newPlace("Big Ben", listOf(-0.1268194f, 51.5007292f))
+
+        salesmanSetMutationResolver.newSalesmanSetByDistance(6, listOf(
+                0.0f, 20.0f, 30.0f, 31.0f, 28.0f, 40.0f,
+                30.0f, 0.0f, 10.0f, 14.0f, 20.0f, 44.0f,
+                40.0f, 20.0f, 0.0f, 10.0f, 22.0f, 50.0f,
+                41.0f, 24.0f, 20.0f, 0.0f, 14.0f, 42.0f,
+                38.0f, 30.0f, 32.0f, 24.0f, 0.0f, 28.0f,
+                50.0f, 54.0f, 60.0f, 52.0f, 38.0f, 0.0f
+        ))
     }
 
     @Test
@@ -119,6 +128,51 @@ class GeospatialLiveTest {
         assertNotNull(salesmanSet)
     }
 
+//    @Test
+//    fun checkGetSalesmanSetByDistances() {
+//        val salesmanSet = salesmanSetQueryResolver.getSalesmanSetByDistances(
+//                listOf(
+//                        Distance("0", "0", 0.0f),
+//                        Distance("0", "1", 20.0f),
+//                        Distance("0", "2", 30.0f),
+//                        Distance("0", "3", 31.0f),
+//                        Distance("0", "4", 28.0f),
+//                        Distance("0", "5", 40.0f),
+//                        Distance("1", "0", 30.0f),
+//                        Distance("1", "1", 0.0f),
+//                        Distance("1", "2", 10.0f),
+//                        Distance("1", "3", 14.0f),
+//                        Distance("1", "4", 20.0f),
+//                        Distance("1", "5", 44.0f),
+//                        Distance("2", "0", 40.0f),
+//                        Distance("2", "1", 20.0f),
+//                        Distance("2", "2", 0.0f),
+//                        Distance("2", "3", 10.0f),
+//                        Distance("2", "4", 22.0f),
+//                        Distance("2", "5", 50.0f),
+//                        Distance("3", "0", 41.0f),
+//                        Distance("3", "1", 24.0f),
+//                        Distance("3", "2", 20.0f),
+//                        Distance("3", "3", 0.0f),
+//                        Distance("3", "4", 14.0f),
+//                        Distance("3", "5", 42.0f),
+//                        Distance("4", "0", 38.0f),
+//                        Distance("4", "1", 30.0f),
+//                        Distance("4", "2", 32.0f),
+//                        Distance("4", "3", 24.0f),
+//                        Distance("4", "4", 0.0f),
+//                        Distance("4", "5", 28.0f),
+//                        Distance("5", "0", 50.0f),
+//                        Distance("5", "1", 54.0f),
+//                        Distance("5", "2", 60.0f),
+//                        Distance("5", "3", 52.0f),
+//                        Distance("5", "4", 38.0f),
+//                        Distance("5", "5", 0.0f)
+//        ))
+//
+//        assertNotNull(salesmanSet)
+//    }
+
     @Test
     fun checkFindGreedyPath() {
         val salesmanSet = salesmanSetMutationResolver.newSalesmanSet(
@@ -137,8 +191,8 @@ class GeospatialLiveTest {
         )?.let { Path(it as List<Coordinate>) }
         path1.value = pathMutationResolver.calcPathValue(path1.places)
 
-        assertEquals(result1.places, path1.places)
-        assertEquals(result1.value, path1.value)
+        assertEquals(path1.places, result1.places)
+        assertEquals(path1.value, result1.value)
 
         val result2 = salesmanSetMutationResolver.findGreedyPath(salesmanSet!!.id, coordinateQueryResolver.findOneByLocation(listOf(0f, 0f))!!.id)
         val path2: Path = listOf(
@@ -149,8 +203,8 @@ class GeospatialLiveTest {
         )?.let { Path(it as List<Coordinate>) }
         path2.value = pathMutationResolver.calcPathValue(path2.places)
 
-        assertEquals(result2.places, path2.places)
-        assertEquals(result2.value, path2.value)
+        assertEquals(path2.places, result2.places)
+        assertEquals(path2.value, result2.value)
     }
 
     @Test
@@ -162,8 +216,47 @@ class GeospatialLiveTest {
                         Coordinate(listOf(1f, 1f))
                 )
         )
-        val result = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)
-        println(result)
+        val result1 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result2 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result3 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result4 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result5 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result6 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result7 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result8 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result9 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result10 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+
+        val path1: Path = listOf(
+                coordinateQueryResolver.findOneByLocation(listOf(2.3f, 2.4f)),
+                coordinateQueryResolver.findOneByLocation(listOf(1f, 1f)),
+                coordinateQueryResolver.findOneByLocation(listOf(0f, 0f)),
+                coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
+        )?.let { Path(it as List<Coordinate>) }
+        path1.value = pathMutationResolver.calcPathValue(path1.places)
+
+        assertEquals(path1.value, result1.value)
+        assertEquals(path1.value, result2.value)
+        assertEquals(path1.value, result3.value)
+        assertEquals(path1.value, result4.value)
+        assertEquals(path1.value, result5.value)
+        assertEquals(path1.value, result6.value)
+        assertEquals(path1.value, result7.value)
+        assertEquals(path1.value, result8.value)
+        assertEquals(path1.value, result9.value)
+        assertEquals(path1.value, result10.value)
+    }
+
+    @Test
+    fun testMutate() {
+        val path = pathMutationResolver.newPath(listOf(
+                Coordinate(listOf(2.3f, 2.4f)),
+                Coordinate(listOf(1f, 1f)),
+                Coordinate(listOf(0f, 0f)),
+                Coordinate(listOf(44f, 55.6f))
+        ))
+        val result = path?.let { salesmanSetMutationResolver.mutate(it, 100, 100) }
+        assertEquals(path?.places!!.distinct().size, result?.places!!.distinct().size)
     }
 
 }

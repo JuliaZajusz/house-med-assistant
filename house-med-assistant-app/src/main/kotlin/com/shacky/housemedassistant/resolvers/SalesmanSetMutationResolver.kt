@@ -37,9 +37,61 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         return salesmanSet
     }
 
+//    fun newSalesmanSetByDistance(neighborhoodMatrix: List<Distance>): SalesmanSet? {
+//        var newCoordinates: MutableList<Coordinate> = mutableListOf();
+//        val numberOfCoordinates = sqrt(neighborhoodMatrix.size.toDouble()).toInt()
+//        for (i in 0..numberOfCoordinates) {
+//            val long = 89.0f + i.toFloat() / numberOfCoordinates
+//            val lat = 89.0f + i.toFloat() / numberOfCoordinates
+//            newCoordinates.add(coordinateMutationResolver.newCoordinate(listOf(long, lat)))
+//        }
+//        var salesmanSet = salesmanSetQueryResolver.getSalesmanSetByDistances(neighborhoodMatrix)
+//        if (salesmanSet == null) {
+//            salesmanSet = SalesmanSet(newCoordinates, neighborhoodMatrix)
+//            salesmanSet.id = UUID.randomUUID().toString()
+//            salesmanSetRepository.save(salesmanSet)
+//        }
+//        return salesmanSet
+//    }
+
+    fun newSalesmanSetByDistance(numberOfCoordinates: Int, distances: List<Float>): SalesmanSet? {
+        var newCoordinates: MutableList<Coordinate> = mutableListOf();
+        for (i in 0 until numberOfCoordinates) {
+            val long = 89.0f + i.toFloat() / numberOfCoordinates
+            val lat = 89.0f + i.toFloat() / numberOfCoordinates
+            newCoordinates.add(coordinateMutationResolver.newCoordinate(listOf(long, lat)))
+        }
+        val neighborhoodMatrix = createNeighborhoodMatrixByGivedDistances(newCoordinates, distances)
+        var salesmanSet = salesmanSetQueryResolver.getSalesmanSetByDistances(neighborhoodMatrix)
+        if (salesmanSet == null) {
+            salesmanSet = SalesmanSet(newCoordinates, neighborhoodMatrix)
+            salesmanSet.id = UUID.randomUUID().toString()
+            salesmanSetRepository.save(salesmanSet)
+        }
+        return salesmanSet
+    }
+
     fun deleteSalesmanSet(id: String): Boolean {
         salesmanSetRepository.deleteById(id)
         return true
+    }
+
+    fun createNeighborhoodMatrixByGivedDistances(coordinates: List<Coordinate>, distances: List<Float>): List<Distance> {
+        var neighborhoodMatrix: MutableList<Distance> = mutableListOf();
+        for (item1 in coordinates) {
+            for (item2 in coordinates) {
+                val index = coordinates.indexOf(item1) * (coordinates.size) + coordinates.indexOf(item2)
+                var distance = -1.0f
+                try {
+                    distance = distances[index]
+                } catch (e: ArrayIndexOutOfBoundsException) {
+                    println("" + index + " " + coordinates.indexOf(item1) + " " + coordinates.indexOf(item2))
+                    throw ArrayIndexOutOfBoundsException()
+                }
+                neighborhoodMatrix.add(Distance(item1.id, item2.id, distance))
+            }
+        }
+        return neighborhoodMatrix
     }
 
     fun calcNeighborhoodMatrix(coordinates: List<Coordinate>): List<Distance> {
@@ -114,7 +166,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         var newSalesmanSet = salesmanSet
         //create population
         var genomPath = newSalesmanSet.places
-        for (i in newSalesmanSet.population.size..populationSize) {
+        for (i in newSalesmanSet.population.size until populationSize) {
             genomPath = getRandomGenom(genomPath)
             val value = pathMutationResolver.calcPathValue(genomPath)
             newSalesmanSet.population.add(Path(genomPath, value))
@@ -124,7 +176,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         //rob
         while (true) {
             //jesli warunek konca nie zostal osiagniety
-            if (i < 100) {
+            if (i < 1) {
                 //        sortuj populację
                 newSalesmanSet.population = newSalesmanSet.population.sortedBy { it.value.toFloat() }.toMutableList()
                 //        jesli jest za duża to usuń część osobników
@@ -162,12 +214,17 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         //dla kazdej pary rodzicow utworz pare dzieci
         {
             val crossPoint1: Int = ThreadLocalRandom.current().nextInt(0, pathSize - 1)
-            val crossPoint2: Int = ThreadLocalRandom.current().nextInt(crossPoint1 + 1, pathSize - crossPoint1 - 1)
+            val crossPoint2: Int = ThreadLocalRandom.current().nextInt(crossPoint1, pathSize - 1)
 
             var a = crossover(salesmanSet.parentPopulation[2 * i], salesmanSet.parentPopulation[2 * i + 1], crossPoint1, crossPoint2)  //dziecko1
             var b = crossover(salesmanSet.parentPopulation[2 * i + 1], salesmanSet.parentPopulation[2 * i], crossPoint1, crossPoint2)  //dziecko2
             a = mutate(a, mutationsProbability, swapsInMutation)
             b = mutate(b, mutationsProbability, swapsInMutation)
+            if (a.places.size != salesmanSet.places.size || b.places.size != salesmanSet.places.size || a.places.distinct().size < salesmanSet.places.size || b.places.distinct().size < salesmanSet.places.size) {
+                println("" + crossPoint1 + " " + crossPoint2)
+                throw Exception()
+            }
+
             updatedSalesmanSet.population.add(a)
             updatedSalesmanSet.population.add(b)
         }
@@ -175,7 +232,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
     }
 
     private fun crossover(parentOneGenom: Path, parentTwoGenom: Path, crossPoint1: Int, crossPoint2: Int): Path {
-        val pathSize = parentOneGenom.places.size
+        val pathSize = parentTwoGenom.places.size
         val childListOfCoordinates: MutableList<Coordinate?> = parentTwoGenom.places.toMutableList()  //środek
         val checkForRepeat = mutableListOf<Coordinate>()
 
@@ -198,11 +255,18 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
         for (i in crossPoint2 until pathSize)            //koniec
         {
-            val zm = parentOneGenom.places[i];
+            var zm: Coordinate? = null;
+            try {
+                zm = parentOneGenom.places[i];
+            } catch (e: IndexOutOfBoundsException) {
+                println("" + parentOneGenom + parentTwoGenom + crossPoint1 + crossPoint2)
+            }
 
             if (!checkForRepeat.contains(zm)) {
                 childListOfCoordinates[i] = zm;
-                checkForRepeat.add(zm);
+                if (zm != null) {
+                    checkForRepeat.add(zm)
+                };
             } else {
                 childListOfCoordinates[i] = null;
             }
@@ -220,23 +284,26 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
             }
         }
-        val child: Path = Path(childListOfCoordinates.filterNotNull());
+        val pathValue: Float = pathMutationResolver.calcPathValue(childListOfCoordinates.filterNotNull())
+        val child: Path = Path(childListOfCoordinates.filterNotNull(), pathValue);
         return child;
     }
 
-    private fun mutate(genomPath: Path, mutationsProbability: Int, swapsInMutation: Int): Path {
+    fun mutate(genomPath: Path, mutationsProbability: Int, swapsInMutation: Int): Path {
         val chance = ThreadLocalRandom.current().nextInt(0, 100)
         val updatedGenomPath = genomPath.places.toMutableList()
 
         if (chance <= mutationsProbability) {
             for (i in 0 until swapsInMutation) {
-                val city1 = ThreadLocalRandom.current().nextInt(0, genomPath.places.size)
-                val city2 = ThreadLocalRandom.current().nextInt(0, genomPath.places.size)
-                updatedGenomPath[city1] = genomPath.places[city2];
-                updatedGenomPath[city2] = genomPath.places[city1];
+                val city1 = ThreadLocalRandom.current().nextInt(0, updatedGenomPath.size)
+                val city2 = ThreadLocalRandom.current().nextInt(0, updatedGenomPath.size)
+                val temp = updatedGenomPath[city1];
+                updatedGenomPath[city1] = updatedGenomPath[city2];
+                updatedGenomPath[city2] = temp;
             }
         }
-        return Path(updatedGenomPath)
+        val pathValue: Float = pathMutationResolver.calcPathValue(updatedGenomPath)
+        return Path(updatedGenomPath, pathValue)
     }
 
 
@@ -255,7 +322,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
             rouletteList.add(rouletteList[rouletteList.size - 1] + pathPercentage)
         }
 
-        for (i in 0..parentPopulationSize) {
+        for (i in 0 until parentPopulationSize) {
             val randomInteger = ThreadLocalRandom.current().nextInt(0, 100)
             println(randomInteger)
 
