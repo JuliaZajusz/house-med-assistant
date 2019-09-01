@@ -108,13 +108,15 @@ class GeospatialLiveTest {
     }
 
     @Test
-    fun checkGetSalesmanSetByCoordinates() {        //nie działa, bo nie zaimplementowane
-        salesmanSetQueryResolver.getSalesmanSetByCoordinates(
+    fun checkGetSalesmanSetByCoordinates() {
+        val salesmanSet = salesmanSetQueryResolver.getSalesmanSetByCoordinates(
                 listOf(Coordinate(listOf(2.3f, 2.4f)),
                         Coordinate(listOf(44f, 55.6f)),
                         Coordinate(listOf(0f, 0f)),
                         Coordinate(listOf(1f, 1f)))
         )
+
+        assertNotNull(salesmanSet)
     }
 
     @Test

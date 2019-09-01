@@ -27,10 +27,13 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                 newCoordinates.add(coordinateMutationResolver.newCoordinate(item.location))
             }
         }
-        val neighborhoodMatrix = calcNeighborhoodMatrix(newCoordinates)
-        val salesmanSet = SalesmanSet(newCoordinates, neighborhoodMatrix)
-        salesmanSet.id = UUID.randomUUID().toString()
-        salesmanSetRepository.save(salesmanSet)
+        var salesmanSet = salesmanSetQueryResolver.getSalesmanSetByCoordinates(newCoordinates)
+        if (salesmanSet == null) {
+            val neighborhoodMatrix = calcNeighborhoodMatrix(newCoordinates)
+            salesmanSet = SalesmanSet(newCoordinates, neighborhoodMatrix)
+            salesmanSet.id = UUID.randomUUID().toString()
+            salesmanSetRepository.save(salesmanSet)
+        }
         return salesmanSet
     }
 
