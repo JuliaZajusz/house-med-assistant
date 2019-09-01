@@ -105,7 +105,6 @@ class GeospatialLiveTest {
     @Test
     fun checkFindDistanceBetweenCoordinates() {
         val result = coordinateQueryResolver.findDistanceBetweenCoordinates(0, 0, 1, 1)
-        println(result)
         assertEquals(157.24938127194397, result, 0.0)
     }
 
@@ -172,6 +171,20 @@ class GeospatialLiveTest {
 //
 //        assertNotNull(salesmanSet)
 //    }
+
+    @Test
+    fun checkGetSalesmanSetByDistances() {
+        val salesmanSet = salesmanSetMutationResolver.newSalesmanSetByDistance(6, listOf(
+                0.0f, 20.0f, 30.0f, 31.0f, 28.0f, 40.0f,
+                30.0f, 0.0f, 10.0f, 14.0f, 20.0f, 44.0f,
+                40.0f, 20.0f, 0.0f, 10.0f, 22.0f, 50.0f,
+                41.0f, 24.0f, 20.0f, 0.0f, 14.0f, 42.0f,
+                38.0f, 30.0f, 32.0f, 24.0f, 0.0f, 28.0f,
+                50.0f, 54.0f, 60.0f, 52.0f, 38.0f, 0.0f
+        ))
+
+        assertNotNull(salesmanSet)
+    }
 
     @Test
     fun checkFindGreedyPath() {
@@ -257,6 +270,87 @@ class GeospatialLiveTest {
         ))
         val result = path?.let { salesmanSetMutationResolver.mutate(it, 100, 100) }
         assertEquals(path?.places!!.distinct().size, result?.places!!.distinct().size)
+    }
+
+//    @Test
+//    fun check_6_1_datasetGreedyValue() {
+//        val salesmanSet = salesmanSetMutationResolver.newSalesmanSetByDistance(6, listOf(
+//                0.0f, 20.0f, 30.0f, 31.0f, 28.0f, 40.0f,
+//                30.0f, 0.0f, 10.0f, 14.0f, 20.0f, 44.0f,
+//                40.0f, 20.0f, 0.0f, 10.0f, 22.0f, 50.0f,
+//                41.0f, 24.0f, 20.0f, 0.0f, 14.0f, 42.0f,
+//                38.0f, 30.0f, 32.0f, 24.0f, 0.0f, 28.0f,
+//                50.0f, 54.0f, 60.0f, 52.0f, 38.0f, 0.0f
+//        ))
+//
+//        val result = salesmanSetMutationResolver.findGreedyPath(salesmanSet!!.id)
+//        assertEquals(132, result.value)
+//    }
+
+    @Test
+    fun check_burma14_datasetGreedyValue() {
+        val salesmanSet = salesmanSetMutationResolver.newSalesmanSet(
+                listOf(
+                        Coordinate(listOf(16.47f - 90.0f, 96.10f - 90.0f)),
+                        Coordinate(listOf(16.47f - 90.0f, 94.44f - 90.0f)),
+                        Coordinate(listOf(20.09f - 90.0f, 92.54f - 90.0f)),
+                        Coordinate(listOf(22.39f - 90.0f, 93.37f - 90.0f)),
+                        Coordinate(listOf(25.23f - 90.0f, 97.24f - 90.0f)),
+                        Coordinate(listOf(22.00f - 90.0f, 96.05f - 90.0f)),
+                        Coordinate(listOf(20.47f - 90.0f, 97.02f - 90.0f)),
+                        Coordinate(listOf(17.20f - 90.0f, 96.29f - 90.0f)),
+                        Coordinate(listOf(16.30f - 90.0f, 97.38f - 90.0f)),
+                        Coordinate(listOf(14.05f - 90.0f, 98.12f - 90.0f)),
+                        Coordinate(listOf(16.53f - 90.0f, 97.38f - 90.0f)),
+                        Coordinate(listOf(21.52f - 90.0f, 95.59f - 90.0f)),
+                        Coordinate(listOf(19.41f - 90.0f, 97.13f - 90.0f)),
+                        Coordinate(listOf(20.09f - 90.0f, 94.55f - 90.0f))
+                )
+        )
+
+        val result = salesmanSetMutationResolver.findGreedyPath(salesmanSet!!.id)
+        assertEquals(3323, result.value)
+    }
+
+
+//    @Test
+//    fun check_6_1_datasetValue() {
+//        val salesmanSet = salesmanSetMutationResolver.newSalesmanSetByDistance(6, listOf(
+//                0.0f, 20.0f, 30.0f, 31.0f, 28.0f, 40.0f,
+//                30.0f, 0.0f, 10.0f, 14.0f, 20.0f, 44.0f,
+//                40.0f, 20.0f, 0.0f, 10.0f, 22.0f, 50.0f,
+//                41.0f, 24.0f, 20.0f, 0.0f, 14.0f, 42.0f,
+//                38.0f, 30.0f, 32.0f, 24.0f, 0.0f, 28.0f,
+//                50.0f, 54.0f, 60.0f, 52.0f, 38.0f, 0.0f
+//        ))
+//
+//        val result = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 20, 200, 10)
+//        assertEquals(132, result.value)
+//    }
+
+    @Test
+    fun check_burma14_datasetValue() {
+        val salesmanSet = salesmanSetMutationResolver.newSalesmanSet(
+                listOf(
+                        Coordinate(listOf(16.47f - 90.0f, 96.10f - 90.0f)),
+                        Coordinate(listOf(16.47f - 90.0f, 94.44f - 90.0f)),
+                        Coordinate(listOf(20.09f - 90.0f, 92.54f - 90.0f)),
+                        Coordinate(listOf(22.39f - 90.0f, 93.37f - 90.0f)),
+                        Coordinate(listOf(25.23f - 90.0f, 97.24f - 90.0f)),
+                        Coordinate(listOf(22.00f - 90.0f, 96.05f - 90.0f)),
+                        Coordinate(listOf(20.47f - 90.0f, 97.02f - 90.0f)),
+                        Coordinate(listOf(17.20f - 90.0f, 96.29f - 90.0f)),
+                        Coordinate(listOf(16.30f - 90.0f, 97.38f - 90.0f)),
+                        Coordinate(listOf(14.05f - 90.0f, 98.12f - 90.0f)),
+                        Coordinate(listOf(16.53f - 90.0f, 97.38f - 90.0f)),
+                        Coordinate(listOf(21.52f - 90.0f, 95.59f - 90.0f)),
+                        Coordinate(listOf(19.41f - 90.0f, 97.13f - 90.0f)),
+                        Coordinate(listOf(20.09f - 90.0f, 94.55f - 90.0f))
+                )
+        )
+
+        val result = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 5, 200, 10)
+        assertEquals(3323, result.value)
     }
 
 }

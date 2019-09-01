@@ -37,6 +37,10 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         return salesmanSet
     }
 
+    fun updateSalesmanSet(salesmanSet: SalesmanSet): SalesmanSet {
+        return salesmanSetRepository.save(salesmanSet)
+    }
+
 //    fun newSalesmanSetByDistance(neighborhoodMatrix: List<Distance>): SalesmanSet? {
 //        var newCoordinates: MutableList<Coordinate> = mutableListOf();
 //        val numberOfCoordinates = sqrt(neighborhoodMatrix.size.toDouble()).toInt()
@@ -151,19 +155,30 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
     fun findBestPathUsingGeneticAlgorythm(id: String, timeInSec: Int, populationSize: Int, parentPopulationSize: Int): Path {
         var salesmanSet: SalesmanSet = salesmanSetQueryResolver.findById(id);
-        var pathPlaces: List<Coordinate> = mutableListOf();
-//            Timer().schedule((timeInSec* 1000).toLong()) {
-//        for(i in 0..timeInSec) {
-        salesmanSet = doGenetic(salesmanSet, populationSize, parentPopulationSize)
-//            }
-        pathPlaces = salesmanSet.paths.last().places  //to juz jest path, moze nie trzeba tworzyć nowej
-        var pathValue: Float = pathMutationResolver.calcPathValue(pathPlaces)
-        val path: Path = Path(pathPlaces, pathValue);
-        return path;
+        val greedyPath = findGreedyPath(salesmanSet.id)
+        if (!salesmanSet.paths.contains(greedyPath)) {
+            salesmanSet.paths.add(greedyPath)
+        }
+        val start = System.currentTimeMillis();
+        val end = start + timeInSec * 1000; // 60 seconds * 1000 ms/sec
+        while (System.currentTimeMillis() < end) {
+            salesmanSet = doGenetic(salesmanSet, populationSize, parentPopulationSize)
+        }
+        salesmanSet.paths = salesmanSet.paths.distinct().sortedBy { it.value.toFloat() }.toMutableList()
+        if (salesmanSet.paths.size > 10) {
+            salesmanSet.paths = salesmanSet.paths.subList(0, 10)  //to chyba nie działa
+        }
+        salesmanSet.population = salesmanSet.population.distinct().toMutableList()  //desperacja
+        updateSalesmanSet(salesmanSet)
+        return salesmanSet.paths.first()
     }
 
     fun doGenetic(salesmanSet: SalesmanSet, populationSize: Int, parentPopulationSize: Int, mutationsProbability: Int = 1, swapsInMutation: Int = 10): SalesmanSet {
         var newSalesmanSet = salesmanSet
+        newSalesmanSet.population = mutableListOf()
+        if (salesmanSet.paths.isNotEmpty()) {
+            newSalesmanSet.population.add(salesmanSet.paths.first())
+        }
         //create population
         var genomPath = newSalesmanSet.places
         for (i in newSalesmanSet.population.size until populationSize) {
@@ -171,12 +186,12 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
             val value = pathMutationResolver.calcPathValue(genomPath)
             newSalesmanSet.population.add(Path(genomPath, value))
         }
-
-        var i = 0;
         //rob
+        var i = 0;
         while (true) {
             //jesli warunek konca nie zostal osiagniety
-            if (i < 1) {
+            if (i < 100) {
+                newSalesmanSet.population = newSalesmanSet.population.distinct().toMutableList()
                 //        sortuj populację
                 newSalesmanSet.population = newSalesmanSet.population.sortedBy { it.value.toFloat() }.toMutableList()
                 //        jesli jest za duża to usuń część osobników
@@ -184,7 +199,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                     newSalesmanSet.population = newSalesmanSet.population.subList(0, populationSize - 1)
                 }
 //        wybierz populację rodzicielską (ruletka, turniej)
-                newSalesmanSet.parentPopulation = chooseParentPopulationByRouletteMethod(newSalesmanSet.population, parentPopulationSize)
+                newSalesmanSet.parentPopulation = chooseParentPopulationByRouletteMethod(newSalesmanSet.population, newSalesmanSet.population.size)
 //        krzyżuj
                 newSalesmanSet = reproducePopulation(newSalesmanSet, mutationsProbability, swapsInMutation)
 //        mutuj
@@ -324,7 +339,6 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
         for (i in 0 until parentPopulationSize) {
             val randomInteger = ThreadLocalRandom.current().nextInt(0, 100)
-            println(randomInteger)
 
             loop@ for (i in 0 until rouletteList.size) {
                 if (rouletteList[i] < randomInteger && (i + 1 == rouletteList.size || rouletteList[i + 1] > randomInteger)) {
