@@ -3,8 +3,8 @@ extend type Query {
 }
 
 type Distance {
-    coordinate_1_id: String
-    coordinate_2_id: String
+    startCoordinateId: String
+    endCoordinateId: String
     value: Float
 }
 

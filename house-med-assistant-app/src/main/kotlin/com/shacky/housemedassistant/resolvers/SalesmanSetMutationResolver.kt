@@ -15,6 +15,8 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                                   val salesmanSetQueryResolver: SalesmanSetQueryResolver,
                                   val coordinateMutationResolver: CoordinateMutationResolver,
                                   val coordinateQueryResolver: CoordinateQueryResolver,
+                                  val distanceMutationResolver: DistanceMutationResolver,
+                                  val distanceQueryResolver: DistanceQueryResolver,
                                   val pathMutationResolver: PathMutationResolver
 ) : GraphQLMutationResolver {
     fun newSalesmanSet(coordinates: List<Coordinate>): SalesmanSet? {
@@ -40,23 +42,6 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
     fun updateSalesmanSet(salesmanSet: SalesmanSet): SalesmanSet {
         return salesmanSetRepository.save(salesmanSet)
     }
-
-//    fun newSalesmanSetByDistance(neighborhoodMatrix: List<Distance>): SalesmanSet? {
-//        var newCoordinates: MutableList<Coordinate> = mutableListOf();
-//        val numberOfCoordinates = sqrt(neighborhoodMatrix.size.toDouble()).toInt()
-//        for (i in 0..numberOfCoordinates) {
-//            val long = 89.0f + i.toFloat() / numberOfCoordinates
-//            val lat = 89.0f + i.toFloat() / numberOfCoordinates
-//            newCoordinates.add(coordinateMutationResolver.newCoordinate(listOf(long, lat)))
-//        }
-//        var salesmanSet = salesmanSetQueryResolver.getSalesmanSetByDistances(neighborhoodMatrix)
-//        if (salesmanSet == null) {
-//            salesmanSet = SalesmanSet(newCoordinates, neighborhoodMatrix)
-//            salesmanSet.id = UUID.randomUUID().toString()
-//            salesmanSetRepository.save(salesmanSet)
-//        }
-//        return salesmanSet
-//    }
 
     fun newSalesmanSetByDistance(numberOfCoordinates: Int, distances: List<Float>): SalesmanSet? {
         var newCoordinates: MutableList<Coordinate> = mutableListOf();
@@ -92,7 +77,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                     println("" + index + " " + coordinates.indexOf(item1) + " " + coordinates.indexOf(item2))
                     throw ArrayIndexOutOfBoundsException()
                 }
-                neighborhoodMatrix.add(Distance(item1.id, item2.id, distance))
+                neighborhoodMatrix.add(distanceMutationResolver.newDistance(item1.location, item2.location, distance))
             }
         }
         return neighborhoodMatrix
@@ -102,11 +87,12 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         var neighborhoodMatrix: MutableList<Distance> = mutableListOf();
         for (item1 in coordinates) {
             for (item2 in coordinates) {
-                var distance = 0.0;
-                if (!item1.id.equals(item2.id)) {
-                    distance = coordinateQueryResolver.findDistanceBetweenCoordinates(item1.location[0], item1.location[1], item2.location[0], item2.location[1])
+                var distance: Distance = if (item1.id.equals(item2.id)) {
+                    Distance(item1.id, item2.id, 0.0f)
+                } else {
+                    distanceMutationResolver.getOrCreateDistanceByCoordinates(item1, item2)
                 }
-                neighborhoodMatrix.add(Distance(item1.id, item2.id, distance.toFloat()))
+                neighborhoodMatrix.add(distance)
             }
         }
         return neighborhoodMatrix
@@ -134,20 +120,18 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
             for (i in places.indices) {
                 val startPlace = places[startElementIndex]
-                println("The element is $startPlace")
                 val pathElement = neighborhoodMatrix.filter { distance ->
-                    //                    (distance.coordinate_1_id.equals(startPlace.id) && !visited.contains(distance.coordinate_2_id)) || (distance.coordinate_2_id.equals(startPlace.id) && !visited.contains(distance.coordinate_1_id))
-                    distance.coordinate_1_id.equals(startPlace.id) && !visited.contains(distance.coordinate_2_id)
+                    distance.startCoordinateId.equals(startPlace.id) && !visited.contains(distance.endCoordinateId)
                 }.minBy { distance -> distance.value }
                 if (pathElement != null) {
-                    val secondPlace: Coordinate = places.first { coordinate -> coordinate.id.equals(pathElement.coordinate_2_id) }
+                    val secondPlace: Coordinate = places.first { coordinate -> coordinate.id.equals(pathElement.endCoordinateId) }
                     pathPlaces.add(secondPlace)
-                    visited.add(pathElement.coordinate_2_id)
+                    visited.add(pathElement.endCoordinateId)
                     startElementIndex = places.indexOf(secondPlace)
                 }
             }
         }
-        var pathValue: Float = pathMutationResolver.calcPathValue(pathPlaces)
+        val pathValue: Float = pathMutationResolver.calcPathValue(pathPlaces)
         val path: Path = Path(pathPlaces, pathValue);
         return path;
     }
@@ -168,7 +152,9 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         if (salesmanSet.paths.size > 10) {
             salesmanSet.paths = salesmanSet.paths.subList(0, 10)  //to chyba nie działa
         }
-        salesmanSet.population = salesmanSet.population.distinct().toMutableList()  //desperacja
+//        salesmanSet.population = salesmanSet.population.distinct().toMutableList()  //desperacja
+        salesmanSet.population = mutableListOf()  //desperacja
+        salesmanSet.parentPopulation = mutableListOf()  //desperacja
         updateSalesmanSet(salesmanSet)
         return salesmanSet.paths.first()
     }
@@ -199,7 +185,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                     newSalesmanSet.population = newSalesmanSet.population.subList(0, populationSize - 1)
                 }
 //        wybierz populację rodzicielską (ruletka, turniej)
-                newSalesmanSet.parentPopulation = chooseParentPopulationByRouletteMethod(newSalesmanSet.population, newSalesmanSet.population.size)
+                newSalesmanSet.parentPopulation = chooseParentPopulationByRouletteMethod(newSalesmanSet.population, parentPopulationSize)
 //        krzyżuj
                 newSalesmanSet = reproducePopulation(newSalesmanSet, mutationsProbability, swapsInMutation)
 //        mutuj

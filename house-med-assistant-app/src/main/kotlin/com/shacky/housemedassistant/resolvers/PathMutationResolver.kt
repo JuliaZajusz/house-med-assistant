@@ -10,7 +10,9 @@ import java.util.*
 @Component
 class PathMutationResolver(private val pathRepository: PathRepository,
                            val coordinateMutationResolver: CoordinateMutationResolver,
-                           val coordinateQueryResolver: CoordinateQueryResolver
+                           val coordinateQueryResolver: CoordinateQueryResolver,
+                           val distanceMutationResolver: DistanceMutationResolver,
+                           val distanceQueryResolver: DistanceQueryResolver
 ) : GraphQLMutationResolver {
     fun newPath(coordinates: List<Coordinate>): Path? {
         var newCoordinates: MutableList<Coordinate> = mutableListOf();
@@ -64,9 +66,9 @@ class PathMutationResolver(private val pathRepository: PathRepository,
         var value = 0.0;
         for (i in places.indices) {
             if (places.size - 1 > i) {
-                value += coordinateQueryResolver.findDistanceBetweenCoordinates(places[i], places[i + 1])
+                value += distanceMutationResolver.getOrCreateDistanceByCoordinates(places[i], places[i + 1]).value
             } else {
-                value += coordinateQueryResolver.findDistanceBetweenCoordinates(places[i], places[0])
+                value += distanceMutationResolver.getOrCreateDistanceByCoordinates(places[i], places[0]).value
             }
         }
         return value.toFloat()

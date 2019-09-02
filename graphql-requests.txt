@@ -253,8 +253,8 @@ query getAllSalesmanSets {
       location
     }
     neighborhoodMatrix {
-      coordinate_1_id,
-      coordinate_2_id,
+      startCoordinateId,
+      endCoordinateId,
       value
     }
   }
@@ -296,8 +296,8 @@ mutation newSalesmanSet {
       location
     }
     neighborhoodMatrix {
-      coordinate_1_id,
-      coordinate_2_id,
+      startCoordinateId,
+      endCoordinateId,
       value
     }
   }

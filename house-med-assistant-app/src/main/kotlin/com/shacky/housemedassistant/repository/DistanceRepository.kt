@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository
 @Repository
 interface DistanceRepository : MongoRepository<Distance, String> {
 
-
+    fun findDistanceByStartCoordinateIdAndEndCoordinateId(startCoordinateId: String, endCoordinateId: String): Distance?
 }
 
