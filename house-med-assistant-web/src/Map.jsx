@@ -17,6 +17,7 @@ export default class SimpleExample extends Component {
         lat: 51.505,
         lng: -0.09,
         zoom: 13,
+        markers: [[51.505, -0.09]]
     }
 
     onMapClick(e) {
@@ -26,22 +27,38 @@ export default class SimpleExample extends Component {
         // .openOn(mymap);
     }
 
+    addMarker = (e) => {
+        const {markers} = this.state
+        let lat = Math.round(e.latlng.lat * 100) / 100
+        let lng = Math.round(e.latlng.lng * 100) / 100
+        markers.push([lat, lng])
+        this.setState({markers})
+    }
+
     render() {
-        const position = [this.state.lat, this.state.lng]
+        const startPosition = [this.state.lat, this.state.lng]
         return (
-            <Map center={position}
+            <Map center={startPosition}
                  zoom={this.state.zoom}
                  style={{height: '350px'}}
-                 onClick={(e) => this.onMapClick(e)}>
+                 onClick={this.addMarker}
+                // onClick={(e) => this.onMapClick(e)}
+            >
                 <TileLayer
                     attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
                 />
-                <Marker position={position}>
-                    <Popup>
-                        A pretty CSS3 popup. <br/> Easily customizable. {position}
-                    </Popup>
-                </Marker>
+                {this.state.markers.map((markerPosition, idx) =>
+                    <Marker key={`marker-${idx}`} position={markerPosition} onClick={() => console.log("a")}>
+                        <Popup key={`popup-${idx}`}>
+                            <span>
+                                A pretty CSS3 popup. <br/>
+                                Easily customizable.<br/>
+                                {markerPosition[0]}, {markerPosition[1]}
+                            </span>
+                        </Popup>
+                    </Marker>
+                )}
             </Map>
         )
     }
