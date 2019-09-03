@@ -153,6 +153,7 @@ query sciezki{
     id,
     location
   }
+    value
   }
 }
 
@@ -252,6 +253,13 @@ query getAllSalesmanSets {
       id,
       location
     }
+  paths {
+    places {
+      id,
+      location
+    },
+    value
+  }
     neighborhoodMatrix {
       startCoordinateId,
       endCoordinateId,
@@ -295,6 +303,14 @@ mutation newSalesmanSet {
       id,
       location
     }
+    paths {
+    places {
+      id,
+      location
+    },
+    value
+  }
+
     neighborhoodMatrix {
       startCoordinateId,
       endCoordinateId,

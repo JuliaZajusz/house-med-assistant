@@ -5,6 +5,7 @@ extend type Query {
 type Path {
     id: ID!
     places: [Coordinate]
+    value: Float
 }
 
 extend type Mutation {

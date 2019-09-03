@@ -1,8 +1,9 @@
-import React, {Component} from 'react'
+import React, {Component, createRef} from 'react'
 // import TileLayer from "react-leaflet/lib/TileLayer";
 import {Map, Marker, Popup, TileLayer} from "react-leaflet";
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet';
+import * as _ from 'lodash';
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -12,19 +13,59 @@ L.Icon.Default.mergeOptions({
     shadowUrl: require('leaflet/dist/images/marker-shadow.png')
 });
 
+const outer = [[50.505, -29.09], [52.505, 29.09]]
+const inner = [[49.505, -2.09], [53.505, 2.09]]
+
 export default class SimpleExample extends Component {
+    constructor(props) {
+        super(props);
+        this.mapRef = createRef()
+    }
+
     state = {
         lat: 51.505,
         lng: -0.09,
         zoom: 13,
-        markers: [[51.505, -0.09]]
+        markers: [],
+        bounds: [[49.11, 15.04], [54.11, 23.04],]
     }
 
-    onMapClick(e) {
-        L.popup
-            .setLatLng(e.latlng)
-            .setContent("You clicked the map at " + e.latlng.toString())
-        // .openOn(mymap);
+    onClickInner = () => {
+        this.setState({bounds: inner})
+    }
+
+    onClickOuter = () => {
+        this.setState({bounds: outer})
+    }
+
+
+    static getDerivedStateFromProps = (props, state) => {
+        console.log("dostalem propsy", props)
+        let markers = props.data ? props.data.places.map((place) => place.location) : []
+
+        let newMarkers = [...state.markers, ...markers]
+        let newBounds = state.bounds;
+        if (newMarkers.length > 1) {
+            let south = _.minBy(newMarkers, (o) => {
+                return o[0]
+            })
+            let west = _.minBy(newMarkers, (o) => {
+                return o[1]
+            })
+            let north = _.maxBy(newMarkers, (o) => {
+                return o[0]
+            })
+            let east = _.maxBy(newMarkers, (o) => {
+                return o[1]
+            })
+            newBounds = [[south, west], [north, east]]
+        }
+
+        return {
+            ...state,
+            bounds: newBounds,
+            markers: newMarkers
+        }
     }
 
     addMarker = (e) => {
@@ -38,12 +79,26 @@ export default class SimpleExample extends Component {
     render() {
         const startPosition = [this.state.lat, this.state.lng]
         return (
-            <Map center={startPosition}
-                 zoom={this.state.zoom}
-                 style={{height: '350px'}}
-                 onClick={this.addMarker}
-                // onClick={(e) => this.onMapClick(e)}
+            <Map
+                id="mapa"
+                center={startPosition}
+                zoom={this.state.zoom}
+                style={{height: '350px'}}
+                onClick={this.addMarker}
+                ref={this.mapRef}
+                bounds={this.state.bounds}
+                // boundsOptions={{padding: [50, 50]}}
             >
+                {/*<Rectangle*/}
+                {/*    bounds={outer}*/}
+                {/*    color={this.state.bounds === outer ? 'red' : 'white'}*/}
+                {/*    onClick={this.onClickOuter}*/}
+                {/*/>*/}
+                {/*<Rectangle*/}
+                {/*    bounds={inner}*/}
+                {/*    color={this.state.bounds === inner ? 'red' : 'white'}*/}
+                {/*    onClick={this.onClickInner}*/}
+                {/*/>*/}
                 <TileLayer
                     attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     url="https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png"
