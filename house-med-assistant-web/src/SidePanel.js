@@ -6,9 +6,14 @@ import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from '@material-ui/icons/Search';
 import {fade} from "@material-ui/core/styles";
+import Fab from "@material-ui/core/Fab";
+import ExchangeRates from "./components/ExchangeRates";
 
 
 const useStyles = makeStyles(theme => ({
+    side_container: {
+        overflow: 'hidden',
+    },
     button: {
         background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
         color: 'white',
@@ -90,9 +95,15 @@ export default function SidePanel(props) {
         props.onAddToSet(place)
     }
 
+    const loadData = () => {
+        props.onLoadData()
+    }
+
 
     return (
-        <Grid>
+        <Grid
+            className={classes.side_container}
+        >
             <Grid
                 item
                 container
@@ -106,8 +117,17 @@ export default function SidePanel(props) {
                     onClick={() => addToSet(place)}
                 >{place.id}</Paper>)
                 }
-
-                <Button className={classes.button} onClick={() => showSet()}>Show set</Button>
+                <Fab
+                    variant="extended"
+                    size="small"
+                    color="primary"
+                    aria-label="add"
+                    className={classes.margin}
+                    onClick={() => showSet()}
+                >
+                    Wylicz trasę
+                </Fab>
+                <Button className={classes.button} onClick={() => loadData()}>Testuj grapql</Button>
             </Grid>
 
             <Grid className={classes.search_panel}>
@@ -140,6 +160,7 @@ export default function SidePanel(props) {
                 >{place.id}</Paper>)
                 }
             </Grid>
+            <ExchangeRates/>
 
         </Grid>
     )

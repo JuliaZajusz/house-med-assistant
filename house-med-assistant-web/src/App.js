@@ -37,10 +37,17 @@ const useStyles = makeStyles(theme => ({
         background: theme.palette.primary.main
     },
     main_layout_box: {
-        flexGrow: 1
+        flexGrow: 1,
+        height: '100%',
+        maxHeight: '100%',
     },
     title: {
         flexGrow: 1,
+    },
+    side_container_container: {
+        height: '100%',
+        maxHeight: '100%',
+        overflowY: 'auto'
     }
 }));
 
@@ -49,6 +56,11 @@ function App() {
 
     const [salesmanSet, setSalesmanSet] = useState(() => {
         return {places: []}
+        }
+    );
+
+    const [currencies, setCurrencies] = useState(() => {
+            return {}
         }
     );
 
@@ -85,6 +97,19 @@ function App() {
         }
     );
 
+    function loadData() {
+        //  const { loading, error, data } = useQuery(gql`
+        //     {
+        //         rates(currency: "USD") {
+        //             currency
+        //             rate
+        //         }
+        //     }
+        // `);
+        //
+        // setCurrencies(data)
+
+    }
 
     const showSet = () => {
         console.log("odbywa się łądowanie")
@@ -117,10 +142,12 @@ function App() {
                 >
                     <Grid item xs={3}
                           flexgrow={1}
+                          className={classes.side_container_container}
                     >
                         <SidePanel
                             salesmanSet={salesmanSet}
                             savedPlaces={savedPlaces}
+                            onLoadData={() => loadData()}
                             onShowSet={() => showSet()}
                             onAddToSet={(place) => addToSet(place)}
                         />
