@@ -43,7 +43,7 @@ export default class MapWrapper extends Component {
         let markers = props.data ? props.data.places.map((place) => [place.location[1], place.location[0]]) : []
         console.log("mark", markers)
         let newBounds = state.bounds;
-        if (newMarkers.length > 1) {
+        if (markers.length > 1) {
             let south = _.minBy(markers, (o) => {
                 return o[0]
             })
