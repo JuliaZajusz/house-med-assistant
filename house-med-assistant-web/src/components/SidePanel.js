@@ -7,7 +7,7 @@ import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from '@material-ui/icons/Search';
 import {fade} from "@material-ui/core/styles";
 import Fab from "@material-ui/core/Fab";
-import ExchangeRates from "./components/ExchangeRates";
+import PlacesList from "./PlacesList";
 
 
 const useStyles = makeStyles(theme => ({
@@ -27,6 +27,7 @@ const useStyles = makeStyles(theme => ({
         background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
     },
     side_panel: {
+        paddingBottom: '1px',
         alignItems: 'stretch',
     },
     top_paper: {
@@ -99,6 +100,9 @@ export default function SidePanel(props) {
         props.onLoadData()
     }
 
+    let a = PlacesList()
+
+    console.log("a: ", a)
 
     return (
         <Grid
@@ -154,13 +158,31 @@ export default function SidePanel(props) {
                 alignItems="center"
                 className={classes.side_panel}
             >
-                {props.savedPlaces.filter(place => !props.salesmanSet.places.includes(place)).map((place) => <Paper
+                {props.savedPlaces
+                    .filter(place => !props.salesmanSet.places.includes(place))
+                    .map((place) => <Paper
                     className={classes.paper}
                     onClick={() => addToSet(place)}
                 >{place.id}</Paper>)
                 }
+
+                {a && a.places
+                    .filter(place => !props.salesmanSet.places.includes(place))
+                    .map((place) => <Paper
+                            key={place.id}
+                            className={classes.paper}
+                            onClick={() => addToSet(place.coordinate)}
+                        >
+                            <p>
+                                {place.id}
+                            </p>
+                            <p>
+                                {place.name}: {place.coordinate.location[0]}, {place.coordinate.location[1]}
+                            </p>
+                        </Paper>
+                    )}
             </Grid>
-            <ExchangeRates/>
+            {/*<ExchangeRates/>*/}
 
         </Grid>
     )

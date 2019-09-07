@@ -16,7 +16,7 @@ L.Icon.Default.mergeOptions({
 const outer = [[50.505, -29.09], [52.505, 29.09]]
 const inner = [[49.505, -2.09], [53.505, 2.09]]
 
-export default class SimpleExample extends Component {
+export default class MapWrapper extends Component {
     constructor(props) {
         super(props);
         this.mapRef = createRef()
@@ -40,8 +40,8 @@ export default class SimpleExample extends Component {
 
 
     static getDerivedStateFromProps = (props, state) => {
-        console.log("dostalem propsy", props)
-        let markers = props.data ? props.data.places.map((place) => place.location) : []
+        console.log("dostalem propsy getDerivedStateFromProps", props)
+        let markers = props.data ? props.data.places.map((place) => [place.location[1], place.location[0]]) : []
 
         let newMarkers = [...state.markers, ...markers]
         let newBounds = state.bounds;

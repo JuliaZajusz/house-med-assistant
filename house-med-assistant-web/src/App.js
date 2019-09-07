@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
-import SimpleExample from "./Map";
+import MapWrapper from "./components/Map";
 import {getSalesmanSet} from "./services/SalesmanSetService";
 import {Toolbar} from '@material-ui/core';
 import Typography from "@material-ui/core/Typography";
@@ -10,7 +10,8 @@ import {createMuiTheme} from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import AppBar from "@material-ui/core/AppBar";
-import SidePanel from "./SidePanel";
+import SidePanel from "./components/SidePanel";
+import {loadSalesmanSets} from "./services/DefaultService";
 
 const theme = createMuiTheme({
     palette: {
@@ -108,7 +109,8 @@ function App() {
         // `);
         //
         // setCurrencies(data)
-
+        loadSalesmanSets()
+            .then(result => console.log(result));
     }
 
     const showSet = () => {
@@ -153,7 +155,7 @@ function App() {
                         />
                     </Grid>
                     <Grid item xs={9}>
-                        <SimpleExample data={salesmanSet}/>
+                        <MapWrapper data={salesmanSet}/>
                     </Grid>
                 </Grid>
             </ThemeProvider>

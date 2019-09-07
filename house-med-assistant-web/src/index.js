@@ -6,22 +6,6 @@ import * as serviceWorker from './serviceWorker';
 import {ApolloProvider} from '@apollo/react-hooks';
 import {client} from "./services/DefaultService";
 
-// const client = new ApolloClient({
-//     uri: 'https://48p1r2roz4.sse.codesandbox.io',
-// });
-//
-// client
-// .query({
-//     query: gql`
-//         {
-//             rates(currency: "USD") {
-//                 currency
-//             }
-//         }
-//     `
-// })
-// .then(result => console.log(result));
-
 ReactDOM.render(<ApolloProvider client={client}>< App/></ApolloProvider>, document.getElementById('root')
 )
 ;
