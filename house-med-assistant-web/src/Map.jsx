@@ -83,7 +83,7 @@ export default class SimpleExample extends Component {
                 id="mapa"
                 center={startPosition}
                 zoom={this.state.zoom}
-                style={{height: '350px'}}
+                style={{minHeight: '500px', height: '100%'}}
                 onClick={this.addMarker}
                 ref={this.mapRef}
                 bounds={this.state.bounds}
