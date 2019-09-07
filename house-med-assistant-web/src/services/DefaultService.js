@@ -35,3 +35,25 @@ export const loadSalesmanSets = () => {
     })
 // .then(result => console.log(result));
 }
+
+export const addCoordinate = (coordinate) => {
+    let lat = coordinate[0]
+    let lng = coordinate[1]
+
+    return client
+    .mutate({
+            mutation: gql`
+                mutation nowyKoordynat {
+                    newCoordinate(
+                        location: [${lat}, ${lng}]
+                    ){
+                        id, location
+                    }
+                }
+            `
+        }
+    );
+}
+
+
+

@@ -11,7 +11,7 @@ import purple from '@material-ui/core/colors/purple';
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import AppBar from "@material-ui/core/AppBar";
 import SidePanel from "./components/SidePanel";
-import {loadSalesmanSets} from "./services/DefaultService";
+import {addCoordinate, loadSalesmanSets} from "./services/DefaultService";
 
 const theme = createMuiTheme({
     palette: {
@@ -99,16 +99,6 @@ function App() {
     );
 
     function loadData() {
-        //  const { loading, error, data } = useQuery(gql`
-        //     {
-        //         rates(currency: "USD") {
-        //             currency
-        //             rate
-        //         }
-        //     }
-        // `);
-        //
-        // setCurrencies(data)
         loadSalesmanSets()
             .then(result => console.log(result));
     }
@@ -121,6 +111,17 @@ function App() {
 
     const addToSet = (place) => {
         setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, place]})
+    }
+
+    const addPlaceToSalesmanSet = (coordinate) => {
+        addCoordinate(coordinate)
+            .then(result => {
+                    console.log("addPlaceToSalesmanSet: ", result.data.newCoordinate)
+                    // addToSet(result.data.newCoordinate);
+                    setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, result.data.newCoordinate]})
+                    console.log("+: ", salesmanSet)
+                }
+            );
     }
 
 
@@ -155,7 +156,8 @@ function App() {
                         />
                     </Grid>
                     <Grid item xs={9}>
-                        <MapWrapper data={salesmanSet}/>
+                        <MapWrapper data={salesmanSet}
+                                    onAddPlaceToSalesmanSet={(coordinates) => addPlaceToSalesmanSet(coordinates)}/>
                     </Grid>
                 </Grid>
             </ThemeProvider>

@@ -40,22 +40,20 @@ export default class MapWrapper extends Component {
 
 
     static getDerivedStateFromProps = (props, state) => {
-        console.log("dostalem propsy getDerivedStateFromProps", props)
         let markers = props.data ? props.data.places.map((place) => [place.location[1], place.location[0]]) : []
-
-        let newMarkers = [...state.markers, ...markers]
+        console.log("mark", markers)
         let newBounds = state.bounds;
         if (newMarkers.length > 1) {
-            let south = _.minBy(newMarkers, (o) => {
+            let south = _.minBy(markers, (o) => {
                 return o[0]
             })
-            let west = _.minBy(newMarkers, (o) => {
+            let west = _.minBy(markers, (o) => {
                 return o[1]
             })
-            let north = _.maxBy(newMarkers, (o) => {
+            let north = _.maxBy(markers, (o) => {
                 return o[0]
             })
-            let east = _.maxBy(newMarkers, (o) => {
+            let east = _.maxBy(markers, (o) => {
                 return o[1]
             })
             newBounds = [[south, west], [north, east]]
@@ -64,7 +62,7 @@ export default class MapWrapper extends Component {
         return {
             ...state,
             bounds: newBounds,
-            markers: newMarkers
+            markers: markers
         }
     }
 
@@ -73,7 +71,7 @@ export default class MapWrapper extends Component {
         let lat = Math.round(e.latlng.lat * 100) / 100
         let lng = Math.round(e.latlng.lng * 100) / 100
         markers.push([lat, lng])
-        this.setState({markers})
+        this.props.onAddPlaceToSalesmanSet([lng, lat])
     }
 
     render() {
@@ -87,7 +85,7 @@ export default class MapWrapper extends Component {
                 onClick={this.addMarker}
                 ref={this.mapRef}
                 bounds={this.state.bounds}
-                // boundsOptions={{padding: [50, 50]}}
+                boundsOptions={{padding: [50, 50]}}
             >
                 {/*<Rectangle*/}
                 {/*    bounds={outer}*/}
