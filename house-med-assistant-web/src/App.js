@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import MapWrapper from "./components/Map";
-import {postSalesmanSet, upgradeSalesmanSet} from "./services/SalesmanSetService";
+import {postSalesmanSet, putSalesmanSet, upgradeSalesmanSet} from "./services/SalesmanSetService";
 import {Toolbar} from '@material-ui/core';
 import Typography from "@material-ui/core/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -60,17 +60,21 @@ function App() {
     const classes = useStyles();
 
     const [salesmanSet, setSalesmanSet] = useState(() => {
+        if (history.location.pathname) {
+            let id = history.location.pathname
+            id = id.substr(1);
+            return {
+                id: id.length > 0 ? id : null,
+                places: [],
+                path: []
+            }
+        }
         return {
             places: [],
             path: []
         }
         }
     );
-
-    // const [currencies, setCurrencies] = useState(() => {
-    //         return {}
-    //     }
-    // );
 
     const [savedPlaces, setSavedPlaces] = useState(() => {
             return [
@@ -115,40 +119,31 @@ function App() {
             );
     }
 
-    // const showSet = () => {
-    //     console.log("odbywa się ładowanie")
-    //     let set = getSalesmanSet()
-    //     setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, ...set.places]})
-    // }
-
     const updateSalesmanSet = () => {
-        postSalesmanSet(salesmanSet)
+
+        putSalesmanSet(salesmanSet)
             .then(response => {
-                setSalesmanSet(response.data.updateSalesmanSet)
-                history.push({
-                    pathname: `/${response.data.updateSalesmanSet.id}`,
-                    search: `?id=${response.data.updateSalesmanSet.id}`
-                })
+                repeat(response.data.updateSalesmanSet)
+            })
+    }
+
+    function repeat(set) {
+        history.push({
+            pathname: `/${set.id}`
+        })
+        setSalesmanSet(set)
+        upgradeSalesmanSet(set.id, 2, 20, 20)
+            .then((response) => {
+                //TODO jeśli stan się zmienił, doszedł nowy punkt to nie update'uj, przerwij request
+                setSalesmanSet(response.data.upgradeSalesmanSet)
             })
     }
 
     const addNewSalesmanSet = () => {
-        console.log("HISTORY: ", history)
-        if (salesmanSet.id != null) {
+        if (salesmanSet.id == null) {
             postSalesmanSet(salesmanSet)
                 .then(response => {
-                    console.log("UTWORZONO: ", response.data.newSalesmanSet)
-                    history.push({
-                        pathname: `/${response.data.newSalesmanSet.id}`,
-                        search: `?id=${response.data.newSalesmanSet.id}`
-                    })
-                    setSalesmanSet(response.data.newSalesmanSet)
-                    upgradeSalesmanSet(response.data.newSalesmanSet.id, 2, 20, 20)
-                        .then((response) => {
-                            console.log("DRUGI UPGRADE ", response, response.data.upgradeSalesmanSet)
-                            setSalesmanSet(response.data.upgradeSalesmanSet)
-                            console.log("po: ", salesmanSet)
-                        })
+                    repeat(response.data.newSalesmanSet);
                 })
         } else {
             updateSalesmanSet()
@@ -207,8 +202,7 @@ function App() {
                 </ThemeProvider>
             </BrowserRouter>
         </div>
-    )
-        ;
+    );
 }
 
 export default App;

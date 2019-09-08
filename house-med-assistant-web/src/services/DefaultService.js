@@ -1,8 +1,11 @@
 import ApolloClient, {gql} from 'apollo-boost';
+import {InMemoryCache} from "apollo-cache-inmemory";
 
 export const client = new ApolloClient({
-    // uri: 'https://48p1r2roz4.sse.codesandbox.io',
     uri: 'http://localhost:9000/graphql',
+    cache: new InMemoryCache({
+        addTypename: false
+    })
 });
 
 

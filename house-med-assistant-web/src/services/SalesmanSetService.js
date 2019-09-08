@@ -69,6 +69,7 @@ export const postSalesmanSet = (set) => {
                             location
                         }
                         paths {
+                            id,
                             places {
                                 id,
                                 location
@@ -88,12 +89,26 @@ export const postSalesmanSet = (set) => {
 }
 
 export const putSalesmanSet = (set) => {
+    let places = set.places.map((place) => {
+        return {
+            id: place.id,
+            location: place.location
+        }
+    })
+    let mappedSet = {
+        id: set.id,
+        paths: set.paths,
+        neighborhoodMatrix: set.neighborhoodMatrix,
+        places: places
+    }
+    let json = JSON.stringify(mappedSet).replace(/\"([^(\")"]+)\":/g, "$1:");
+
     return client
     .mutate({
             mutation: gql`
                 mutation updateSalesmanSet {
                     updateSalesmanSet(
-                        #                        coordinates: ${json}
+                        salesmanSet: ${json}
                     ) {
                         id,
                         places {
@@ -101,6 +116,7 @@ export const putSalesmanSet = (set) => {
                             location
                         }
                         paths {
+                            id,
                             places {
                                 id,
                                 location
