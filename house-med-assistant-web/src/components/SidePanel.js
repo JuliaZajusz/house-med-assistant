@@ -88,9 +88,9 @@ export default function SidePanel(props) {
     // );
     //
 
-    const showSet = () => {
-        props.onShowSet()
-    }
+    // const showSet = () => {
+    //     props.onShowSet()
+    // }
 
     const addNewSalesmanSet = () => {
         props.onAddNewSalesmanSet()
@@ -106,6 +106,8 @@ export default function SidePanel(props) {
 
     let a = PlacesList()
 
+
+    console.log("SidePanel props: ", props)
     return (
         <Grid
             className={classes.side_container}
@@ -118,7 +120,7 @@ export default function SidePanel(props) {
                 alignItems="center"
                 className={classes.top_side_panel}
             >
-                {props.salesmanSet.places.map((place) => <Paper
+                {props.salesmanSet && props.salesmanSet.places && props.salesmanSet.places.map((place) => <Paper
                     key={place.id}
                     className={classes.top_paper}
                     onClick={() => addToSet(place)}
@@ -145,16 +147,16 @@ export default function SidePanel(props) {
                 >
                     Wylicz trasę
                 </Fab>
-                <Fab
-                    variant="extended"
-                    size="small"
-                    color="primary"
-                    aria-label="add"
-                    className={classes.margin}
-                    onClick={() => showSet()}
-                >
-                    pokaz set
-                </Fab>
+                {/*<Fab*/}
+                {/*    variant="extended"*/}
+                {/*    size="small"*/}
+                {/*    color="primary"*/}
+                {/*    aria-label="add"*/}
+                {/*    className={classes.margin}*/}
+                {/*    onClick={() => showSet()}*/}
+                {/*>*/}
+                {/*    pokaz set*/}
+                {/*</Fab>*/}
                 <Button className={classes.button} onClick={() => loadData()}>Testuj grapql</Button>
             </Grid>
 
@@ -174,39 +176,40 @@ export default function SidePanel(props) {
                 </div>
             </Grid>
 
-            <Grid
-                item
-                container
-                direction="column"
-                justify="center"
-                alignItems="center"
-                className={classes.side_panel}
-            >
-                {props.savedPlaces
-                    .filter(place => !props.salesmanSet.places.includes(place))
-                    .map((place) => <Paper
-                        key={place.id}
-                        className={classes.paper}
-                        onClick={() => addToSet(place)}
-                    >{place.id}</Paper>)
-                }
+            {/*<Grid*/}
+            {/*    item*/}
+            {/*    container*/}
+            {/*    direction="column"*/}
+            {/*    justify="center"*/}
+            {/*    alignItems="center"*/}
+            {/*    className={classes.side_panel}*/}
+            {/*>*/}
+            {/*    /!*{props.salesmanSet && props.salesmanSet.places &&*!/*/}
+            {/*    /!*props.savedPlaces*!/*/}
+            {/*    /!*    .filter(place => !props.salesmanSet.places.includes(place))*!/*/}
+            {/*    /!*    .map((place) => <Paper*!/*/}
+            {/*    /!*        key={place.id}*!/*/}
+            {/*    /!*        className={classes.paper}*!/*/}
+            {/*    /!*        onClick={() => addToSet(place)}*!/*/}
+            {/*    /!*    >{place.id}</Paper>)*!/*/}
+            {/*    /!*}*!/*/}
 
-                {a && a.places
-                    .filter(place => !props.salesmanSet.places.includes(place))
-                    .map((place) => <Paper
-                            key={place.id}
-                            className={classes.paper}
-                            onClick={() => addToSet(place.coordinate)}
-                        >
-                            <p>
-                                {place.id}
-                            </p>
-                            <p>
-                                {place.name}: {place.coordinate.location[0]}, {place.coordinate.location[1]}
-                            </p>
-                        </Paper>
-                    )}
-            </Grid>
+            {/*    {a && a.places*/}
+            {/*        .filter(place => !props.salesmanSet.places.includes(place))*/}
+            {/*        .map((place) => <Paper*/}
+            {/*                key={place.id}*/}
+            {/*                className={classes.paper}*/}
+            {/*                onClick={() => addToSet(place.coordinate)}*/}
+            {/*            >*/}
+            {/*                <p>*/}
+            {/*                    {place.id}*/}
+            {/*                </p>*/}
+            {/*                <p>*/}
+            {/*                    {place.name}: {place.coordinate.location[0]}, {place.coordinate.location[1]}*/}
+            {/*                </p>*/}
+            {/*            </Paper>*/}
+            {/*        )}*/}
+            {/*</Grid>*/}
             {/*<ExchangeRates/>*/}
 
         </Grid>

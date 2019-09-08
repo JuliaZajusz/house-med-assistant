@@ -44,6 +44,19 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         return salesmanSetRepository.save(salesmanSet)
     }
 
+    fun upgradeSalesmanSet(id: String, timeInSec: Int, populationSize: Int = 200, parentPopulationSize: Int = 20): SalesmanSet {
+        findBestPathUsingGeneticAlgorythm(id, timeInSec, populationSize, parentPopulationSize)
+        return salesmanSetQueryResolver.findById(id);
+    }
+
+    fun doSomethingElse(): Float {
+        for (i in 0..10) {
+            println("doSomethingElse $i")
+            Thread.sleep(1000)
+        }
+        return 11.10f
+    }
+
     fun newSalesmanSetByDistance(numberOfCoordinates: Int, distances: List<Float>): SalesmanSet? {
         var newCoordinates: MutableList<Coordinate> = mutableListOf();
         for (i in 0 until numberOfCoordinates) {
@@ -191,6 +204,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
     }
 
     fun doGenetic(salesmanSet: SalesmanSet, populationSize: Int, parentPopulationSize: Int, mutationsProbability: Int = 1, swapsInMutation: Int = 10): SalesmanSet {
+        println("doGenetic")
         var newSalesmanSet = salesmanSet
         newSalesmanSet.population = mutableListOf()
         if (salesmanSet.paths.isNotEmpty()) {
@@ -206,8 +220,9 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         //rob
         var i = 0;
         while (true) {
+            println("while true $i")
             //jesli warunek konca nie zostal osiagniety
-            if (i < 100) {
+            if (i < 10) {
                 newSalesmanSet.population = newSalesmanSet.population.distinct().toMutableList()
                 //        sortuj populację
                 newSalesmanSet.population = newSalesmanSet.population.sortedBy { it.value.toFloat() }.toMutableList()

@@ -20,6 +20,8 @@ scalar ObjectScalar
 extend type Mutation {
     newSalesmanSet(coordinates: [CoordinateInput]) : SalesmanSet!
     deleteSalesmanSet(id: ID!) : Boolean
+    upgradeSalesmanSet(id: ID, timeInSec: Float, populationSize: Float!, parentPopulationSize: Float!): SalesmanSet
+    doSomethingElse: Float
 }
 
 input CoordinateInput {

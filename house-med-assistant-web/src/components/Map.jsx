@@ -132,7 +132,9 @@ class MapWrapper extends Component {
                 >
                     {this.state.paths &&
                     this.state.paths.map((path, idx) => {
-                        return <div key={"path-" + idx} onClick={() => {
+                        return <div key={"path-" + idx}
+                                    style={{cursor: 'pointer'}}
+                                    onClick={() => {
                             console.log("USTAWIAM INDEX NA ", idx)
                             this.setState({...this.state, selectedPathIndex: idx, path: path})
                         }}>
@@ -156,6 +158,10 @@ class MapWrapper extends Component {
                     //     if(this.state.path[idx+1])
                     //     return <Polyline color="lime" positions={this.state.path} />})
                     <Polyline color="lime" positions={this.state.path}/>
+                    }
+                    {this.state.path.length > 1 &&
+                    <Polyline color="pink"
+                              positions={[this.state.path[this.state.path.length - 1], this.state.path[0]]}/>
                     }
                     <TileLayer
                         attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"

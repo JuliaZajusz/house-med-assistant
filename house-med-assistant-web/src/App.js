@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import MapWrapper from "./components/Map";
-import {getSalesmanSet, putSalesmanSet} from "./services/SalesmanSetService";
+import {putSalesmanSet, upgradeSalesmanSet} from "./services/SalesmanSetService";
 import {Toolbar} from '@material-ui/core';
 import Typography from "@material-ui/core/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -111,17 +111,23 @@ function App() {
             );
     }
 
-    const showSet = () => {
-        console.log("odbywa się ładowanie")
-        let set = getSalesmanSet()
-        setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, ...set.places]})
-    }
+    // const showSet = () => {
+    //     console.log("odbywa się ładowanie")
+    //     let set = getSalesmanSet()
+    //     setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, ...set.places]})
+    // }
 
     const addNewSalesmanSet = () => {
         putSalesmanSet(salesmanSet)
             .then(response => {
-                console.log(response.data.newSalesmanSet)
+                console.log("UTWORZONO: ", response.data.newSalesmanSet)
                 setSalesmanSet(response.data.newSalesmanSet)
+                upgradeSalesmanSet(response.data.newSalesmanSet.id, 2, 20, 20)
+                    .then((response) => {
+                        console.log("DRUGI UPGRADE ", response, response.data.upgradeSalesmanSet)
+                        setSalesmanSet(response.data.upgradeSalesmanSet)
+                        console.log("po: ", salesmanSet)
+                    })
             })
     }
 
@@ -162,7 +168,7 @@ function App() {
                             salesmanSet={salesmanSet}
                             savedPlaces={savedPlaces}
                             onLoadData={() => loadData()}
-                            onShowSet={() => showSet()}
+                            // onShowSet={() => showSet()}
                             onAddToSet={(place) => addToSet(place)}
                             onAddNewSalesmanSet={() => addNewSalesmanSet()}
                         />

@@ -319,3 +319,60 @@ mutation newSalesmanSet {
     }
   }
 }
+
+
+mutation newSalesmanSet2 {
+    newSalesmanSet(
+        coordinates: [{location:[18.33,53.01]},{location:[18.77,47.92]},{location:[16.08,50.18]}]
+    ) {
+        id,
+        places {
+            id,
+            location
+        }
+        paths {
+            places {
+                id,
+                location
+            },
+            value
+        }
+        neighborhoodMatrix {
+            startCoordinateId,
+            endCoordinateId,
+            value
+        }
+    }
+}
+
+mutation upgradeSalesmanSet {
+  upgradeSalesmanSet(
+    id: "483c545c-4d70-497a-82f1-d90f8b0b6774",
+    timeInSec: 2,
+    populationSize: 20,
+    parentPopulationSize: 20
+  )  {
+    id,
+    places {
+      id,
+      location
+    }
+    paths {
+    places {
+      id,
+      location
+    },
+    value
+  }
+
+    neighborhoodMatrix {
+      startCoordinateId,
+      endCoordinateId,
+      value
+    }
+  }
+}
+
+mutation doSomethingElse {
+  doSomethingElse
+}
