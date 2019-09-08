@@ -176,40 +176,40 @@ export default function SidePanel(props) {
                 </div>
             </Grid>
 
-            {/*<Grid*/}
-            {/*    item*/}
-            {/*    container*/}
-            {/*    direction="column"*/}
-            {/*    justify="center"*/}
-            {/*    alignItems="center"*/}
-            {/*    className={classes.side_panel}*/}
-            {/*>*/}
-            {/*    /!*{props.salesmanSet && props.salesmanSet.places &&*!/*/}
-            {/*    /!*props.savedPlaces*!/*/}
-            {/*    /!*    .filter(place => !props.salesmanSet.places.includes(place))*!/*/}
-            {/*    /!*    .map((place) => <Paper*!/*/}
-            {/*    /!*        key={place.id}*!/*/}
-            {/*    /!*        className={classes.paper}*!/*/}
-            {/*    /!*        onClick={() => addToSet(place)}*!/*/}
-            {/*    /!*    >{place.id}</Paper>)*!/*/}
-            {/*    /!*}*!/*/}
+            <Grid
+                item
+                container
+                direction="column"
+                justify="center"
+                alignItems="center"
+                className={classes.side_panel}
+            >
+                {props.salesmanSet && props.salesmanSet.places &&
+                props.savedPlaces
+                    .filter(place => !props.salesmanSet.places.includes(place))
+                    .map((place) => <Paper
+                        key={place.id}
+                        className={classes.paper}
+                        onClick={() => addToSet(place)}
+                    >{place.id}</Paper>)
+                }
 
-            {/*    {a && a.places*/}
-            {/*        .filter(place => !props.salesmanSet.places.includes(place))*/}
-            {/*        .map((place) => <Paper*/}
-            {/*                key={place.id}*/}
-            {/*                className={classes.paper}*/}
-            {/*                onClick={() => addToSet(place.coordinate)}*/}
-            {/*            >*/}
-            {/*                <p>*/}
-            {/*                    {place.id}*/}
-            {/*                </p>*/}
-            {/*                <p>*/}
-            {/*                    {place.name}: {place.coordinate.location[0]}, {place.coordinate.location[1]}*/}
-            {/*                </p>*/}
-            {/*            </Paper>*/}
-            {/*        )}*/}
-            {/*</Grid>*/}
+                {a && a.places
+                    .filter(place => !props.salesmanSet.places.includes(place))
+                    .map((place) => <Paper
+                            key={place.id}
+                            className={classes.paper}
+                            onClick={() => addToSet(place.coordinate)}
+                        >
+                            <p>
+                                {place.id}
+                            </p>
+                            <p>
+                                {place.name}: {place.coordinate.location[0]}, {place.coordinate.location[1]}
+                            </p>
+                        </Paper>
+                    )}
+            </Grid>
             {/*<ExchangeRates/>*/}
 
         </Grid>
