@@ -92,6 +92,10 @@ export default function SidePanel(props) {
         props.onShowSet()
     }
 
+    const addNewSalesmanSet = () => {
+        props.onAddNewSalesmanSet()
+    }
+
     const addToSet = (place) => {
         props.onAddToSet(place)
     }
@@ -118,8 +122,29 @@ export default function SidePanel(props) {
                     key={place.id}
                     className={classes.top_paper}
                     onClick={() => addToSet(place)}
-                >{place.id}</Paper>)
+                >
+                    <div style={{fontSize: '10px', color: 'grey'}}>
+                        {place.id}
+                    </div>
+                    {place.name && <div>
+                        {place.name}
+                    </div>}
+                    <div>
+                        {place.location[0]}, {place.location[1]}
+                    </div>
+
+                </Paper>)
                 }
+                <Fab
+                    variant="extended"
+                    size="small"
+                    color="primary"
+                    aria-label="add"
+                    className={classes.margin}
+                    onClick={() => addNewSalesmanSet()}
+                >
+                    Wylicz trasę
+                </Fab>
                 <Fab
                     variant="extended"
                     size="small"
@@ -128,7 +153,7 @@ export default function SidePanel(props) {
                     className={classes.margin}
                     onClick={() => showSet()}
                 >
-                    Wylicz trasę
+                    pokaz set
                 </Fab>
                 <Button className={classes.button} onClick={() => loadData()}>Testuj grapql</Button>
             </Grid>
@@ -163,7 +188,7 @@ export default function SidePanel(props) {
                         key={place.id}
                         className={classes.paper}
                         onClick={() => addToSet(place)}
-                >{place.id}</Paper>)
+                    >{place.id}</Paper>)
                 }
 
                 {a && a.places

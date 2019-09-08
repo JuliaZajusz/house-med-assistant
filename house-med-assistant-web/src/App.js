@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import MapWrapper from "./components/Map";
-import {getSalesmanSet} from "./services/SalesmanSetService";
+import {getSalesmanSet, putSalesmanSet} from "./services/SalesmanSetService";
 import {Toolbar} from '@material-ui/core';
 import Typography from "@material-ui/core/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -117,6 +117,14 @@ function App() {
         setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, ...set.places]})
     }
 
+    const addNewSalesmanSet = () => {
+        putSalesmanSet(salesmanSet)
+            .then(response => {
+                console.log(response.data.newSalesmanSet)
+                setSalesmanSet(response.data.newSalesmanSet)
+            })
+    }
+
     const addToSet = (place) => {
         setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, place]})
     }
@@ -134,9 +142,7 @@ function App() {
         <div className={classes.app}>
             <ThemeProvider theme={theme}>
                 <AppBar position="static">
-                    <Toolbar
-                        // className={classes.toolbar}
-                    >
+                    <Toolbar>
                         <Typography variant="h6" className={classes.title}>
                             house med assistant
                         </Typography>
@@ -158,6 +164,7 @@ function App() {
                             onLoadData={() => loadData()}
                             onShowSet={() => showSet()}
                             onAddToSet={(place) => addToSet(place)}
+                            onAddNewSalesmanSet={() => addNewSalesmanSet()}
                         />
                     </Grid>
                     <Grid item xs={9}>

@@ -1,3 +1,6 @@
+import {gql} from "apollo-boost";
+import {client} from "./DefaultService";
+
 export const getSalesmanSet = () => {
     return {
         "id": "ebbaf119-5e71-43ab-adfe-a5b4aa3f702d",
@@ -115,4 +118,65 @@ export const getSalesmanSet = () => {
             }
         ]
     }
+}
+
+
+export const putSalesmanSet = (set) => {
+    let places = set.places.map((place) => {
+        return {location: place.location}
+    })
+
+    let json = JSON.stringify(places).replace(/\"([^(\")"]+)\":/g, "$1:");
+    console.log(`mutation newSalesmanSet {
+                    newSalesmanSet(
+                        coordinates: ${json}
+                    ) {
+                        id,
+                        places {
+                            id,
+                            location
+                        }
+                        paths {
+                            places {
+                                id,
+                                location
+                            },
+                            value
+                        }
+                        neighborhoodMatrix {
+                            startCoordinateId,
+                            endCoordinateId,
+                            value
+                        }
+                    }
+                }`)
+    return client
+    .mutate({
+            mutation: gql`
+                mutation newSalesmanSet {
+                    newSalesmanSet(
+                        coordinates: ${json}
+                    ) {
+                        id,
+                        places {
+                            id,
+                            location
+                        }
+                        paths {
+                            places {
+                                id,
+                                location
+                            },
+                            value
+                        }
+                        neighborhoodMatrix {
+                            startCoordinateId,
+                            endCoordinateId,
+                            value
+                        }
+                    }
+                }
+            `
+        }
+    );
 }
