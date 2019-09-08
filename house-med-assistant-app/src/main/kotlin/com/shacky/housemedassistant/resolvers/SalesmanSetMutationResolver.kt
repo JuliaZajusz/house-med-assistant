@@ -34,6 +34,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
             val neighborhoodMatrix = calcNeighborhoodMatrix(newCoordinates)
             salesmanSet = SalesmanSet(newCoordinates, neighborhoodMatrix)
             salesmanSet.id = UUID.randomUUID().toString()
+            salesmanSet.paths = mutableListOf(findFirstPath(salesmanSet))
             salesmanSetRepository.save(salesmanSet)
         }
         return salesmanSet
@@ -96,6 +97,36 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
             }
         }
         return neighborhoodMatrix
+    }
+
+    fun findFirstPath(salesmanSet: SalesmanSet): Path {
+        val visited: MutableList<String> = mutableListOf();
+        val pathPlaces: MutableList<Coordinate> = mutableListOf();
+
+        val places = salesmanSet.places
+        val neighborhoodMatrix = salesmanSet.neighborhoodMatrix
+        var startElementIndex = 0;
+
+        if (places.isNotEmpty()) {
+            pathPlaces.add(salesmanSet.places[startElementIndex])
+            visited.add(salesmanSet.places[startElementIndex].id)
+        }
+
+        for (i in places.indices) {
+            val startPlace = places[startElementIndex]
+            val pathElement = neighborhoodMatrix.filter { distance ->
+                distance.startCoordinateId.equals(startPlace.id) && !visited.contains(distance.endCoordinateId)
+            }.minBy { distance -> distance.value }
+            if (pathElement != null) {
+                val secondPlace: Coordinate = places.first { coordinate -> coordinate.id.equals(pathElement.endCoordinateId) }
+                pathPlaces.add(secondPlace)
+                visited.add(pathElement.endCoordinateId)
+                startElementIndex = places.indexOf(secondPlace)
+            }
+        }
+        val pathValue: Float = pathMutationResolver.calcPathValue(pathPlaces)
+        val path: Path = Path(pathPlaces, pathValue);
+        return path;
     }
 
     fun findGreedyPath(id: String, startCoordinateId: String = ""): Path {
