@@ -41,7 +41,24 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
     }
 
     fun updateSalesmanSet(salesmanSet: SalesmanSet): SalesmanSet {
-        return salesmanSetRepository.save(salesmanSet)
+        val oldSalesmanSet = salesmanSetRepository.findById(salesmanSet.id).get();
+        val updatedSet = salesmanSet
+        if (oldSalesmanSet.places != updatedSet.places) {
+            println("rożne")
+            var newCoordinates: MutableList<Coordinate> = mutableListOf();
+            for (item in updatedSet.places) {
+                if (!item.id.isEmpty()) {
+                    val itemById = coordinateQueryResolver.findById(item.id)
+                    newCoordinates.add(itemById)
+                } else {
+                    newCoordinates.add(coordinateMutationResolver.newCoordinate(item.location))
+                }
+            }
+            updatedSet.neighborhoodMatrix = calcNeighborhoodMatrix(newCoordinates)
+            salesmanSet.paths = mutableListOf(findFirstPath(salesmanSet))
+        }
+        return salesmanSetRepository.save(updatedSet)
+//        return salesmanSetRepository.insert(updatedSet)
     }
 
     fun upgradeSalesmanSet(id: String, timeInSec: Int, populationSize: Int = 200, parentPopulationSize: Int = 20): SalesmanSet {

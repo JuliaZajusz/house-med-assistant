@@ -305,6 +305,7 @@ mutation newSalesmanSet {
       location
     }
     paths {
+      id,
     places {
       id,
       location
@@ -321,34 +322,37 @@ mutation newSalesmanSet {
 }
 
 
+
+
 mutation newSalesmanSet2 {
-    newSalesmanSet(
-        coordinates: [{location:[18.33,53.01]},{location:[18.77,47.92]},{location:[16.08,50.18]}]
-    ) {
-        id,
-        places {
-            id,
-            location
-        }
-        paths {
-            places {
-                id,
-                location
-            },
-            value
-        }
-        neighborhoodMatrix {
-            startCoordinateId,
-            endCoordinateId,
-            value
-        }
-    }
-}
+                    newSalesmanSet(
+                        coordinates: [{location:[18.33,53.01]},{location:[18.77,47.92]},{location:[16.08,50.18]}]
+                    ) {
+                        id,
+                        places {
+                            id,
+                            location
+                        }
+                        paths {
+                          id,
+                            places {
+                                id,
+                                location
+                            },
+                            value
+                        }
+                        neighborhoodMatrix {
+                            startCoordinateId,
+                            endCoordinateId,
+                            value
+                        }
+                    }
+                }
 
 mutation upgradeSalesmanSet {
   upgradeSalesmanSet(
     id: "483c545c-4d70-497a-82f1-d90f8b0b6774",
-    timeInSec: 2,
+    timeInSec: 5,
     populationSize: 20,
     parentPopulationSize: 20
   )  {
@@ -358,6 +362,7 @@ mutation upgradeSalesmanSet {
       location
     }
     paths {
+      id
     places {
       id,
       location
@@ -373,6 +378,244 @@ mutation upgradeSalesmanSet {
   }
 }
 
-mutation doSomethingElse {
-  doSomethingElse
+
+mutation updateSalesmanSet {
+  updateSalesmanSet(
+    salesmanSet: {
+    id: "483c545c-4d70-497a-82f1-d90f8b0b6774",
+      places: [
+        {
+          id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+          location: [
+            18.33,
+            53.01
+          ]
+        },
+        {
+          id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
+          location: [
+            18.77,
+            47.92
+          ]
+        },
+        {
+          id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
+          location: [
+            16.08,
+            50.18
+          ]
+        }
+      ],
+      paths: [
+        {
+          places: [
+            {
+              id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+              location: [
+                18.33,
+                53.01
+              ]
+            },
+            {
+              id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
+              location: [
+                16.08,
+                50.18
+              ]
+            },
+            {
+              id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
+              location: [
+                18.77,
+                47.92
+              ]
+            }
+          ],
+          value: 1236.4390869140625
+        },
+        {
+          places: [
+            {
+              id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+              location: [
+                18.33,
+                53.01
+              ]
+            },
+            {
+              id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
+              location: [
+                16.08,
+                50.18
+              ]
+            },
+            {
+              id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
+              location: [
+                18.77,
+                47.92
+              ]
+            }
+          ],
+          value: 1236.4390869140625
+        }
+      ],
+      neighborhoodMatrix: [
+        {
+          startCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+          endCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+          value: 0
+        },
+        {
+          startCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+          endCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
+          value: 566.8353
+        },
+        {
+          startCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+          endCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
+          value: 350.9272
+        },
+        {
+          startCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
+          endCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+          value: 566.8353
+        },
+        {
+          startCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
+          endCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
+          value: 0
+        },
+        {
+          startCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
+          endCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
+          value: 318.67657
+        },
+        {
+          startCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
+          endCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+          value: 350.9272
+        },
+        {
+          startCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
+          endCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
+          value: 318.67657
+        },
+        {
+          startCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
+          endCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
+          value: 0
+        }
+      ]
+    }
+  )
+  {
+       id,
+    places {
+      id,
+      location
+    }
+    paths {
+id
+    places {
+      id,
+      location
+    },
+    value
+  }
+
+    neighborhoodMatrix {
+      startCoordinateId,
+      endCoordinateId,
+      value
+    }
+  }
 }
+
+
+mutation updateSalesmanSet2 {
+  updateSalesmanSet(
+    salesmanSet: {
+    id: "483c545c--497a-82f1-d90f8b0b6774",
+      places: [],
+      paths: [],
+      neighborhoodMatrix: []
+    }
+  )
+  {
+       id
+  }
+}
+
+
+
+
+mutation updateSalesmanSet3 {
+  updateSalesmanSet(
+    salesmanSet: {
+    id: "483c545c-4d70-497a-82f1-d90f8b0b6774",
+      places: [
+        {
+          id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+          location: [
+            18.33,
+            53.01
+          ]
+        }
+      ],
+      paths: [
+        {
+          places: [
+            {
+              id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+              location: [
+                18.33,
+                53.01
+              ]
+            },
+            {
+              id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
+              location: [
+                16.08,
+                50.18
+              ]
+            },
+            {
+              id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
+              location: [
+                18.77,
+                47.92
+              ]
+            }
+          ],
+          value: 1236.4390869140625
+        }
+      ],
+      neighborhoodMatrix: []
+    }
+  )
+  {
+       id,
+    places {
+      id,
+      location
+    }
+    paths {
+      id,
+    places {
+      id,
+      location
+    },
+    value
+  }
+
+    neighborhoodMatrix {
+      startCoordinateId,
+      endCoordinateId,
+      value
+    }
+  }
+}
+
+
+

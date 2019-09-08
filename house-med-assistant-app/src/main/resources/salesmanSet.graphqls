@@ -15,6 +15,13 @@ type SalesmanSet {
     neighborhoodMatrix: [Distance]
 }
 
+input SalesmanSetInput {
+    id: ID!
+    places: [CoordinateInput]
+    paths: [PathInput]
+    neighborhoodMatrix: [DistanceInput]
+}
+
 scalar ObjectScalar
 
 extend type Mutation {
@@ -22,9 +29,17 @@ extend type Mutation {
     deleteSalesmanSet(id: ID!) : Boolean
     upgradeSalesmanSet(id: ID, timeInSec: Float, populationSize: Float!, parentPopulationSize: Float!): SalesmanSet
     doSomethingElse: Float
+    updateSalesmanSet(salesmanSet: SalesmanSetInput): SalesmanSet
 }
 
-input CoordinateInput {
-    id: ID,
-    location: [Float]
+input PathInput {
+    id: ID
+    places: [CoordinateInput]
+    value: Float
+}
+
+input DistanceInput {
+    startCoordinateId: String
+    endCoordinateId: String
+    value: Float
 }

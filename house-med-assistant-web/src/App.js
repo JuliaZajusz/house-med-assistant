@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import MapWrapper from "./components/Map";
-import {putSalesmanSet, upgradeSalesmanSet} from "./services/SalesmanSetService";
+import {postSalesmanSet, upgradeSalesmanSet} from "./services/SalesmanSetService";
 import {Toolbar} from '@material-ui/core';
 import Typography from "@material-ui/core/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -12,6 +12,10 @@ import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import AppBar from "@material-ui/core/AppBar";
 import SidePanel from "./components/SidePanel";
 import {addCoordinate, loadSalesmanSets} from "./services/DefaultService";
+import {BrowserRouter, Link} from "react-router-dom";
+import {createBrowserHistory} from 'history';
+
+export const history = createBrowserHistory();
 
 const theme = createMuiTheme({
     palette: {
@@ -117,18 +121,38 @@ function App() {
     //     setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, ...set.places]})
     // }
 
-    const addNewSalesmanSet = () => {
-        putSalesmanSet(salesmanSet)
+    const updateSalesmanSet = () => {
+        postSalesmanSet(salesmanSet)
             .then(response => {
-                console.log("UTWORZONO: ", response.data.newSalesmanSet)
-                setSalesmanSet(response.data.newSalesmanSet)
-                upgradeSalesmanSet(response.data.newSalesmanSet.id, 2, 20, 20)
-                    .then((response) => {
-                        console.log("DRUGI UPGRADE ", response, response.data.upgradeSalesmanSet)
-                        setSalesmanSet(response.data.upgradeSalesmanSet)
-                        console.log("po: ", salesmanSet)
-                    })
+                setSalesmanSet(response.data.updateSalesmanSet)
+                history.push({
+                    pathname: `/${response.data.updateSalesmanSet.id}`,
+                    search: `?id=${response.data.updateSalesmanSet.id}`
+                })
             })
+    }
+
+    const addNewSalesmanSet = () => {
+        console.log("HISTORY: ", history)
+        if (salesmanSet.id != null) {
+            postSalesmanSet(salesmanSet)
+                .then(response => {
+                    console.log("UTWORZONO: ", response.data.newSalesmanSet)
+                    history.push({
+                        pathname: `/${response.data.newSalesmanSet.id}`,
+                        search: `?id=${response.data.newSalesmanSet.id}`
+                    })
+                    setSalesmanSet(response.data.newSalesmanSet)
+                    upgradeSalesmanSet(response.data.newSalesmanSet.id, 2, 20, 20)
+                        .then((response) => {
+                            console.log("DRUGI UPGRADE ", response, response.data.upgradeSalesmanSet)
+                            setSalesmanSet(response.data.upgradeSalesmanSet)
+                            console.log("po: ", salesmanSet)
+                        })
+                })
+        } else {
+            updateSalesmanSet()
+        }
     }
 
     const addToSet = (place) => {
@@ -146,39 +170,42 @@ function App() {
 
     return (
         <div className={classes.app}>
-            <ThemeProvider theme={theme}>
-                <AppBar position="static">
-                    <Toolbar>
-                        <Typography variant="h6" className={classes.title}>
-                            house med assistant
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-                <Grid container
-                      direction="row"
-                      justify="center"
-                      className={classes.main_layout_box}
-                      alignItems='stretch'
-                >
-                    <Grid item xs={3}
-                          flexgrow={1}
-                          className={classes.side_container_container}
+            <BrowserRouter history={history}>
+                <ThemeProvider theme={theme}>
+                    <AppBar position="static">
+                        <Toolbar>
+                            <Typography variant="h6" className={classes.title}>
+                                house med assistant
+                            </Typography>
+                        </Toolbar>
+                        <Link to="/about">Home</Link>
+                    </AppBar>
+                    <Grid container
+                          direction="row"
+                          justify="center"
+                          className={classes.main_layout_box}
+                          alignItems='stretch'
                     >
-                        <SidePanel
-                            salesmanSet={salesmanSet}
-                            savedPlaces={savedPlaces}
-                            onLoadData={() => loadData()}
-                            // onShowSet={() => showSet()}
-                            onAddToSet={(place) => addToSet(place)}
-                            onAddNewSalesmanSet={() => addNewSalesmanSet()}
-                        />
+                        <Grid item xs={3}
+                              flexgrow={1}
+                              className={classes.side_container_container}
+                        >
+                            <SidePanel
+                                salesmanSet={salesmanSet}
+                                savedPlaces={savedPlaces}
+                                onLoadData={() => loadData()}
+                                // onShowSet={() => showSet()}
+                                onAddToSet={(place) => addToSet(place)}
+                                onAddNewSalesmanSet={() => addNewSalesmanSet()}
+                            />
+                        </Grid>
+                        <Grid item xs={9}>
+                            <MapWrapper data={salesmanSet}
+                                        onAddPlaceToSalesmanSet={(coordinates) => addPlaceToSalesmanSet(coordinates)}/>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={9}>
-                        <MapWrapper data={salesmanSet}
-                                    onAddPlaceToSalesmanSet={(coordinates) => addPlaceToSalesmanSet(coordinates)}/>
-                    </Grid>
-                </Grid>
-            </ThemeProvider>
+                </ThemeProvider>
+            </BrowserRouter>
         </div>
     )
         ;
