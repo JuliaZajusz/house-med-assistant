@@ -56,14 +56,17 @@ function App() {
     const classes = useStyles();
 
     const [salesmanSet, setSalesmanSet] = useState(() => {
-        return {places: []}
+        return {
+            places: [],
+            path: []
+        }
         }
     );
 
-    const [currencies, setCurrencies] = useState(() => {
-            return {}
-        }
-    );
+    // const [currencies, setCurrencies] = useState(() => {
+    //         return {}
+    //     }
+    // );
 
     const [savedPlaces, setSavedPlaces] = useState(() => {
             return [
@@ -100,11 +103,16 @@ function App() {
 
     function loadData() {
         loadSalesmanSets()
-            .then(result => console.log(result));
+            .then(result => {
+                    console.log(result)
+                    let set = result.data.salesmanSets[1]
+                    setSalesmanSet({...set, places: [...salesmanSet.places, ...set.places]})
+                }
+            );
     }
 
     const showSet = () => {
-        console.log("odbywa się łądowanie")
+        console.log("odbywa się ładowanie")
         let set = getSalesmanSet()
         setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, ...set.places]})
     }
@@ -116,10 +124,7 @@ function App() {
     const addPlaceToSalesmanSet = (coordinate) => {
         addCoordinate(coordinate)
             .then(result => {
-                    console.log("addPlaceToSalesmanSet: ", result.data.newCoordinate)
-                    // addToSet(result.data.newCoordinate);
                     setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, result.data.newCoordinate]})
-                    console.log("+: ", salesmanSet)
                 }
             );
     }
@@ -132,10 +137,10 @@ function App() {
                     <Toolbar
                         // className={classes.toolbar}
                     >
-                    <Typography variant="h6" className={classes.title}>
-                        house med assistant
-                    </Typography>
-                </Toolbar>
+                        <Typography variant="h6" className={classes.title}>
+                            house med assistant
+                        </Typography>
+                    </Toolbar>
                 </AppBar>
                 <Grid container
                       direction="row"
@@ -162,8 +167,8 @@ function App() {
                 </Grid>
             </ThemeProvider>
         </div>
-)
-    ;
+    )
+        ;
 }
 
 export default App;

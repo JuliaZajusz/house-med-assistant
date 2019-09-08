@@ -2,12 +2,22 @@
  ##Genetic algorithms for fleet vehicles management in home medical care system
 
 #Requirements
-mongo datatbase
+mongo database
 
 #Run application 
+```aidl
 gradlew house-med-assistant:bootRun
+```
 
 http://localhost:9000/graphiql
+
+#Run client application
+```aidl
+cd house-med-assistant-web
+yarn
+yarn start
+```
+
 
 
 #Stack
@@ -15,3 +25,4 @@ Kotlin
 GraphQL
 MongoDB
 React
+Leaflet

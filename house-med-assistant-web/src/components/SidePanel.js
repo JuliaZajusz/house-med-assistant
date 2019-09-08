@@ -102,8 +102,6 @@ export default function SidePanel(props) {
 
     let a = PlacesList()
 
-    console.log("a: ", a)
-
     return (
         <Grid
             className={classes.side_container}
@@ -117,6 +115,7 @@ export default function SidePanel(props) {
                 className={classes.top_side_panel}
             >
                 {props.salesmanSet.places.map((place) => <Paper
+                    key={place.id}
                     className={classes.top_paper}
                     onClick={() => addToSet(place)}
                 >{place.id}</Paper>)
@@ -161,8 +160,9 @@ export default function SidePanel(props) {
                 {props.savedPlaces
                     .filter(place => !props.salesmanSet.places.includes(place))
                     .map((place) => <Paper
-                    className={classes.paper}
-                    onClick={() => addToSet(place)}
+                        key={place.id}
+                        className={classes.paper}
+                        onClick={() => addToSet(place)}
                 >{place.id}</Paper>)
                 }
 
