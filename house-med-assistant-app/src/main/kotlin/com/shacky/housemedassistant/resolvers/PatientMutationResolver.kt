@@ -2,6 +2,7 @@ package com.shacky.housemedassistant.resolvers
 
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import com.shacky.housemedassistant.entity.Patient
+import com.shacky.housemedassistant.entity.Tag
 import com.shacky.housemedassistant.repository.PatientRepository
 import org.springframework.stereotype.Component
 import java.util.*
@@ -9,11 +10,20 @@ import java.util.*
 @Component
 class PatientMutationResolver(private val patientRepository: PatientRepository,
                               val coordinateMutationResolver: CoordinateMutationResolver,
-                              val patientQueryResolver: PatientQueryResolver) : GraphQLMutationResolver {
+                              val patientQueryResolver: PatientQueryResolver,
+                              val tagQueryResolver: TagQueryResolver,
+                              val tagMutationResolver: TagMutationResolver) : GraphQLMutationResolver {
 
     fun newPatient(lastName: String, firstName: String, location: List<Float>, tags: List<String>): Patient {
         val coordinate = coordinateMutationResolver.newCoordinate(location)
-        val patient = Patient(lastName, firstName, coordinate, tags)
+
+        val newTags: MutableList<Tag> = mutableListOf();
+        for (tagName in tags) {
+            val tag = tagMutationResolver.newTag(tagName);
+            newTags.add(tag)
+        }
+
+        val patient = Patient(lastName, firstName, coordinate, newTags)
         val existed = patientRepository.findOneByLastNameAndFirstNameAndCoordinate(lastName, firstName, coordinate);
         if (existed != null) {
             return existed

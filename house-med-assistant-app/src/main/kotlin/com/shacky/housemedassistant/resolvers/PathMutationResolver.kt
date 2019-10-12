@@ -14,8 +14,9 @@ class PathMutationResolver(private val pathRepository: PathRepository,
                            val distanceMutationResolver: DistanceMutationResolver,
                            val distanceQueryResolver: DistanceQueryResolver
 ) : GraphQLMutationResolver {
-    fun newPath(coordinates: List<Coordinate>): Path? {
-        var newCoordinates: MutableList<Coordinate> = mutableListOf();
+    fun newPath(coordinates: List<Coordinate>): Path? { //TODO dbanie o niedublowanie się koordynatów powinno być w coordinateMutationResolver.newCoordinate()
+        //TODO poza tym, ze należy usunąć stąd dodawanie koordynatów, to nie ma sensu.
+        val newCoordinates: MutableList<Coordinate> = mutableListOf();
         for (item in coordinates) {
             if (!item.id.isEmpty()) {
 //                try {

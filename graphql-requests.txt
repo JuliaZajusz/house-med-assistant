@@ -29,7 +29,10 @@ query pacjenci{
       id,
       location
     },
-    tags
+    tags {
+      # id,
+      name
+    }
   }
 }
 
@@ -65,7 +68,7 @@ mutation nowyKoordynat {
 
 
 #tworzenie nowego pacjenta
-mutation nowyPunkt{
+mutation nowyPacjent{
   newPatient(lastName: "Wieża", firstName: "Eifflea", location: [4.0, 5.6], tags: ["dr. Adamczyk", "Sektor A"]) {
     id,
     lastName,
@@ -74,7 +77,10 @@ mutation nowyPunkt{
       id,
       location
     },
-    tags
+        tags {
+      id,
+      name
+    }
   }
 }
 
@@ -135,7 +141,10 @@ query znajdzPacjentaPoNazwiskuIImieniu{
       id,
       location
     },
-    tags
+    tags {
+      # id,
+      name
+    }
   }
 }
 
@@ -148,7 +157,10 @@ query znajdzPacjentowPoTagu{
       id,
       location
     },
-    tags
+    tags {
+      # id,
+      name
+    }
   }
 }
 

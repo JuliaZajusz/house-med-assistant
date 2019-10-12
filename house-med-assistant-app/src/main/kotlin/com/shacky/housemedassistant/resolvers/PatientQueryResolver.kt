@@ -2,6 +2,7 @@ package com.shacky.housemedassistant.resolvers
 
 import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import com.shacky.housemedassistant.entity.Patient
+import com.shacky.housemedassistant.entity.Tag
 import com.shacky.housemedassistant.repository.PatientRepository
 import org.springframework.data.mongodb.core.MongoOperations
 import org.springframework.data.mongodb.core.query.Criteria
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class PatientQueryResolver(val patientRepository: PatientRepository,
+                           val tagQueryResolver: TagQueryResolver,
                            private val mongoOperations: MongoOperations) : GraphQLQueryResolver {
     fun patients(): List<Patient> {
         val list = patientRepository.findAll()
@@ -28,7 +30,15 @@ class PatientQueryResolver(val patientRepository: PatientRepository,
 
     fun findPatientsByTags(tags: List<String>): List<Patient> {
         val query = Query()
-        query.addCriteria(Criteria.where("tags").all(tags))
+        val newTags: MutableList<Tag> = mutableListOf();
+        for (tagName in tags) {
+            val tag = tagQueryResolver.getTagByName(tagName)
+            if (tag != null) {
+                newTags.add(tag)
+            }
+        }
+
+        query.addCriteria(Criteria.where("tags").all(newTags))
         val patients = mongoOperations.find(query, Patient::class.java)
         return patients;
     }

@@ -13,7 +13,7 @@ class TagQueryResolver(val tagRepository: TagRepository,
         return tagRepository.findAll()
     }
 
-    private fun getTagByName(name: String): Tag? {
+    fun getTagByName(name: String): Tag? {
         return tagRepository.getTagByName(name);
 //        val query = Query()
 //        query.addCriteria(Criteria.where("name").`is`(name))

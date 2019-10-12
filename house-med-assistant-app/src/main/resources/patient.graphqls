@@ -10,7 +10,7 @@ type Patient {
     lastName: String
     firstName: String
     coordinate: Coordinate
-    tags: [String]
+    tags: [Tag]
 }
 
 type Mutation {

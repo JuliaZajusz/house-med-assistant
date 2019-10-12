@@ -9,9 +9,13 @@ import java.util.*
 @Component
 class TagMutationResolver(private val tagRepository: TagRepository) : GraphQLMutationResolver {
     fun newTag(name: String): Tag {
-        val tag = Tag(name)
-        tag.id = UUID.randomUUID().toString()
-        tagRepository.save(tag)
+//        val tag = Tag(name)
+        var tag = tagRepository.getTagByName(name)
+        if (tag == null) {
+            tag = Tag(name)
+            tag.id = UUID.randomUUID().toString()
+            tagRepository.save(tag)
+        }
         return tag
     }
 

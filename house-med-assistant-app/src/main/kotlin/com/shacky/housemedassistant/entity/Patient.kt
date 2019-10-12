@@ -8,7 +8,7 @@ data class Patient(
         var lastName: String,
         var firstName: String,
         var coordinate: Coordinate,
-        var tags: List<String>
+        var tags: List<Tag>
 ) {
     @Id
     var id: String = ""
