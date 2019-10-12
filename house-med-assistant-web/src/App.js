@@ -14,8 +14,8 @@ import SidePanel from "./components/SidePanel";
 import {addCoordinate} from "./services/DefaultService";
 import {BrowserRouter, Link} from "react-router-dom";
 import {createBrowserHistory} from 'history';
-import {connect} from 'react-redux';
 import {simpleAction} from './actions/patientActions';
+import PatientsPanel from "./components/PatientsPanel";
 
 export const history = createBrowserHistory();
 
@@ -204,10 +204,24 @@ function App(props, state) {
                               onSetSalesmanSet={(salesmanSet) => setSalesmanSet(salesmanSet)}
                             />
                         </Grid>
-                        <Grid item xs={9}>
+                      <Grid item xs={6}>
                             <MapWrapper data={salesmanSet}
                                         onAddPlaceToSalesmanSet={(coordinates) => addPlaceToSalesmanSet(coordinates)}/>
-                        </Grid>
+                      </Grid>
+                      <Grid item xs={3}
+                            flexgrow={1}
+                            className={classes.side_container_container}
+                      >
+                        <PatientsPanel
+                          // salesmanSet={salesmanSet}
+                          // savedPlaces={savedPlaces}
+                          // onLoadData={() => loadData()}
+                          // // onShowSet={() => showSet()}
+                          // onAddToSet={(place) => addToSet(place)}
+                          // onAddNewSalesmanSet={() => addNewSalesmanSet()}
+                          // onSetSalesmanSet={(salesmanSet) => setSalesmanSet(salesmanSet)}
+                        />
+                      </Grid>
                     </Grid>
                 </ThemeProvider>
             </BrowserRouter>
@@ -222,7 +236,7 @@ function App(props, state) {
 
 const mapStateToProps = (state) => {
     return {
-        ...state,
+      // ...state,
         result: state.patientReducer.result,
         "ala": "makota"
     }
@@ -232,4 +246,5 @@ const mapDispatchToProps = dispatch => ({
     simpleAction: () => dispatch(simpleAction())
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+// export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
