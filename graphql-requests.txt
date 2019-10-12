@@ -59,7 +59,7 @@ query sciezki{
 #tworzenie nowego koordynatu
 mutation nowyKoordynat {
     newCoordinate(
-    	location: [2.0, 2.0]
+    	location: [51.0656419, 16.988788]
     ){
         id, location
     }
@@ -480,15 +480,36 @@ mutation updateSalesmanSet2 {
 mutation updateSalesmanSet3 {
   updateSalesmanSet(
     salesmanSet: {
-    id: "483c545c-4d70-497a-82f1-d90f8b0b6774",
+    id: "ccbceca5-0578-4fa3-881d-31109b1eec54",
       places: [
-        {
-          id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
-          location: [
-            18.33,
-            53.01
-          ]
-        }
+                    {
+              id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+              location: [
+                18.33,
+                53.01
+              ]
+            },
+            {
+              id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
+              location: [
+                16.08,
+                50.18
+              ]
+            },
+            {
+              id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
+              location: [
+                18.77,
+                47.92
+              ]
+            },
+            {
+      id: "26014f50-fbed-4d94-b375-6aae8cf37b08",
+      location: [
+        16.988789,
+        51.065643
+      ]
+    }
       ],
       paths: [
         {
@@ -513,7 +534,14 @@ mutation updateSalesmanSet3 {
                 18.77,
                 47.92
               ]
-            }
+            },
+            {
+      id: "26014f50-fbed-4d94-b375-6aae8cf37b08",
+      location: [
+        16.988789,
+        51.065643
+      ]
+    }
           ],
           value: 1236.4390869140625
         }

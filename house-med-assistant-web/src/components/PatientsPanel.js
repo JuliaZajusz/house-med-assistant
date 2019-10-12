@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
@@ -11,6 +11,8 @@ import Chip from "@material-ui/core/Chip";
 import {getContrastYIQ, hashCode, intToRGB} from "../utils/Utils";
 import {getCoordinatesByAddress, getTagsAction} from "../actions/patientActions";
 import {connect} from "react-redux";
+import TextField from "@material-ui/core/TextField";
+import {Paper} from "@material-ui/core";
 
 
 const useStyles = makeStyles(theme => ({
@@ -86,22 +88,53 @@ const mapStateToProps = (state) => {
   return {
     ...state,
     tags: state.patientReducer.tags,
+    coordinatesByAddress: state.patientReducer.coordinatesByAddress,
+
   }
 };
 
 const mapDispatchToProps = dispatch => ({
   getTagsAction: () => dispatch(getTagsAction()),
-  getCoordinatesByAddress: () => dispatch(getCoordinatesByAddress()),
+  getCoordinatesByAddress: (addr) => dispatch(getCoordinatesByAddress(addr)),
 });
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPanel(props) {
   const classes = useStyles();
 
+  const [value, setValue] = useState("");
+
+  const [addNewPatient, setAddNewPatient] = useState(
+    // false
+    true
+  );
+
   const createNewPatient = () => {
-    props.getCoordinatesByAddress();
-    return undefined;
+    setAddNewPatient(true)
   };
+
+  const handleChange = (e) => {
+    setValue(e.target.value)
+  }
+
+  const handleTextFieldKeyDown = event => {
+    switch (event.key) {
+      case 'Enter':
+        console.log(value);
+        searchForCoordinates(value.replace(/ /g, "+"))
+        // call corresponding handler
+        break
+      case 'Escape':
+        // etc...
+        break
+      default:
+        break
+    }
+  };
+
+  const searchForCoordinates = (addr) => {
+    props.getCoordinatesByAddress(addr);
+  }
 
   useEffect(() => {
     props.getTagsAction()
@@ -172,6 +205,28 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
           }}>
           Dodaj nowego pacjenta
         </Button>
+        {addNewPatient && <Grid>
+          <TextField
+            label="Normal"
+            id="margin-normal"
+            helperText="Some important text"
+            margin="normal"
+            value={value}
+            onKeyDown={handleTextFieldKeyDown}
+            onChange={handleChange}
+          />
+          <Grid>
+            {props.coordinatesByAddress.map((result) => {
+              return (
+                <Paper>
+                  {result.formatted_address}
+                  <br/>
+                  {result.geometry.location.lng} {result.geometry.location.lat}
+                </Paper>
+              )
+            })}
+          </Grid>
+        </Grid>}
       </Grid>
 
       {/*<Grid*/}

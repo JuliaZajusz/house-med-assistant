@@ -1,6 +1,6 @@
 import {getPatientsByTags} from "../services/PatientService";
 import {getAllTags} from "../services/TagService";
-import {GOOGLE_API_KEY} from "../../secret/secret";
+import {GOOGLE_API_KEY} from "../secret/secret";
 
 export const simpleAction = () => async (dispatch) => {
   dispatch({
@@ -26,35 +26,23 @@ export const getTagsAction = (tags) => async (dispatch, getState) => {
 };
 
 
-export const getCoordinatesByAddress = () => dispatch => {
-  const addr = 'http://maps.google.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA'
-  const headers = {
-    'Content-Type': 'application/json',
-    // 'Referer': '*.[my-app].appspot.com/*',
-    apiKey: GOOGLE_API_KEY
-  };
-  let fetchParams = {
-    apiKey: GOOGLE_API_KEY
-  };
-  console.log("tuuuu", fetchParams);
-  fetch(addr, {headers})
+export const getCoordinatesByAddress = (address) => dispatch => {
+  const addr = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&key=' + GOOGLE_API_KEY;
+  fetch(addr)
     .then(res => res.json())
     .then(res => {
-      if (res.error) {
-        throw(res.error);
+      if (res.status !== "OK") {
+        throw(res);
       }
-      console.log(res);
-      // dispatch(fetchProductsSuccess(res.products);
-      // return res.products;
+      dispatch({
+        type: 'GET_COORDINATES_BY_ADDRESS',
+        payload: res.results
+      });
+      console.log(res.results);
     })
     .catch(error => {
       console.log(error);
-      // dispatch(fetchProductsError(error));
     });
-  //   dispatch({
-  //   type: 'SIMPLE_ACTION',
-  //   payload: 'result_of_simple_action'
-  // })
 };
 
 

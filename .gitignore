@@ -5,7 +5,7 @@ build/
 !**/src/main/**
 !**/src/test/**
 
-house-med-assistant-web/secret
+house-med-assistant-web/src/secret
 
 ### STS ###
 .apt_generated
