@@ -12,9 +12,7 @@ import AppBar from "@material-ui/core/AppBar";
 import SidePanel from "./components/SidePanel";
 import {BrowserRouter, Link} from "react-router-dom";
 import {createBrowserHistory} from 'history';
-import {simpleAction} from './actions/patientActions';
 import PatientsPanel from "./components/PatientsPanel";
-import connect from "react-redux/es/connect/connect";
 
 export const history = createBrowserHistory();
 
@@ -212,22 +210,4 @@ function App(props, state) {
     );
 }
 
-// const mapStateToProps = state => ({
-//     ...state,
-//     "ala": "makota"
-// })
-
-const mapStateToProps = (state) => {
-    return {
-      // ...state,
-        result: state.patientReducer.result,
-        "ala": "makota"
-    }
-};
-
-const mapDispatchToProps = dispatch => ({
-    simpleAction: () => dispatch(simpleAction())
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
-// export default App;
+export default App;

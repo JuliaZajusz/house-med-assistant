@@ -40,7 +40,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
 
   useEffect(() => {
     // Your code here
-    console.log("useEffect SalesmanSetsList")
+    // console.log("useEffect SalesmanSetsList")
     getAllSalesmanSets()
       .then(result => {
           setSalesmanSets(result.data.salesmanSets);
@@ -51,7 +51,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
       )
   });
 
-  console.log("salesmanSets", salesmanSets)
+  // console.log("salesmanSets", salesmanSets)
 
   const deleteDalesmanSet = (e, id) => {
     e.stopPropagation();

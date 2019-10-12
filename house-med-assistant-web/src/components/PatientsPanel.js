@@ -9,10 +9,11 @@ import Fab from "@material-ui/core/Fab";
 import PatientsList from "./PatientsList";
 import Chip from "@material-ui/core/Chip";
 import {getContrastYIQ, hashCode, intToRGB} from "../utils/Utils";
-import {getCoordinatesByAddress, getTagsAction} from "../actions/patientActions";
+import {getCoordinatesByAddress, getTagsAction, setActiveTagsAction} from "../actions/patientActions";
 import {connect} from "react-redux";
 import TextField from "@material-ui/core/TextField";
 import {Paper} from "@material-ui/core";
+import {Add} from "@material-ui/icons";
 
 
 const useStyles = makeStyles(theme => ({
@@ -88,6 +89,7 @@ const mapStateToProps = (state) => {
   return {
     ...state,
     tags: state.patientReducer.tags,
+    activeTags: state.patientReducer.activeTags,
     coordinatesByAddress: state.patientReducer.coordinatesByAddress,
 
   }
@@ -96,6 +98,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
   getTagsAction: () => dispatch(getTagsAction()),
   getCoordinatesByAddress: (addr) => dispatch(getCoordinatesByAddress(addr)),
+  setActiveTagsAction: (activeTags) => dispatch(setActiveTagsAction(activeTags))
 });
 
 
@@ -105,9 +108,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
   const [value, setValue] = useState("");
 
   const [addNewPatient, setAddNewPatient] = useState(
-    // false
-    true
+    false
+    // true
   );
+
+  const changeTagActivity = (tag) => {
+    let activeTags = props.activeTags;
+    activeTags.includes(tag) ? activeTags.remove(tag) : activeTags.push(tag);
+    props.setActiveTagsAction(activeTags)
+  };
 
   const createNewPatient = () => {
     setAddNewPatient(true)
@@ -144,34 +153,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
     <Grid
       className={classes.side_container}
     >
-      <Grid
-        item
-        container
-        direction="column"
-        justify="center"
-        alignItems="center"
-        className={classes.top_side_panel}
-      >
-        <Fab
-          variant="extended"
-          size="small"
-          color="primary"
-          aria-label="add"
-          className={classes.margin}
-          // onClick={() => addNewSalesmanSet()}
-        >
-          Wylicz trasę
-        </Fab>
-
-      </Grid>
-
       <Grid className={classes.search_panel}>
         <div className={classes.search}>
           <div className={classes.searchIcon}>
             <SearchIcon/>
           </div>
           <InputBase
-            placeholder="Szukaj zapisanych punktów..."
+            placeholder="Szukaj zapisanych pacjentów..."
             classes={{
               root: classes.inputRoot,
               input: classes.inputInput,
@@ -189,9 +177,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
                   background: backgroundColor,
                   color: getContrastYIQ(backgroundColor),
                   margin: '5px',
+                  opacity: !props.activeTags.includes(tag.name) ? 0.5 : 1,
                 }}
                 label={tag.name}
                 size="small"
+                // disabled={!props.activeTags.includes(tag.name)}
+                onClick={() => changeTagActivity(tag.name)}
               />
             )
           })
@@ -199,12 +190,25 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
       </Grid>
       <Grid className={classes.search_panel}>
         <Button
+          size="small"
+          // variant="outlined"
+          variant="contained"
+          color={"secondary"}
           onClick={() => {
-            console.log("aaa")
             createNewPatient()
           }}>
           Dodaj nowego pacjenta
         </Button>
+        <Fab size="small"
+             color="secondary"
+             aria-label="add"
+             className={classes.margin}
+             onClick={() => {
+               createNewPatient()
+             }}
+        >
+          <Add/>
+        </Fab>
         {addNewPatient && <Grid>
           <TextField
             label="Normal"
@@ -216,9 +220,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
             onChange={handleChange}
           />
           <Grid>
-            {props.coordinatesByAddress.map((result) => {
+            {props.coordinatesByAddress.map((result, resultIdx) => {
               return (
-                <Paper>
+                <Paper
+                  key={resultIdx}
+                >
                   {result.formatted_address}
                   <br/>
                   {result.geometry.location.lng} {result.geometry.location.lat}

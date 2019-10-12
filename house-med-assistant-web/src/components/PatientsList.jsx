@@ -8,6 +8,7 @@ import {getPatientsAction} from "../actions/patientActions";
 import {Edit} from "@material-ui/icons";
 import Chip from "@material-ui/core/Chip";
 import {getContrastYIQ, hashCode, intToRGB} from "../utils/Utils";
+import {addCoordinateToSalesmanSet} from "../actions/salesmanSetActions";
 
 
 const useStyles = makeStyles(theme => ({
@@ -30,7 +31,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  getPatientsAction: (tags) => dispatch(getPatientsAction(tags))
+  getPatientsAction: (tags) => dispatch(getPatientsAction(tags)),
+  addCoordinateToSalesmanSet: (coordinate) => dispatch(addCoordinateToSalesmanSet(coordinate))
 });
 
 
@@ -59,7 +61,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsLis
           return <Paper
             key={patient.id}
             className={classes.salesmanSet_paper}
-            // onClick={() => props.onSetSalesmanSet(patient)}
+            onClick={() => {
+              props.addCoordinateToSalesmanSet(patient.coordinate.location)
+            }}
           >
             <h4>
               {patient.lastName + " " + patient.firstName}
@@ -68,11 +72,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsLis
                 <Edit fontSize="small"/>
               </IconButton>
             </h4>
-            {patient.tags.map((tag) => {
+            {patient.tags.map((tag, tagIdx) => {
               let backgroundColor = '#' + intToRGB(hashCode(tag.name));
               return (
                 <Chip
-                  key={tag.id}
+                  key={tagIdx}
                   style={{
                     // background: 'linear-gradient(to right bottom, #430089, #82ffa1)'
                     background: backgroundColor,

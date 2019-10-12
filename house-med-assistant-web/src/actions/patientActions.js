@@ -2,13 +2,6 @@ import {getPatientsByTags} from "../services/PatientService";
 import {getAllTags} from "../services/TagService";
 import {GOOGLE_API_KEY} from "../secret/secret";
 
-export const simpleAction = () => async (dispatch) => {
-  dispatch({
-    type: 'SIMPLE_ACTION',
-    payload: 'result_of_simple_action'
-  })
-};
-
 export const getPatientsAction = (tags) => async (dispatch, getState) => {
   let response = await getPatientsByTags(tags);
   dispatch({
@@ -24,6 +17,11 @@ export const getTagsAction = (tags) => async (dispatch, getState) => {
     payload: response.data.tags
   })
 };
+
+export const setActiveTagsAction = (activeTags) => ({
+  type: 'SET_ACTIVE_TAGS',
+  payload: activeTags
+});
 
 
 export const getCoordinatesByAddress = (address) => dispatch => {

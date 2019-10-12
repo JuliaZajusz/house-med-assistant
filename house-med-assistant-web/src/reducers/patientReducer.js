@@ -1,5 +1,6 @@
 export default (state = {
-  result: null,
+  tags: [],
+  activeTags: [],
   coordinatesByAddress: [
     {
       "address_components": [
@@ -67,11 +68,6 @@ export default (state = {
   ]
 }, action) => {
   switch (action.type) {
-    case 'SIMPLE_ACTION':
-      return {
-        ...state,
-        result: action.payload
-      };
     case 'SET_PATIENTS':
       return {
         ...state,
@@ -81,6 +77,11 @@ export default (state = {
       return {
         ...state,
         tags: action.payload
+      };
+    case 'SET_ACTIVE_TAGS':
+      return {
+        ...state,
+        activeTags: action.payload
       };
     case 'GET_COORDINATES_BY_ADDRESS':
       return {

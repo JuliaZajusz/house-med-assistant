@@ -3,6 +3,8 @@ import {postSalesmanSet, upgradeSalesmanSet} from "../services/SalesmanSetServic
 import {history} from "../App";
 
 export const addCoordinateToSalesmanSet = (coordinate) => dispatch => {
+  // console.log(coordinate)
+  //nie wiem, ale tu chyba nie trzeba pchać tego na backend jeszcze
   addCoordinate(coordinate)
     .then(result => {
         dispatch({
