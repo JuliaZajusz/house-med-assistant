@@ -66,7 +66,6 @@ export default (state = {
     }
   ]
 }, action) => {
-  console.log("patientReducer state changes");
   switch (action.type) {
     case 'SIMPLE_ACTION':
       return {

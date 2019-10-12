@@ -3,12 +3,13 @@ import Button from '@material-ui/core/Button';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import InputBase from "@material-ui/core/InputBase";
-import SearchIcon from '@material-ui/icons/Search';
 import {fade} from "@material-ui/core/styles";
 import Fab from "@material-ui/core/Fab";
-import PlacesList from "./PlacesList";
 import SalesmanSetsList from "./SalesmanSetsList";
+import connect from "react-redux/es/connect/connect";
+import {addNewSalesmanSet, setSalesmanSet} from "../actions/salesmanSetActions";
+import Delete from '@material-ui/icons/Delete';
+import ButtonGroup from "@material-ui/core/ButtonGroup";
 
 
 const useStyles = makeStyles(theme => ({
@@ -78,41 +79,37 @@ const useStyles = makeStyles(theme => ({
             width: 200,
         },
     },
+    flexWrapNowrap: {
+        flexWrap: 'nowrap',
+    }
 }));
 
-export default function SidePanel(props) {
-    const classes = useStyles();
-    //
-    // const [state, setState] = useState(() => {
-    //         return null
-    //     }
-    // );
-    //
+const mapStateToProps = (state) => {
+    return {
+        mapSalesmanSet: state.salesmanSetReducer.mapSalesmanSet,
+    }
+};
 
-    // const showSet = () => {
-    //     props.onShowSet()
-    // }
+const mapDispatchToProps = dispatch => ({
+    addNewSalesmanSet: () => dispatch(addNewSalesmanSet()),
+    setSalesmanSet: () => dispatch(setSalesmanSet()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(function SidePanel(props) {
+    const classes = useStyles();
 
     const addNewSalesmanSet = () => {
-        props.onAddNewSalesmanSet()
+        props.addNewSalesmanSet()
     }
+    //
+    // const addToSet = (place) => {
+    //     props.onAddToSet(place)
+    // }
+    //
+    // const loadData = () => {
+    //     props.onLoadData()
+    // }
 
-    const addToSet = (place) => {
-        props.onAddToSet(place)
-    }
-
-    const loadData = () => {
-        props.onLoadData()
-    }
-
-  const setSalesmanSet = (salesmanSet) => {
-    props.onSetSalesmanSet(salesmanSet);
-  }
-
-    let a = PlacesList()
-
-
-    console.log("SidePanel props: ", props)
     return (
         <Grid
             className={classes.side_container}
@@ -125,14 +122,41 @@ export default function SidePanel(props) {
                 alignItems="center"
                 className={classes.top_side_panel}
             >
-                {props.salesmanSet && props.salesmanSet.places && props.salesmanSet.places.map((place) => <Paper
+                <Grid container
+                      direction="row"
+                      justify="flex-start"
+                      className={classes.flexWrapNowrap}
+                  // flexWrap="nowrap"
+                      alignItems='stretch'
+                >
+                    <Grid item>
+                        <ButtonGroup size="small" aria-label="small outlined button group">
+                            <Button
+                              onClick={() => props.setSalesmanSet()}
+                            >Wyczyść</Button>
+                            {/*<Button>Two</Button>*/}
+                            {/*<Button>Three</Button>*/}
+                        </ButtonGroup>
+                    </Grid>
+                </Grid>
+                {props.mapSalesmanSet && props.mapSalesmanSet.places && props.mapSalesmanSet.places.map((place) =>
+                  <Paper
                     key={place.id}
                     className={classes.top_paper}
-                    onClick={() => addToSet(place)}
+                    // onClick={() => addToSet(place)}
                 >
-                    <div style={{fontSize: '10px', color: 'grey'}}>
-                        {place.id}
-                    </div>
+                      <Grid container
+                            direction="row"
+                            justify="flex-start"
+                            className={classes.flexWrapNowrap}
+                        // flexWrap="nowrap"
+                            alignItems='stretch'
+                      >
+                          <div style={{fontSize: '10px', color: 'grey'}}>
+                              {place.id}
+                          </div>
+                          <Delete fontSize="small"/>
+                      </Grid>
                     {place.name && <div>
                         {place.name}
                     </div>}
@@ -152,76 +176,8 @@ export default function SidePanel(props) {
                 >
                     Wylicz trasę
                 </Fab>
-                {/*<Fab*/}
-                {/*    variant="extended"*/}
-                {/*    size="small"*/}
-                {/*    color="primary"*/}
-                {/*    aria-label="add"*/}
-                {/*    className={classes.margin}*/}
-                {/*    onClick={() => showSet()}*/}
-                {/*>*/}
-                {/*    pokaz set*/}
-                {/*</Fab>*/}
-                <Button className={classes.button} onClick={() => loadData()}>Testuj grapql</Button>
             </Grid>
-
-            <Grid className={classes.search_panel}>
-                <div className={classes.search}>
-                    <div className={classes.searchIcon}>
-                        <SearchIcon/>
-                    </div>
-                    <InputBase
-                        placeholder="Szukaj zapisanych punktów..."
-                        classes={{
-                            root: classes.inputRoot,
-                            input: classes.inputInput,
-                        }}
-                        inputProps={{'aria-label': 'search'}}
-                    />
-                </div>
-            </Grid>
-
-            <Grid
-                item
-                container
-                direction="column"
-                justify="center"
-                alignItems="center"
-                className={classes.side_panel}
-            >
-                {props.salesmanSet && props.salesmanSet.places &&
-                props.savedPlaces
-                    .filter(place => !props.salesmanSet.places.includes(place))
-                    .map((place) => <Paper
-                        key={place.id}
-                        className={classes.paper}
-                        onClick={() => addToSet(place)}
-                    >{place.id}</Paper>)
-                }
-
-                {a && a.places
-                    .filter(place => !props.salesmanSet.places.includes(place))
-                    .map((place) => <Paper
-                            key={place.id}
-                            className={classes.paper}
-                            onClick={() => addToSet(place.coordinate)}
-                        >
-                            <p>
-                                {place.id}
-                            </p>
-                            <p>
-                                {place.name}: {place.coordinate.location[0]}, {place.coordinate.location[1]}
-                            </p>
-                        </Paper>
-                    )}
-            </Grid>
-
-          <SalesmanSetsList
-            onSetSalesmanSet={(salesmanSet) => setSalesmanSet(salesmanSet)}
-          />
-            {/*<ExchangeRates/>*/}
-
+            <SalesmanSetsList/>
         </Grid>
-    )
-        ;
-}
+    );
+})

@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import './App.css';
 import MapWrapper from "./components/Map";
-import {getAllSalesmanSets, postSalesmanSet, putSalesmanSet, upgradeSalesmanSet} from "./services/SalesmanSetService";
 import {Toolbar} from '@material-ui/core';
 import Typography from "@material-ui/core/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -11,11 +10,11 @@ import purple from '@material-ui/core/colors/purple';
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import AppBar from "@material-ui/core/AppBar";
 import SidePanel from "./components/SidePanel";
-import {addCoordinate} from "./services/DefaultService";
 import {BrowserRouter, Link} from "react-router-dom";
 import {createBrowserHistory} from 'history';
 import {simpleAction} from './actions/patientActions';
 import PatientsPanel from "./components/PatientsPanel";
+import connect from "react-redux/es/connect/connect";
 
 export const history = createBrowserHistory();
 
@@ -61,108 +60,102 @@ const useStyles = makeStyles(theme => ({
 function App(props, state) {
     const classes = useStyles();
 
-    const [salesmanSet, setSalesmanSet] = useState(() => {
-        if (history.location.pathname) {
-            let id = history.location.pathname
-            id = id.substr(1);
-            return {
-                id: id.length > 0 ? id : null,
-                places: [],
-                path: []
-            }
-        }
-        return {
-            places: [],
-            path: []
-        }
-        }
-    );
 
-    const [savedPlaces, setSavedPlaces] = useState(() => {
-            return [
-                {
-                    "id": "dgsfs",
-                    "location": [
-                        3.3,
-                        3.4
-                    ]
-                },
-                {
-                    "id": "jhgfd",
-                    "location": [
-                        20,
-                        51.6
-                    ]
-                },
-                {
-                    "id": "jhu5454w",
-                    "location": [
-                        18,
-                        51
-                    ]
-                },
-                {
-                    "id": "j45y3gw",
-                    "location": [
-                        19,
-                        19
-                    ]
-                }]
-        }
-    );
+    // //TODO do usuniecia
+    // const [salesmanSet, setSalesmanSet] = useState(() => {
+    //     if (history.location.pathname) {
+    //         let id = history.location.pathname
+    //         id = id.substr(1);
+    //         return {
+    //             id: id.length > 0 ? id : null,
+    //             places: [],
+    //             path: []
+    //         }
+    //     }
+    //     return {
+    //         places: [],
+    //         path: []
+    //     }
+    //     }
+    // );
 
-    const loadData = () => {
-        getAllSalesmanSets()
-            .then(result => {
-                    console.log(result)
-                    let set = result.data.salesmanSets[1]
-                    setSalesmanSet({...set, places: [...salesmanSet.places, ...set.places]})
-                }
-            );
-    };
+    // const [savedPlaces, setSavedPlaces] = useState(() => {
+    //         return [
+    //             {
+    //                 "id": "dgsfs",
+    //                 "location": [
+    //                     3.3,
+    //                     3.4
+    //                 ]
+    //             },
+    //             {
+    //                 "id": "jhgfd",
+    //                 "location": [
+    //                     20,
+    //                     51.6
+    //                 ]
+    //             },
+    //             {
+    //                 "id": "jhu5454w",
+    //                 "location": [
+    //                     18,
+    //                     51
+    //                 ]
+    //             },
+    //             {
+    //                 "id": "j45y3gw",
+    //                 "location": [
+    //                     19,
+    //                     19
+    //                 ]
+    //             }]
+    //     }
+    // );
 
-    const updateSalesmanSet = () => {
+    // const loadData = () => {
+    //     getAllSalesmanSets()
+    //         .then(result => {
+    //                 console.log(result)
+    //                 let set = result.data.salesmanSets[1]
+    //                 setSalesmanSet({...set, places: [...salesmanSet.places, ...set.places]})
+    //             }
+    //         );
+    // };
+    //
+    // const updateSalesmanSet = () => {
+    //
+    //     putSalesmanSet(salesmanSet)
+    //         .then(response => {
+    //             repeat(response.data.updateSalesmanSet)
+    //         })
+    // }
 
-        putSalesmanSet(salesmanSet)
-            .then(response => {
-                repeat(response.data.updateSalesmanSet)
-            })
-    }
+    // const repeat = (set) => {
+    //     history.push({
+    //         pathname: `/${set.id}`
+    //     })
+    //     setSalesmanSet(set)
+    //     upgradeSalesmanSet(set.id, 2, 20, 20)
+    //         .then((response) => {
+    //             //TODO jeśli stan się zmienił, doszedł nowy punkt to nie update'uj, przerwij request
+    //             setSalesmanSet(response.data.upgradeSalesmanSet)
+    //         })
+    // }
 
-    const repeat = (set) => {
-        history.push({
-            pathname: `/${set.id}`
-        })
-        setSalesmanSet(set)
-        upgradeSalesmanSet(set.id, 2, 20, 20)
-            .then((response) => {
-                //TODO jeśli stan się zmienił, doszedł nowy punkt to nie update'uj, przerwij request
-                setSalesmanSet(response.data.upgradeSalesmanSet)
-            })
-    }
-
-    const addNewSalesmanSet = () => {
-        if (salesmanSet.id == null) {
-            postSalesmanSet(salesmanSet)
-                .then(response => {
-                    repeat(response.data.newSalesmanSet);
-                })
-        } else {
-            updateSalesmanSet()
-        }
-    }
-
-    const addToSet = (place) => {
-        setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, place]})
-    }
-
-    const addPlaceToSalesmanSet = (coordinate) => {
-        addCoordinate(coordinate)
-            .then(result => {
-                    setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, result.data.newCoordinate]})
-                }
-            );
-    };
+    // const addNewSalesmanSet = () => {
+    //     if (salesmanSet.id == null) {
+    //         postSalesmanSet(salesmanSet)
+    //             .then(response => {
+    //                 repeat(response.data.newSalesmanSet);
+    //             })
+    //     } else {
+    //         updateSalesmanSet()
+    //     }
+    // }
+    //
+    // const addToSet = (place) => {
+    //     setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, place]})
+    // }
 
     const simpleAction = (event) => {
         props.simpleAction().then((res) =>
@@ -195,32 +188,22 @@ function App(props, state) {
                               className={classes.side_container_container}
                         >
                             <SidePanel
-                              salesmanSet={salesmanSet}
-                              savedPlaces={savedPlaces}
-                              onLoadData={() => loadData()}
-                                // onShowSet={() => showSet()}
-                              onAddToSet={(place) => addToSet(place)}
-                              onAddNewSalesmanSet={() => addNewSalesmanSet()}
-                              onSetSalesmanSet={(salesmanSet) => setSalesmanSet(salesmanSet)}
+                              // salesmanSet={salesmanSet}
+                              // savedPlaces={savedPlaces}
+                              // onLoadData={() => loadData()}
+                              // onAddToSet={(place) => addToSet(place)}
+                              // onAddNewSalesmanSet={() => addNewSalesmanSet()}
+                              // onSetSalesmanSet={(salesmanSet) => setSalesmanSet(salesmanSet)}
                             />
                         </Grid>
                       <Grid item xs={6}>
-                            <MapWrapper data={salesmanSet}
-                                        onAddPlaceToSalesmanSet={(coordinates) => addPlaceToSalesmanSet(coordinates)}/>
+                          <MapWrapper/>
                       </Grid>
                       <Grid item xs={3}
                             flexgrow={1}
                             className={classes.side_container_container}
                       >
-                        <PatientsPanel
-                          // salesmanSet={salesmanSet}
-                          // savedPlaces={savedPlaces}
-                          // onLoadData={() => loadData()}
-                          // // onShowSet={() => showSet()}
-                          // onAddToSet={(place) => addToSet(place)}
-                          // onAddNewSalesmanSet={() => addNewSalesmanSet()}
-                          // onSetSalesmanSet={(salesmanSet) => setSalesmanSet(salesmanSet)}
-                        />
+                          <PatientsPanel/>
                       </Grid>
                     </Grid>
                 </ThemeProvider>
@@ -246,5 +229,5 @@ const mapDispatchToProps = dispatch => ({
     simpleAction: () => dispatch(simpleAction())
 });
 
-// export default connect(mapStateToProps, mapDispatchToProps)(App);
-export default App;
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+// export default App;

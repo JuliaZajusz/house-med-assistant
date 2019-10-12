@@ -78,6 +78,10 @@ export const upgradeSalesmanSet = (id,
 
 
 export const postSalesmanSet = (set) => {
+    if (set.id != null) {
+        return putSalesmanSet(set)
+    }
+    ;
     let places = set.places.map((place) => {
         return {location: place.location}
     })

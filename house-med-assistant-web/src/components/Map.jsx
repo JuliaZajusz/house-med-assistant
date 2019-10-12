@@ -4,6 +4,8 @@ import 'leaflet/dist/leaflet.css'
 import L from 'leaflet';
 import * as _ from 'lodash';
 import {withStyles} from "@material-ui/styles";
+import connect from "react-redux/es/connect/connect";
+import {addCoordinateToSalesmanSet} from "../actions/salesmanSetActions";
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -115,7 +117,7 @@ class MapWrapper extends Component {
         let lat = Math.round(e.latlng.lat * 100) / 100
         let lng = Math.round(e.latlng.lng * 100) / 100
         markers.push([lat, lng])
-        this.props.onAddPlaceToSalesmanSet([lng, lat])
+        this.props.addCoordinateToSalesmanSet([lng, lat])
     }
 
     polyline = [[51.505, -0.09], [51.51, -0.1], [51.51, -0.12]]
@@ -184,4 +186,14 @@ class MapWrapper extends Component {
     }
 }
 
-export default withStyles(classes)(MapWrapper);
+const mapStateToProps = (state) => {
+    return {
+        data: state.salesmanSetReducer.mapSalesmanSet,
+    }
+};
+
+const mapDispatchToProps = dispatch => ({
+    addCoordinateToSalesmanSet: (coordinates) => dispatch(addCoordinateToSalesmanSet(coordinates))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(classes)(MapWrapper));

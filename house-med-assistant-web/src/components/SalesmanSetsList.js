@@ -5,6 +5,8 @@ import Paper from "@material-ui/core/Paper";
 import DeleteIcon from '@material-ui/icons/Delete';
 import {deleteSalesmanSet, getAllSalesmanSets} from "../services/SalesmanSetService";
 import IconButton from "@material-ui/core/IconButton";
+import {setSalesmanSet} from "../actions/salesmanSetActions";
+import connect from "react-redux/es/connect/connect";
 
 
 const useStyles = makeStyles(theme => ({
@@ -19,7 +21,17 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function SalesmanSetsList(props) {
+const mapStateToProps = (state) => {
+  return {
+    mapSalesmanSet: state.salesmanSetReducer.mapSalesmanSet,
+  }
+};
+
+const mapDispatchToProps = dispatch => ({
+  setSalesmanSet: (salesmanSet) => dispatch(setSalesmanSet(salesmanSet))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSetsList(props) {
   const classes = useStyles();
 
   const [salesmanSets, setSalesmanSets] = useState(
@@ -66,7 +78,7 @@ export default function SalesmanSetsList(props) {
           return <Paper
             key={salesmanSet.id}
             className={classes.salesmanSet_paper}
-            onClick={() => props.onSetSalesmanSet(salesmanSet)}
+            onClick={() => props.setSalesmanSet(salesmanSet)}
           >
             <h4>
               {salesmanSet.id}
@@ -93,6 +105,5 @@ export default function SalesmanSetsList(props) {
       )
       }
     </Grid>
-  )
-    ;
-}
+  );
+})
