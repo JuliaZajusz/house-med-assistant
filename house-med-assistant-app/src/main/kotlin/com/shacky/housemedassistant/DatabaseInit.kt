@@ -1,7 +1,7 @@
 package com.shacky.housemedassistant
 
 import com.shacky.housemedassistant.entity.Coordinate
-import com.shacky.housemedassistant.repository.PlaceRepository
+import com.shacky.housemedassistant.repository.PatientRepository
 import com.shacky.housemedassistant.resolvers.*
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -12,13 +12,13 @@ import javax.annotation.PostConstruct
 @Component
 class DatabaseInit() {
     @Autowired
-    lateinit var placeMutationResolver: PlaceMutationResolver
+    lateinit var patientMutationResolver: PatientMutationResolver
 
     @Autowired
-    lateinit var placeQueryResolver: PlaceQueryResolver
+    lateinit var patientQueryResolver: PatientQueryResolver
 
     @Autowired
-    lateinit var placeRepository: PlaceRepository
+    lateinit var patientRepository: PatientRepository
 
     @Autowired
     lateinit var coordinateMutationResolver: CoordinateMutationResolver
@@ -45,7 +45,7 @@ class DatabaseInit() {
 
         LOG.info("Initialize database with some data.")
 
-        placeMutationResolver.newPlace("Big Ben", listOf(-0.1268194f, 51.5007292f))
+        patientMutationResolver.newPatient("Kowalski", "Jan", listOf(-0.1268194f, 51.5007292f), listOf())
         salesmanSetMutationResolver.newSalesmanSet(
                 listOf(Coordinate(listOf(2.3f, 2.4f)),
                         Coordinate(listOf(44f, 55.6f)),

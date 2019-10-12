@@ -9,8 +9,8 @@ import com.mongodb.client.model.geojson.Point
 import com.mongodb.client.model.geojson.Position
 import com.shacky.housemedassistant.entity.Coordinate
 import com.shacky.housemedassistant.entity.Path
-import com.shacky.housemedassistant.entity.Place
-import com.shacky.housemedassistant.repository.PlaceRepository
+import com.shacky.housemedassistant.entity.Patient
+import com.shacky.housemedassistant.repository.PatientRepository
 import com.shacky.housemedassistant.resolvers.*
 import org.bson.Document
 import org.junit.Assert.*
@@ -31,13 +31,13 @@ class GeospatialLiveTest {
     private var collection: MongoCollection<Document>? = null
 
     @Autowired
-    lateinit var placeMutationResolver: PlaceMutationResolver
+    lateinit var patientMutationResolver: PatientMutationResolver
 
     @Autowired
-    lateinit var placeQueryResolver: PlaceQueryResolver
+    lateinit var patientQueryResolver: PatientQueryResolver
 
     @Autowired
-    lateinit var placeRepository: PlaceRepository
+    lateinit var patientRepository: PatientRepository
 
     @Autowired
     lateinit var coordinateMutationResolver: CoordinateMutationResolver
@@ -70,7 +70,7 @@ class GeospatialLiveTest {
             db = mongoClient!!.getDatabase("kotlin-graphql")
             collection = db!!.getCollection("place")
         }
-        placeMutationResolver.newPlace("Big Ben", listOf(-0.1268194f, 51.5007292f))
+        patientMutationResolver.newPatient("Kowalski", "Jan", listOf(-0.1268194f, 51.5007292f), listOf())
 
         salesmanSetMutationResolver.newSalesmanSetByDistance(6, listOf(
                 0.0f, 20.0f, 30.0f, 31.0f, 28.0f, 40.0f,
@@ -93,7 +93,7 @@ class GeospatialLiveTest {
 
     @Test
     fun givenNearbyLocation_whenSearchWithinCircleSphere_thenFound() {
-        val a = Place("Westminster, Londyn ", Coordinate(listOf(-0.1435083f, 51.4990956f)))
+        val a = Patient("Westminster", "Londyn", Coordinate(listOf(-0.1435083f, 51.4990956f)), listOf())
         val distanceInRad = 5.0 / 6371
         val result = collection!!.find(Filters.geoWithinCenterSphere("coordinate.location", a.coordinate.location[0].toDouble(), a.coordinate.location[1].toDouble(), distanceInRad))
         assertNotNull(result.first())

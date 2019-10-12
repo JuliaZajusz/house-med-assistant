@@ -1,0 +1,25 @@
+type Query {
+    patients: [Patient]
+    patientByCoordinate(coordinateId: ID!): [Patient]
+    findPatientsByLastNameAndFirstName(lastName: String, firstName: String): [Patient]
+    findPatientsByTags(tags: [String]): [Patient]
+}
+
+type Patient {
+    id: ID!
+    lastName: String
+    firstName: String
+    coordinate: Coordinate
+    tags: [String]
+}
+
+type Mutation {
+    newPatient(lastName: String, firstName: String, location: [Float], tags: [String]) : Patient!
+    deletePatient(id: ID!) : Boolean
+    #    updatePlace(id:ID!, location: [Float]) : Place!
+}
+
+#input CoordinateInput {
+#    placeId: String,
+#    location: [Float]
+#}

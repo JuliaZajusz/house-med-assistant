@@ -1,140 +1,14 @@
-# mutation {
-#   newSnack(name: "French Fries", amount: 40.5) {
-#     id
-#     name
-#     amount
-#   }
-# }
-
-
-
-# mutation {
-#     newReview(snackId:"14d029c6-6fdb-4137-8682-c44faf4af853",
-#     text: "Awesome snack!", rating:5
-#     ){
-#         snackId, text, rating
-#     }
-# }
-
-
-# query {
-#   snacks {
-#     name,
-#     reviews {
-#       text, rating
-#     }
-#   }
-# }
-
-# wyciąganie wszystkich punktow z ich lokalizacjami z bazy
-# query miejsca{
-#   places {
-#     id,
-#     name,
-#     coordinate {
-#       location
-#     }
-#   }
-# }
-
-# #wyciaganie wszystkich koordynatow
-# query {
-#   coordinates {
-#     id,
-#     location
-#   }
-# }
-
-# #tworzenie nowego punktu
-# mutation {
-#   newPlace(name: "Wieża Eifflea", location: [4.0, 5.6]) {
-#     id
-#     name
-#     coordinate {
-#       id,
-#       location
-#     }
-#   }
-# }
-
-
-# #tworzenie nowego koordynatu
-# mutation {
-#     newCoordinate(
-#     	location: [2.0, 2.0]
-#     ){
-#         id, location
-#     }
-# }
-
-# mutation {
-#     updatePlace(
-#       id:"a8c361a5-ab21-4908-b3bf-1ffc4406172d",
-#         location: [4.0, 3.0]
-#     ){
-#         id,
-#     		name,
-#     		coordinates {
-#           location
-#         }
-#     }
-# }
-
-
-# #dodanie nowego miejsca
-# mutation dodajMiejsce{
-#   newPlace(
-#     name:"Big Ben",
-#     # location: {
-#       # coordinates:[-0.1268194,51.5007292],
-#       # type: "Place"
-#     # }
-#     locationX: -0.1268194,
-#     locationY: 51.5007292,
-#     locationType: "Place"
-#   ) {
-#     name
-#   }
-# }
-
-
-# mutation {
-#   newSnack(name: "French Fries", amount: 40.5) {
-#     id
-#     name
-#     amount
-#   }
-# }
-
-
-
-# mutation {
-#     newReview(snackId:"14d029c6-6fdb-4137-8682-c44faf4af853",
-#     text: "Awesome snack!", rating:5
-#     ){
-#         snackId, text, rating
-#     }
-# }
-
-
-# query {
-#   snacks {
-#     name,
-#     reviews {
-#       text, rating
-#     }
-#   }
-# }
-
-# wyciąganie wszystkich punktow z ich lokalizacjami z bazy
-query punkty{
-  places {
+# wyciąganie wszystkich pacjentów z ich lokalizacjami z bazy
+query pacjenci{
+  patients {
     id,
-    name,
+    lastName,
+    firstName,
     coordinate {
-       id,
+      id,
       location
-    }
+    },
+    tags
   }
 }
 
@@ -169,15 +43,17 @@ mutation nowyKoordynat {
 
 
 
-#tworzenie nowego punktu
+#tworzenie nowego pacjenta
 mutation nowyPunkt{
-  newPlace(name: "Wieża Eifflea", location: [4.0, 5.6]) {
-    id
-    name
+  newPatient(lastName: "Wieża", firstName: "Eifflea", location: [4.0, 5.6], tags: ["dr. Adamczyk", "Sektor A"]) {
+    id,
+    lastName,
+    firstName,
     coordinate {
       id,
       location
-    }
+    },
+    tags
   }
 }
 
@@ -229,15 +105,33 @@ mutation nowaSciezka2{
 }
 
 
-query findByName{
-  findPlaceByName(name:"Big Ben") {
-    id,
-  name,
+query znajdzPacjentaPoNazwiskuIImieniu{
+  findPatientsByLastNameAndFirstName(lastName:"Kowalski", firstName: "Jan") {
+		id,
+    lastName,
+    firstName,
     coordinate {
-    location
-  }
+      id,
+      location
+    },
+    tags
   }
 }
+
+query znajdzPacjentowPoTagu{
+  findPatientsByTags(tags: ["Sektor A"]) {
+		id,
+    lastName,
+    firstName,
+    coordinate {
+      id,
+      location
+    },
+    tags
+  }
+}
+
+
 
 query findCoordinateByLocation{
   findOneByLocation(location: [-0.1268194, 51.50073]) {
@@ -617,5 +511,6 @@ mutation updateSalesmanSet3 {
   }
 }
 
-
-
+mutation deleteSalesmanSet {
+  deleteSalesmanSet(id: "c8e65d2b-d7a8-45df-9b61-efeffcb3fee8")
+}
