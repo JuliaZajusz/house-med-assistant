@@ -1,0 +1,14 @@
+extend type Query {
+    tags: [Tag]
+}
+
+type Tag {
+    id: ID
+    name: String
+}
+
+extend type Mutation {
+    newTag(name: String!) : Tag!
+    deleteTag(name: String!) : Boolean
+    updateTag(id: ID!, name: String!) : Tag!
+}

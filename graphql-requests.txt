@@ -1,3 +1,24 @@
+mutation nowyTag{
+  newTag(name: "Psie Pole") {
+  	id,
+  	name
+  }
+}
+
+mutation zmienNazweTaga{
+  updateTag(id: "1770f3f3-6cb1-4789-83ff-51c62845da5b", name: "Klecina") {
+  	id,
+  	name
+  }
+}
+
+query tagi{
+  tags {
+    id,
+    name
+  }
+}
+
 # wyciąganie wszystkich pacjentów z ich lokalizacjami z bazy
 query pacjenci{
   patients {
