@@ -68,7 +68,7 @@ class GeospatialLiveTest {
         if (mongoClient == null) {
             mongoClient = MongoClient()
             db = mongoClient!!.getDatabase("kotlin-graphql")
-            collection = db!!.getCollection("place")
+            collection = db!!.getCollection("patient")
         }
         patientMutationResolver.newPatient("Kowalski", "Jan", listOf(-0.1268194f, 51.5007292f), listOf())
 
@@ -88,7 +88,7 @@ class GeospatialLiveTest {
         val result = collection!!.find(Filters.near("coordinate.location", currentLoc, 1000.0, 10.0))
 
         assertNotNull(result.first())
-        assertEquals("Big Ben", result.first()!!["name"])
+        assertEquals("Kowalski", result.first()!!["lastName"])
     }
 
     @Test
@@ -97,7 +97,7 @@ class GeospatialLiveTest {
         val distanceInRad = 5.0 / 6371
         val result = collection!!.find(Filters.geoWithinCenterSphere("coordinate.location", a.coordinate.location[0].toDouble(), a.coordinate.location[1].toDouble(), distanceInRad))
         assertNotNull(result.first())
-        assertEquals("Big Ben", result.first()!!["name"])
+        assertEquals("Kowalski", result.first()!!["lastName"])
     }
 
     @Test
