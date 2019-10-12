@@ -14,6 +14,8 @@ import SidePanel from "./components/SidePanel";
 import {addCoordinate} from "./services/DefaultService";
 import {BrowserRouter, Link} from "react-router-dom";
 import {createBrowserHistory} from 'history';
+import {connect} from 'react-redux';
+import {simpleAction} from './actions/patientActions';
 
 export const history = createBrowserHistory();
 
@@ -56,7 +58,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function App() {
+function App(props, state) {
     const classes = useStyles();
 
     const [salesmanSet, setSalesmanSet] = useState(() => {
@@ -162,7 +164,11 @@ function App() {
             );
     };
 
-
+    const simpleAction = (event) => {
+        props.simpleAction().then((res) =>
+          console.log("THEN", res));
+        console.log("2", props);
+    };
 
 
     return (
@@ -176,6 +182,7 @@ function App() {
                             </Typography>
                         </Toolbar>
                         <Link to="/about">Home</Link>
+                        <button onClick={(e) => simpleAction(e)}>Test redux action</button>
                     </AppBar>
                     <Grid container
                           direction="row"
@@ -208,4 +215,21 @@ function App() {
     );
 }
 
-export default App;
+// const mapStateToProps = state => ({
+//     ...state,
+//     "ala": "makota"
+// })
+
+const mapStateToProps = (state) => {
+    return {
+        ...state,
+        result: state.patientReducer.result,
+        "ala": "makota"
+    }
+};
+
+const mapDispatchToProps = dispatch => ({
+    simpleAction: () => dispatch(simpleAction())
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

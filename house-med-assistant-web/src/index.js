@@ -5,8 +5,16 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {ApolloProvider} from '@apollo/react-hooks';
 import {client} from "./services/DefaultService";
+import {Provider} from 'react-redux'
+import configureStore from './store';
 
-ReactDOM.render(<ApolloProvider client={client}>< App/></ApolloProvider>, document.getElementById('root')
+ReactDOM.render(
+  <ApolloProvider client={client}>
+    <Provider store={configureStore()}>
+      < App/>
+    </Provider>
+  </ApolloProvider>,
+  document.getElementById('root')
 )
 ;
 
