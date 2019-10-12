@@ -5,6 +5,34 @@ import {client} from "./DefaultService";
 //     return null;
 // }
 
+export const getAllSalesmanSets = () => {
+    return client
+    .query({
+          query: gql`{
+              salesmanSets {
+                  id,
+                  places {
+                      id,
+                      location
+                  }
+                  paths {
+                      places {
+                          id,
+                          location
+                      },
+                      value
+                  }
+                  neighborhoodMatrix {
+                      startCoordinateId,
+                      endCoordinateId,
+                      value
+                  }
+              }
+          }`
+      }
+    );
+}
+
 export const upgradeSalesmanSet = (id,
                                    timeInSec,
                                    populationSize,
@@ -134,3 +162,19 @@ export const putSalesmanSet = (set) => {
         }
     );
 }
+
+
+export const deleteSalesmanSet = (id) => {
+    return client
+    .mutate({
+          mutation: gql`
+              mutation deleteSalesmanSet {
+                  deleteSalesmanSet(
+                      id: "${id}"
+                  )
+              }
+          `
+      }
+    );
+}
+

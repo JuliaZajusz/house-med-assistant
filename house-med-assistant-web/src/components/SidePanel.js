@@ -8,6 +8,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import {fade} from "@material-ui/core/styles";
 import Fab from "@material-ui/core/Fab";
 import PlacesList from "./PlacesList";
+import SalesmanSetsList from "./SalesmanSetsList";
 
 
 const useStyles = makeStyles(theme => ({
@@ -103,6 +104,10 @@ export default function SidePanel(props) {
     const loadData = () => {
         props.onLoadData()
     }
+
+  const setSalesmanSet = (salesmanSet) => {
+    props.onSetSalesmanSet(salesmanSet);
+  }
 
     let a = PlacesList()
 
@@ -210,6 +215,10 @@ export default function SidePanel(props) {
                         </Paper>
                     )}
             </Grid>
+
+          <SalesmanSetsList
+            onSetSalesmanSet={(salesmanSet) => setSalesmanSet(salesmanSet)}
+          />
             {/*<ExchangeRates/>*/}
 
         </Grid>

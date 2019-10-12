@@ -3,6 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/house-med-assistant.iml" filepath="$PROJECT_DIR$/.idea/house-med-assistant.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/house-med-assistant-app/house-med-assistant.house-med-assistant-app.iml" filepath="$PROJECT_DIR$/.idea/modules/house-med-assistant-app/house-med-assistant.house-med-assistant-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/house-med-assistant-app/house-med-assistant.house-med-assistant-app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/house-med-assistant-app/house-med-assistant.house-med-assistant-app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/house-med-assistant-app/house-med-assistant.house-med-assistant-app.test.iml" filepath="$PROJECT_DIR$/.idea/modules/house-med-assistant-app/house-med-assistant.house-med-assistant-app.test.iml" />
     </modules>
   </component>
 </project>

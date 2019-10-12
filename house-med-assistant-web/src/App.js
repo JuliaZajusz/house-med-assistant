@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import './App.css';
 import MapWrapper from "./components/Map";
-import {postSalesmanSet, putSalesmanSet, upgradeSalesmanSet} from "./services/SalesmanSetService";
+import {getAllSalesmanSets, postSalesmanSet, putSalesmanSet, upgradeSalesmanSet} from "./services/SalesmanSetService";
 import {Toolbar} from '@material-ui/core';
 import Typography from "@material-ui/core/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -11,7 +11,7 @@ import purple from '@material-ui/core/colors/purple';
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import AppBar from "@material-ui/core/AppBar";
 import SidePanel from "./components/SidePanel";
-import {addCoordinate, loadSalesmanSets} from "./services/DefaultService";
+import {addCoordinate} from "./services/DefaultService";
 import {BrowserRouter, Link} from "react-router-dom";
 import {createBrowserHistory} from 'history';
 
@@ -109,15 +109,15 @@ function App() {
         }
     );
 
-    function loadData() {
-        loadSalesmanSets()
+    const loadData = () => {
+        getAllSalesmanSets()
             .then(result => {
                     console.log(result)
                     let set = result.data.salesmanSets[1]
                     setSalesmanSet({...set, places: [...salesmanSet.places, ...set.places]})
                 }
             );
-    }
+    };
 
     const updateSalesmanSet = () => {
 
@@ -127,7 +127,7 @@ function App() {
             })
     }
 
-    function repeat(set) {
+    const repeat = (set) => {
         history.push({
             pathname: `/${set.id}`
         })
@@ -160,7 +160,9 @@ function App() {
                     setSalesmanSet({...salesmanSet, places: [...salesmanSet.places, result.data.newCoordinate]})
                 }
             );
-    }
+    };
+
+
 
 
     return (
@@ -186,12 +188,13 @@ function App() {
                               className={classes.side_container_container}
                         >
                             <SidePanel
-                                salesmanSet={salesmanSet}
-                                savedPlaces={savedPlaces}
-                                onLoadData={() => loadData()}
+                              salesmanSet={salesmanSet}
+                              savedPlaces={savedPlaces}
+                              onLoadData={() => loadData()}
                                 // onShowSet={() => showSet()}
-                                onAddToSet={(place) => addToSet(place)}
-                                onAddNewSalesmanSet={() => addNewSalesmanSet()}
+                              onAddToSet={(place) => addToSet(place)}
+                              onAddNewSalesmanSet={() => addNewSalesmanSet()}
+                              onSetSalesmanSet={(salesmanSet) => setSalesmanSet(salesmanSet)}
                             />
                         </Grid>
                         <Grid item xs={9}>

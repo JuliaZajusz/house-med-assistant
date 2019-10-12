@@ -8,37 +8,6 @@ export const client = new ApolloClient({
     })
 });
 
-
-export const loadSalesmanSets = () => {
-    return client
-    .query({
-        query: gql`
-            {
-                salesmanSets {
-                    id,
-                    places {
-                        id,
-                        location
-                    }
-                    paths {
-                        places {
-                            id,
-                            location
-                        },
-                        value
-                    }
-                    neighborhoodMatrix {
-                        startCoordinateId,
-                        endCoordinateId,
-                        value
-                    }
-                }
-            }
-        `
-    })
-// .then(result => console.log(result));
-}
-
 export const addCoordinate = (coordinate) => {
     let lat = coordinate[0]
     let lng = coordinate[1]
