@@ -10,7 +10,7 @@ data class Patient(
         var lastName: String,
         @TextIndexed
         var firstName: String,
-        @TextIndexed
+//        @TextIndexed
         var address: String,
         var coordinate: Coordinate,
         var tags: List<Tag>

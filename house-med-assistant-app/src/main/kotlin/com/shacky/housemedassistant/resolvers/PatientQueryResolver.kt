@@ -56,8 +56,6 @@ class PatientQueryResolver(val patientRepository: PatientRepository,
         } else {
             return patients()
         }
-
-
     }
 
     fun findPatientsByTextRespectingTags(searchedText: String, tags: List<String>): List<Patient> {
@@ -71,11 +69,8 @@ class PatientQueryResolver(val patientRepository: PatientRepository,
         }
         query.addCriteria(Criteria.where("tags").all(newTags))
         if (searchedText.isNotEmpty()) {
-            query.addCriteria(TextCriteria.forDefaultLanguage().
-//                        forLanguage("en"). // effectively the same as forDefaultLanguage() here
-                    matching(searchedText));
+            query.addCriteria(Criteria.where("lastName").regex(".*" + searchedText + ".*"))
         }
-
         val patients = mongoOperations.find(query, Patient::class.java)
         return patients;
     }

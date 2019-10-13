@@ -9,7 +9,12 @@ import Fab from "@material-ui/core/Fab";
 import PatientsList from "./PatientsList";
 import Chip from "@material-ui/core/Chip";
 import {getContrastYIQ, hashCode, intToRGB} from "../utils/Utils";
-import {getCoordinatesByAddress, getTagsAction, setActiveTagsAction} from "../actions/patientActions";
+import {
+  getCoordinatesByAddress,
+  getPatientsAction,
+  getTagsAction,
+  setActiveTagsAction
+} from "../actions/patientActions";
 import {connect} from "react-redux";
 import TextField from "@material-ui/core/TextField";
 import {Paper} from "@material-ui/core";
@@ -98,7 +103,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
   getTagsAction: () => dispatch(getTagsAction()),
   getCoordinatesByAddress: (addr) => dispatch(getCoordinatesByAddress(addr)),
-  setActiveTagsAction: (activeTags) => dispatch(setActiveTagsAction(activeTags))
+  setActiveTagsAction: (activeTags) => dispatch(setActiveTagsAction(activeTags)),
+  getPatientsAction: (text, tags) => dispatch(getPatientsAction(text, tags)),
 });
 
 
@@ -149,6 +155,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
     props.getTagsAction()
   }, []);
 
+  const search = (e) => {
+    console.log(e.target.value);
+    props.getPatientsAction(e.target.value, ["Sektor A"])
+  };
+
   return (
     <Grid
       className={classes.side_container}
@@ -165,6 +176,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
               input: classes.inputInput,
             }}
             inputProps={{'aria-label': 'search'}}
+            onChange={(e) => search(e)}
           />
         </div>
         {
