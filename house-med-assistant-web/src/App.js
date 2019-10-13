@@ -21,6 +21,8 @@ const theme = createMuiTheme({
         primary: purple,
         secondary: {
             main: '#f44336',
+            dark: '#424242',
+            light: '#fefefe',
         },
     },
     shape: {

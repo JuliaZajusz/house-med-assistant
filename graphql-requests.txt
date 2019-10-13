@@ -204,6 +204,22 @@ query znajdzPacjentowPoNazwieITagu2{
 }
 
 query znajdzPacjentowPoNazwieITagu3{
+  findPatientsByTextRespectingTags(searchedText: "Wie", tags: ["Sektor A"]) {
+    id
+    lastName
+    firstName
+    address
+    coordinate {
+      id
+      location
+    }
+    tags {
+      name
+    }
+  }
+}
+
+query znajdzPacjentowPoNazwieITagu4{
   findPatientsByTextRespectingTags(searchedText: "", tags: []) {
 		id,
     lastName,
@@ -253,6 +269,9 @@ query znajdzPacjentowPoNiepelnejNazwieLubAdresie2{
     }
   }
 }
+
+
+
 
 
 query findCoordinateByLocation{

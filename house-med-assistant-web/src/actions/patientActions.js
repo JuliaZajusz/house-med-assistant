@@ -1,7 +1,8 @@
 import {
   getAllPatients,
   getAllPatientsTyText,
-  getPatientsByNameAndAddressRespectingTags
+  getPatientsByNameAndAddressRespectingTags,
+  postPatient
 } from "../services/PatientService";
 import {getAllTags} from "../services/TagService";
 import {GOOGLE_API_KEY} from "../secret/secret";
@@ -63,6 +64,10 @@ export const getCoordinatesByAddress = (address) => dispatch => {
     });
 };
 
+
+export const addNewPatient = (patient) => dispatch => {
+  postPatient(patient)
+};
 
 // export const simpleAction = () => dispatch => {
 //   console.log("tu3");

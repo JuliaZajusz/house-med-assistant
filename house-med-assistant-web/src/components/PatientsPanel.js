@@ -1,11 +1,9 @@
-import React, {useEffect, useState} from 'react';
-import Button from '@material-ui/core/Button';
+import React, {useEffect} from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import InputBase from "@material-ui/core/InputBase";
 import SearchIcon from '@material-ui/icons/Search';
 import {fade} from "@material-ui/core/styles";
-import Fab from "@material-ui/core/Fab";
 import PatientsList from "./PatientsList";
 import Chip from "@material-ui/core/Chip";
 import {getContrastYIQ, hashCode, intToRGB} from "../utils/Utils";
@@ -16,14 +14,15 @@ import {
   setActiveTagsAction
 } from "../actions/patientActions";
 import {connect} from "react-redux";
-import TextField from "@material-ui/core/TextField";
-import {Paper} from "@material-ui/core";
-import {Add} from "@material-ui/icons";
+import AddNewPatient from "./AddNewPatient";
 
 
 const useStyles = makeStyles(theme => ({
   side_container: {
     overflow: 'hidden',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
   },
   button: {
     background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
@@ -67,6 +66,7 @@ const useStyles = makeStyles(theme => ({
       width: 'auto',
     },
     border: '1px solid grey',
+    overflow: 'hidden',
   },
   searchIcon: {
     width: theme.spacing(7),
@@ -111,12 +111,12 @@ const mapDispatchToProps = dispatch => ({
 export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPanel(props) {
   const classes = useStyles();
 
-  const [value, setValue] = useState("");
-
-  const [addNewPatient, setAddNewPatient] = useState(
-    false
-    // true
-  );
+  // const [value, setValue] = useState("");
+  //
+  // const [addNewPatient, setAddNewPatient] = useState(
+  //   false
+  //   // true
+  // );
 
   let searchValue = "";
 
@@ -132,32 +132,32 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
     props.getPatientsAction(searchValue, props.activeTags);
   };
 
-  const createNewPatient = () => {
-    setAddNewPatient(true)
-  };
-
-  const handleChange = (e) => {
-    setValue(e.target.value)
-  }
-
-  const handleTextFieldKeyDown = event => {
-    switch (event.key) {
-      case 'Enter':
-        console.log(value);
-        searchForCoordinates(value.replace(/ /g, "+"))
-        // call corresponding handler
-        break
-      case 'Escape':
-        // etc...
-        break
-      default:
-        break
-    }
-  };
-
-  const searchForCoordinates = (addr) => {
-    props.getCoordinatesByAddress(addr);
-  }
+  // const createNewPatient = () => {
+  //   setAddNewPatient(true)
+  // };
+  //
+  // const handleChange = (e) => {
+  //   setValue(e.target.value)
+  // }
+  //
+  // const handleTextFieldKeyDown = event => {
+  //   switch (event.key) {
+  //     case 'Enter':
+  //       console.log(value);
+  //       searchForCoordinates(value.replace(/ /g, "+"))
+  //       // call corresponding handler
+  //       break
+  //     case 'Escape':
+  //       // etc...
+  //       break
+  //     default:
+  //       break
+  //   }
+  // };
+  //
+  // const searchForCoordinates = (addr) => {
+  //   props.getCoordinatesByAddress(addr);
+  // }
 
   useEffect(() => {
     props.getTagsAction()
@@ -167,6 +167,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
   return (
     <Grid
       className={classes.side_container}
+      // alignItems='stretch'
     >
       <Grid className={classes.search_panel}>
         <div className={classes.search}>
@@ -204,52 +205,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
           })
         }
       </Grid>
-      <Grid className={classes.search_panel}>
-        <Button
-          size="small"
-          // variant="outlined"
-          variant="contained"
-          color={"secondary"}
-          onClick={() => {
-            createNewPatient()
-          }}>
-          Dodaj nowego pacjenta
-        </Button>
-        <Fab size="small"
-             color="secondary"
-             aria-label="add"
-             className={classes.margin}
-             onClick={() => {
-               createNewPatient()
-             }}
-        >
-          <Add/>
-        </Fab>
-        {addNewPatient && <Grid>
-          <TextField
-            label="Normal"
-            id="margin-normal"
-            helperText="Some important text"
-            margin="normal"
-            value={value}
-            onKeyDown={handleTextFieldKeyDown}
-            onChange={handleChange}
-          />
-          <Grid>
-            {props.coordinatesByAddress.map((result, resultIdx) => {
-              return (
-                <Paper
-                  key={resultIdx}
-                >
-                  {result.formatted_address}
-                  <br/>
-                  {result.geometry.location.lng} {result.geometry.location.lat}
-                </Paper>
-              )
-            })}
-          </Grid>
-        </Grid>}
-      </Grid>
+      <AddNewPatient/>
 
       {/*<Grid*/}
       {/*    item*/}
