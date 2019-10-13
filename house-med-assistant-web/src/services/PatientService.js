@@ -58,7 +58,6 @@ export const getAllPatientsTyText = (searchedText) => {
 export const getPatientsByNameAndAddressRespectingTags = (searchedText, tags) => {
   if (tags && tags.length > 0) {
     const stringTags = "[\"" + tags.join("\", \"") + "\"]";
-    console.log("searchedText", searchedText, "tags", tags, stringTags);
     return client
     .query({
         query: gql`{

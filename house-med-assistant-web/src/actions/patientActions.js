@@ -1,13 +1,33 @@
-import {getPatientsByNameAndAddressRespectingTags} from "../services/PatientService";
+import {
+  getAllPatients,
+  getAllPatientsTyText,
+  getPatientsByNameAndAddressRespectingTags
+} from "../services/PatientService";
 import {getAllTags} from "../services/TagService";
 import {GOOGLE_API_KEY} from "../secret/secret";
 
 export const getPatientsAction = (text, tags) => async (dispatch, getState) => {
-  let response = await getPatientsByNameAndAddressRespectingTags(text, tags);
-  dispatch({
-    type: 'SET_PATIENTS',
-    payload: response.data.patients
-  })
+  if (tags && tags.length > 0) {
+    let response = await getPatientsByNameAndAddressRespectingTags(text, tags);
+    dispatch({
+      type: 'SET_PATIENTS',
+      payload: response.data.findPatientsByTextRespectingTags
+    })
+  } else {
+    if (text && text !== "") {
+      let response = await getAllPatientsTyText(text);
+      dispatch({
+        type: 'SET_PATIENTS',
+        payload: response.data.findPatientsByFullTextSearch
+      })
+    } else {
+      let response = await getAllPatients();
+      dispatch({
+        type: 'SET_PATIENTS',
+        payload: response.data.patients
+      })
+    }
+  }
 };
 
 export const getTagsAction = (tags) => async (dispatch, getState) => {
