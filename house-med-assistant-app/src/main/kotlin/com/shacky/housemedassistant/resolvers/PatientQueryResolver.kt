@@ -7,7 +7,6 @@ import com.shacky.housemedassistant.repository.PatientRepository
 import org.springframework.data.mongodb.core.MongoOperations
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
-import org.springframework.data.mongodb.core.query.TextCriteria
 import org.springframework.stereotype.Component
 
 @Component
@@ -15,11 +14,7 @@ class PatientQueryResolver(val patientRepository: PatientRepository,
                            val tagQueryResolver: TagQueryResolver,
                            private val mongoOperations: MongoOperations) : GraphQLQueryResolver {
     fun patients(): List<Patient> {
-        val list = patientRepository.findAll()
-//        for (item in list) {
-//            item.coordinate = getCoordinates(placeId = item.id)
-//        }
-        return list
+        return patientRepository.findAll()
     }
 
     fun findPatientsByLastNameAndFirstName(lastName: String, firstName: String): List<Patient> {
@@ -38,7 +33,6 @@ class PatientQueryResolver(val patientRepository: PatientRepository,
                 newTags.add(tag)
             }
         }
-
         query.addCriteria(Criteria.where("tags").all(newTags))
         val patients = mongoOperations.find(query, Patient::class.java)
         return patients;
@@ -46,13 +40,9 @@ class PatientQueryResolver(val patientRepository: PatientRepository,
 
     fun findPatientsByFullTextSearch(searchedText: String): List<Patient> {
         val query = Query()
-
         if (searchedText.isNotEmpty()) {
-            query.addCriteria(TextCriteria.forDefaultLanguage().
-//                        forLanguage("en"). // effectively the same as forDefaultLanguage() here
-                    matching(searchedText));
-            val patients = mongoOperations.find(query, Patient::class.java)
-            return patients;
+            query.addCriteria(Criteria.where("lastName").regex(".*" + searchedText + ".*"))
+            return mongoOperations.find(query, Patient::class.java);
         } else {
             return patients()
         }

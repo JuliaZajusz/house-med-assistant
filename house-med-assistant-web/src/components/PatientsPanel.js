@@ -118,10 +118,18 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
     // true
   );
 
+  let searchValue = "";
+
+  const search = (e) => {
+    searchValue = e.target.value;
+    props.getPatientsAction(searchValue, props.activeTags)
+  };
+
   const changeTagActivity = (tag) => {
     let activeTags = props.activeTags;
     activeTags.includes(tag) ? activeTags.remove(tag) : activeTags.push(tag);
-    props.setActiveTagsAction(activeTags)
+    props.setActiveTagsAction(activeTags);
+    props.getPatientsAction(searchValue, props.activeTags);
   };
 
   const createNewPatient = () => {
@@ -155,10 +163,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
     props.getTagsAction()
   }, []);
 
-  const search = (e) => {
-    console.log(e.target.value);
-    props.getPatientsAction(e.target.value, ["Sektor A"])
-  };
 
   return (
     <Grid
