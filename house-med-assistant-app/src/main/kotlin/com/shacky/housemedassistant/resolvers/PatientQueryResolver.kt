@@ -44,7 +44,23 @@ class PatientQueryResolver(val patientRepository: PatientRepository,
         return patients;
     }
 
-    fun findPatientsByNameRespectingTags(name: String, tags: List<String>): List<Patient> {
+    fun findPatientsByFullTextSearch(searchedText: String): List<Patient> {
+        val query = Query()
+
+        if (searchedText.isNotEmpty()) {
+            query.addCriteria(TextCriteria.forDefaultLanguage().
+//                        forLanguage("en"). // effectively the same as forDefaultLanguage() here
+                    matching(searchedText));
+            val patients = mongoOperations.find(query, Patient::class.java)
+            return patients;
+        } else {
+            return patients()
+        }
+
+
+    }
+
+    fun findPatientsByTextRespectingTags(searchedText: String, tags: List<String>): List<Patient> {
         val query = Query()
         val newTags: MutableList<Tag> = mutableListOf();
         for (tagName in tags) {
@@ -53,12 +69,12 @@ class PatientQueryResolver(val patientRepository: PatientRepository,
                 newTags.add(tag)
             }
         }
-
         query.addCriteria(Criteria.where("tags").all(newTags))
-        query.addCriteria(TextCriteria.forDefaultLanguage().
+        if (searchedText.isNotEmpty()) {
+            query.addCriteria(TextCriteria.forDefaultLanguage().
 //                        forLanguage("en"). // effectively the same as forDefaultLanguage() here
-                matching(name));
-
+                    matching(searchedText));
+        }
 
         val patients = mongoOperations.find(query, Patient::class.java)
         return patients;

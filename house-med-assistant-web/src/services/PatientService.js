@@ -13,6 +13,7 @@ export const getAllPatients = () => {
               id,
               lastName,
               firstName,
+              address,
               coordinate {
                   id,
                   location
@@ -27,15 +28,16 @@ export const getAllPatients = () => {
   );
 };
 
-export const getPatientsByTags = (tags) => {
-  if (tags && tags.length > 0) {
+export const getAllPatientsTyText = (searchedText) => {
+  if (searchedText && searchedText !== "") {
     return client
     .query({
         query: gql`{
-            findPatientsByTags(tags: ${tags}) {
+            findPatientsByFullTextSearch(searchedText: "${searchedText}") {
                 id,
                 lastName,
                 firstName,
+                address,
                 coordinate {
                     id,
                     location
@@ -52,6 +54,60 @@ export const getPatientsByTags = (tags) => {
     return getAllPatients();
   }
 };
+
+export const getPatientsByNameAndAddressRespectingTags = (searchedText, tags) => {
+  if (tags && tags.length > 0) {
+    return client
+    .query({
+        query: gql`{
+            findPatientsByTextRespectingTags(searchedText: ${searchedText}, tags: ${tags}) {
+                id,
+                lastName,
+                firstName,
+                address,
+                coordinate {
+                    id,
+                    location
+                },
+                tags {
+                    # id,
+                    name
+                }
+            }
+        }`
+      }
+    );
+  } else {
+    return getAllPatientsTyText(searchedText);
+  }
+};
+
+// export const getPatientsByTags = (tags) => {
+//   if (tags && tags.length > 0) {
+//     return client
+//     .query({
+//         query: gql`{
+//             findPatientsByTags(tags: ${tags}) {
+//                 id,
+//                 lastName,
+//                 firstName,
+//                  address,
+//                 coordinate {
+//                     id,
+//                     location
+//                 },
+//                 tags {
+//                     # id,
+//                     name
+//                 }
+//             }
+//         }`
+//       }
+//     );
+//   } else {
+//     return getAllPatients();
+//   }
+// };
 
 
 //TODO zmienić na płynne wyszukiwanie po imieniu i nazwisku, ograniczone tagami

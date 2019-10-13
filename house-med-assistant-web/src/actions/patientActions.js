@@ -1,9 +1,9 @@
-import {getPatientsByTags} from "../services/PatientService";
+import {getPatientsByNameAndAddressRespectingTags} from "../services/PatientService";
 import {getAllTags} from "../services/TagService";
 import {GOOGLE_API_KEY} from "../secret/secret";
 
-export const getPatientsAction = (tags) => async (dispatch, getState) => {
-  let response = await getPatientsByTags(tags);
+export const getPatientsAction = (text, tags) => async (dispatch, getState) => {
+  let response = await getPatientsByNameAndAddressRespectingTags(text, tags);
   dispatch({
     type: 'SET_PATIENTS',
     payload: response.data.patients

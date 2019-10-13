@@ -170,7 +170,7 @@ query znajdzPacjentowPoTagu{
 }
 
 query znajdzPacjentowPoNazwieITagu{
-  findPatientsByNameRespectingTags(name: "a Eifflea", tags: ["Sektor A"]) {
+  findPatientsByTextRespectingTags(searchedText: "a Eifflea", tags: ["Sektor A"]) {
 		id,
     lastName,
     firstName,
@@ -186,6 +186,73 @@ query znajdzPacjentowPoNazwieITagu{
   }
 }
 
+query znajdzPacjentowPoNazwieITagu2{
+  findPatientsByTextRespectingTags(searchedText: "", tags: ["Sektor A"]) {
+		id,
+    lastName,
+    firstName,
+    address,
+    coordinate {
+      id,
+      location
+    },
+    tags {
+      # id,
+      name
+    }
+  }
+}
+
+query znajdzPacjentowPoNazwieITagu3{
+  findPatientsByTextRespectingTags(searchedText: "", tags: []) {
+		id,
+    lastName,
+    firstName,
+    address,
+    coordinate {
+      id,
+      location
+    },
+    tags {
+      # id,
+      name
+    }
+  }
+}
+
+query znajdzPacjentowPoNiepelnejNazwieLubAdresie{
+  findPatientsByFullTextSearch(searchedText: "a Eifflea") {
+		id,
+    lastName,
+    firstName,
+    address,
+    coordinate {
+      id,
+      location
+    },
+    tags {
+      # id,
+      name
+    }
+  }
+}
+
+query znajdzPacjentowPoNiepelnejNazwieLubAdresie2{
+  findPatientsByFullTextSearch(searchedText: "") {
+		id,
+    lastName,
+    firstName,
+    address,
+    coordinate {
+      id,
+      location
+    },
+    tags {
+      # id,
+      name
+    }
+  }
+}
 
 
 query findCoordinateByLocation{

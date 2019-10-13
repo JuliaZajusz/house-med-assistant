@@ -31,7 +31,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-  getPatientsAction: (tags) => dispatch(getPatientsAction(tags)),
+  getPatientsAction: (text, tags) => dispatch(getPatientsAction(text, tags)),
   addCoordinateToSalesmanSet: (coordinate) => dispatch(addCoordinateToSalesmanSet(coordinate))
 });
 
@@ -40,7 +40,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsLis
   const classes = useStyles();
 
   useEffect(() => {
-    props.getPatientsAction()
+    props.getPatientsAction("")
   }, []);
 
   const editPatient = (e, id) => {

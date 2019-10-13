@@ -3,7 +3,8 @@ type Query {
     patientByCoordinate(coordinateId: ID!): [Patient]
     findPatientsByLastNameAndFirstName(lastName: String, firstName: String): [Patient]
     findPatientsByTags(tags: [String]): [Patient]
-    findPatientsByNameRespectingTags(name: String, tags: [String]): [Patient]
+    findPatientsByTextRespectingTags(searchedText: String, tags: [String]): [Patient]
+    findPatientsByFullTextSearch(searchedText: String): [Patient]
 }
 
 type Patient {
