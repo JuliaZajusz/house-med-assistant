@@ -14,7 +14,7 @@ class PatientMutationResolver(private val patientRepository: PatientRepository,
                               val tagQueryResolver: TagQueryResolver,
                               val tagMutationResolver: TagMutationResolver) : GraphQLMutationResolver {
 
-    fun newPatient(lastName: String, firstName: String, location: List<Float>, tags: List<String>): Patient {
+    fun newPatient(lastName: String, firstName: String, address: String, location: List<Float>, tags: List<String>): Patient {
         val coordinate = coordinateMutationResolver.newCoordinate(location)
 
         val newTags: MutableList<Tag> = mutableListOf();
@@ -23,7 +23,7 @@ class PatientMutationResolver(private val patientRepository: PatientRepository,
             newTags.add(tag)
         }
 
-        val patient = Patient(lastName, firstName, coordinate, newTags)
+        val patient = Patient(lastName, firstName, address, coordinate, newTags)
         val existed = patientRepository.findOneByLastNameAndFirstNameAndCoordinate(lastName, firstName, coordinate);
         if (existed != null) {
             return existed

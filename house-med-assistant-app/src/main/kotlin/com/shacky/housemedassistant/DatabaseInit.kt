@@ -45,7 +45,7 @@ class DatabaseInit() {
 
         LOG.info("Initialize database with some data.")
 
-        patientMutationResolver.newPatient("Kowalski", "Jan", listOf(-0.1268194f, 51.5007292f), listOf())
+        patientMutationResolver.newPatient("Kowalski", "Jan", "", listOf(-0.1268194f, 51.5007292f), listOf())
         salesmanSetMutationResolver.newSalesmanSet(
                 listOf(Coordinate(listOf(2.3f, 2.4f)),
                         Coordinate(listOf(44f, 55.6f)),

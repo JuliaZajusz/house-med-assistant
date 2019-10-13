@@ -25,6 +25,7 @@ query pacjenci{
     id,
     lastName,
     firstName,
+    address,
     coordinate {
       id,
       location
@@ -69,10 +70,12 @@ mutation nowyKoordynat {
 
 #tworzenie nowego pacjenta
 mutation nowyPacjent{
-  newPatient(lastName: "Wieża", firstName: "Eifflea", location: [4.0, 5.6], tags: ["dr. Adamczyk", "Sektor A"]) {
+  newPatient(lastName: "Wieża", firstName: "Eifflea",
+  address: "", location: [4.0, 5.6], tags: ["dr. Adamczyk", "Sektor A"]) {
     id,
     lastName,
     firstName,
+    address,
     coordinate {
       id,
       location
@@ -137,6 +140,7 @@ query znajdzPacjentaPoNazwiskuIImieniu{
 		id,
     lastName,
     firstName,
+    address,
     coordinate {
       id,
       location
@@ -153,6 +157,24 @@ query znajdzPacjentowPoTagu{
 		id,
     lastName,
     firstName,
+    address,
+    coordinate {
+      id,
+      location
+    },
+    tags {
+      # id,
+      name
+    }
+  }
+}
+
+query znajdzPacjentowPoNazwieITagu{
+  findPatientsByNameRespectingTags(name: "a Eifflea", tags: ["Sektor A"]) {
+		id,
+    lastName,
+    firstName,
+    address,
     coordinate {
       id,
       location

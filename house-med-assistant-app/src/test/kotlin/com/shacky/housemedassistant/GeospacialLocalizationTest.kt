@@ -70,7 +70,7 @@ class GeospatialLiveTest {
             db = mongoClient!!.getDatabase("kotlin-graphql")
             collection = db!!.getCollection("patient")
         }
-        patientMutationResolver.newPatient("Kowalski", "Jan", listOf(-0.1268194f, 51.5007292f), listOf())
+        patientMutationResolver.newPatient("Kowalski", "Jan", "", listOf(-0.1268194f, 51.5007292f), listOf())
 
         salesmanSetMutationResolver.newSalesmanSetByDistance(6, listOf(
                 0.0f, 20.0f, 30.0f, 31.0f, 28.0f, 40.0f,
@@ -93,7 +93,7 @@ class GeospatialLiveTest {
 
     @Test
     fun givenNearbyLocation_whenSearchWithinCircleSphere_thenFound() {
-        val a = Patient("Westminster", "Londyn", Coordinate(listOf(-0.1435083f, 51.4990956f)), listOf())
+        val a = Patient("Westminster", "Londyn", "", Coordinate(listOf(-0.1435083f, 51.4990956f)), listOf())
         val distanceInRad = 5.0 / 6371
         val result = collection!!.find(Filters.geoWithinCenterSphere("coordinate.location", a.coordinate.location[0].toDouble(), a.coordinate.location[1].toDouble(), distanceInRad))
         assertNotNull(result.first())
