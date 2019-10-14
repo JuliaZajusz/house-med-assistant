@@ -11,11 +11,19 @@ import {addCoordinateToSalesmanSet} from "../actions/salesmanSetActions";
 
 
 const useStyles = makeStyles(theme => ({
+  side_panel__patients_list__container: {
+    // position: 'relative',
+    flex: "1 1 auto",
+    height: '0px',
+
+  },
   side_panel__patients_list: {
     background: "pink",
     padding: "5px",
     paddingBottom: 0,
-    flex: "1 1 auto",
+    height: '100%',
+    flexWrap: 'nowrap',
+    overflowY: 'scroll',
   },
   patient_paper: {
     background: "white",
@@ -56,62 +64,65 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsLis
   };
 
   return (
-    <Grid
-      item
-      container
-      direction="column"
-      justify="flex-start"
-      alignItems='stretch'
-      className={classes.side_panel__patients_list}
-    >
-      {props.patients && props.patients.map((patient) => {
-          return <Paper
-            key={patient.id}
-            className={classes.patient_paper}
-            onClick={() => {
-              props.addCoordinateToSalesmanSet(patient.coordinate.location)
-            }}
-          >
-            <Grid
-              container
-              direction="row"
-              justify="space-between"
+    <div
+      className={classes.side_panel__patients_list__container}>
+      <Grid
+        item
+        container
+        direction="column"
+        justify="flex-start"
+        alignItems='stretch'
+        className={classes.side_panel__patients_list}
+      >
+        {props.patients && props.patients.map((patient) => {
+            return <Paper
+              key={patient.id}
+              className={classes.patient_paper}
+              onClick={() => {
+                props.addCoordinateToSalesmanSet(patient.coordinate.location)
+              }}
             >
-              <h4 className={classes.patient_name}>
-              {patient.lastName + " " + patient.firstName}
-            </h4>
-              {/*<IconButton aria-label="edit" className={classes.margin}*/}
-              {/*            onClick={(e) => editPatient(e, patient.id)}>*/}
-              <Edit style={{color: "grey", cursor: "pointer"}} fontSize="small"
-                    onClick={(e) => editPatient(e, patient.id)}/>
-              {/*</IconButton>*/}
-            </Grid>
-            <p className={classes.paragraph}>
-              {patient.address}
-            </p>
-            <p className={classes.paragraph}>
-              {patient.coordinate.location[0]}, {patient.coordinate.location[1]}
-            </p>
-            {patient.tags.map((tag, tagIdx) => {
-              let backgroundColor = '#' + intToRGB(hashCode(tag.name));
-              return (
-                <Chip
-                  key={tagIdx}
-                  style={{
-                    // background: 'linear-gradient(to right bottom, #430089, #82ffa1)'
-                    background: backgroundColor,
-                    color: getContrastYIQ(backgroundColor),
-                    margin: '5px',
-                  }}
-                  label={tag.name}
-                  size="small"
-                />)
-            })}
-          </Paper>
+              <Grid
+                container
+                direction="row"
+                justify="space-between"
+              >
+                <h4 className={classes.patient_name}>
+                  {patient.lastName + " " + patient.firstName}
+                </h4>
+                {/*<IconButton aria-label="edit" className={classes.margin}*/}
+                {/*            onClick={(e) => editPatient(e, patient.id)}>*/}
+                <Edit style={{color: "grey", cursor: "pointer"}} fontSize="small"
+                      onClick={(e) => editPatient(e, patient.id)}/>
+                {/*</IconButton>*/}
+              </Grid>
+              <p className={classes.paragraph}>
+                {patient.address}
+              </p>
+              <p className={classes.paragraph}>
+                {patient.coordinate.location[0]}, {patient.coordinate.location[1]}
+              </p>
+              {patient.tags.map((tag, tagIdx) => {
+                let backgroundColor = '#' + intToRGB(hashCode(tag.name));
+                return (
+                  <Chip
+                    key={tagIdx}
+                    style={{
+                      // background: 'linear-gradient(to right bottom, #430089, #82ffa1)'
+                      background: backgroundColor,
+                      color: getContrastYIQ(backgroundColor),
+                      margin: '5px',
+                    }}
+                    label={tag.name}
+                    size="small"
+                  />)
+              })}
+            </Paper>
+          }
+        )
         }
-      )
-      }
-    </Grid>
+      </Grid>
+    </div>
   );
 })
 

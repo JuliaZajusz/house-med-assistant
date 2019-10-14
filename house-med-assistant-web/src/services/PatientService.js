@@ -140,7 +140,6 @@ export const postPatient = (patient) => {
   const firstName = patient.firstName;
   const address = patient.address;
   const location = JSON.stringify(patient.coordinate.location).replace(/\"([^(\")"]+)\":/g, "$1:");
-  ;
   const tags = patient.tags;
   return client
   .mutate({
@@ -173,7 +172,7 @@ export const postPatient = (patient) => {
 
 export const putPatient = (id, patient) => {
   //TODO
-}
+};
 
 export const deletePatient = (id) => {
   return client
