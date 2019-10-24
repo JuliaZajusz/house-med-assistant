@@ -122,11 +122,11 @@ class GeospatialLiveTest {
 
     @Test
     fun checkGetSalesmanSetByCoordinates() {
-        val salesmanSet = salesmanSetQueryResolver.getSalesmanSetByCoordinates(
-                listOf(Coordinate(listOf(2.3f, 2.4f)),
-                        Coordinate(listOf(44f, 55.6f)),
-                        Coordinate(listOf(0f, 0f)),
-                        Coordinate(listOf(1f, 1f)))
+        val salesmanSet = salesmanSetQueryResolver.getSalesmanSetByPatients(
+                listOf(Patient("", "", "", Coordinate(listOf(2.3f, 2.4f), "co-0"), listOf(), "pa-0"),
+                        Patient("", "", "", Coordinate(listOf(44f, 55.6f), "co-1"), listOf(), "pa-1"),
+                        Patient("", "", "", Coordinate(listOf(0f, 0f), "co-2"), listOf(), "pa-2"),
+                        Patient("", "", "", Coordinate(listOf(1f, 1f), "co-3"), listOf(), "pa-3"))
         )
 
         assertNotNull(salesmanSet)
@@ -148,32 +148,46 @@ class GeospatialLiveTest {
     @Test
     fun checkFindGreedyPath() {
         val salesmanSet = salesmanSetMutationResolver.newSalesmanSet(
-                listOf(Coordinate(listOf(2.3f, 2.4f)),
-                        Coordinate(listOf(44f, 55.6f)),
-                        Coordinate(listOf(0f, 0f)),
-                        Coordinate(listOf(1f, 1f))
+                listOf(Patient("", "", "", Coordinate(listOf(2.3f, 2.4f), "co-0"), listOf(), "pa-0"),
+                        Patient("", "", "", Coordinate(listOf(44f, 55.6f), "co-1"), listOf(), "pa-1"),
+                        Patient("", "", "", Coordinate(listOf(0f, 0f), "co-2"), listOf(), "pa-2"),
+                        Patient("", "", "", Coordinate(listOf(1f, 1f), "co-3"), listOf(), "pa-3")
                 )
         )
+
+
         val result1 = salesmanSetMutationResolver.findGreedyPath(salesmanSet!!.id)
-        val path1: Path = listOf(
-                coordinateQueryResolver.findOneByLocation(listOf(2.3f, 2.4f)),
-                coordinateQueryResolver.findOneByLocation(listOf(1f, 1f)),
-                coordinateQueryResolver.findOneByLocation(listOf(0f, 0f)),
-                coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
-        )?.let { Path(it as List<Coordinate>) }
-        path1.value = pathQueryResolver.calcPathValue(path1.places)
+        val path1: Path = Path(listOf(
+//                coordinateQueryResolver.findOneByLocation(listOf(2.3f, 2.4f)),
+//                coordinateQueryResolver.findOneByLocation(listOf(1f, 1f)),
+//                coordinateQueryResolver.findOneByLocation(listOf(0f, 0f)),
+//                coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
+
+                Patient("", "", "", Coordinate(listOf(2.3f, 2.4f), "co-0"), listOf(), "pa-0"),
+                Patient("", "", "", Coordinate(listOf(1f, 1f), "co-3"), listOf(), "pa-3"),
+                Patient("", "", "", Coordinate(listOf(0f, 0f), "co-2"), listOf(), "pa-2"),
+                Patient("", "", "", Coordinate(listOf(44f, 55.6f), "co-1"), listOf(), "pa-1")
+        ))
+        path1.value = pathQueryResolver.calcPathValue(path1.places.map { patient -> patient.coordinate })
 
         assertEquals(path1.places, result1.places)
         assertEquals(path1.value, result1.value)
 
-        val result2 = salesmanSetMutationResolver.findGreedyPath(salesmanSet!!.id, coordinateQueryResolver.findOneByLocation(listOf(0f, 0f))!!.id)
-        val path2: Path = listOf(
-                coordinateQueryResolver.findOneByLocation(listOf(0f, 0f)),
-                coordinateQueryResolver.findOneByLocation(listOf(1f, 1f)),
-                coordinateQueryResolver.findOneByLocation(listOf(2.3f, 2.4f)),
-                coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
-        )?.let { Path(it as List<Coordinate>) }
-        path2.value = pathQueryResolver.calcPathValue(path2.places)
+        val patient0 = Patient("", "", "", Coordinate(listOf(0f, 0f), "co-2"), listOf(), "pa-2")
+        val result2 = salesmanSetMutationResolver.findGreedyPath(salesmanSet!!.id, patient0.id)
+        val path2: Path = Path(listOf(
+//                coordinateQueryResolver.findOneByLocation(listOf(0f, 0f)),
+//                coordinateQueryResolver.findOneByLocation(listOf(1f, 1f)),
+//                coordinateQueryResolver.findOneByLocation(listOf(2.3f, 2.4f)),
+//                coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
+
+                Patient("", "", "", Coordinate(listOf(0f, 0f), "co-2"), listOf(), "pa-2"),
+                Patient("", "", "", Coordinate(listOf(1f, 1f), "co-3"), listOf(), "pa-3"),
+                Patient("", "", "", Coordinate(listOf(2.3f, 2.4f), "co-0"), listOf(), "pa-0"),
+                Patient("", "", "", Coordinate(listOf(44f, 55.6f), "co-1"), listOf(), "pa-1")
+
+        ))
+        path2.value = pathQueryResolver.calcPathValue(path2.places.map { patient -> patient.coordinate })
 
         assertEquals(path2.places, result2.places)
         assertEquals(path2.value, result2.value)
@@ -182,10 +196,10 @@ class GeospatialLiveTest {
     @Test
     fun findBestPathUsingGeneticAlgorythmTest() {
         val salesmanSet = salesmanSetMutationResolver.newSalesmanSet(
-                listOf(Coordinate(listOf(2.3f, 2.4f)),
-                        Coordinate(listOf(44f, 55.6f)),
-                        Coordinate(listOf(0f, 0f)),
-                        Coordinate(listOf(1f, 1f))
+                listOf(Patient("", "", "", Coordinate(listOf(2.3f, 2.4f)), listOf()),
+                        Patient("", "", "", Coordinate(listOf(44f, 55.6f)), listOf()),
+                        Patient("", "", "", Coordinate(listOf(0f, 0f)), listOf()),
+                        Patient("", "", "", Coordinate(listOf(1f, 1f)), listOf())
                 )
         )
         val result1 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
@@ -199,13 +213,17 @@ class GeospatialLiveTest {
         val result9 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
         val result10 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
 
-        val path1: Path = listOf(
-                coordinateQueryResolver.findOneByLocation(listOf(2.3f, 2.4f)),
-                coordinateQueryResolver.findOneByLocation(listOf(1f, 1f)),
-                coordinateQueryResolver.findOneByLocation(listOf(0f, 0f)),
-                coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
-        )?.let { Path(it as List<Coordinate>) }
-        path1.value = pathQueryResolver.calcPathValue(path1.places)
+        val path1: Path = Path(listOf(
+//                coordinateQueryResolver.findOneByLocation(listOf(2.3f, 2.4f)),
+//                coordinateQueryResolver.findOneByLocation(listOf(1f, 1f)),
+//                coordinateQueryResolver.findOneByLocation(listOf(0f, 0f)),
+//                coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
+                Patient("", "", "", Coordinate(listOf(2.3f, 2.4f)), listOf()),
+                Patient("", "", "", Coordinate(listOf(1f, 1f)), listOf()),
+                Patient("", "", "", Coordinate(listOf(0f, 0f)), listOf()),
+                Patient("", "", "", Coordinate(listOf(44f, 55.6f)), listOf())
+        ))
+        path1.value = pathQueryResolver.calcPathValue(path1.places.map { patient -> patient.coordinate })
 
         assertTrue(path1.value.toDouble() >= result1.value.toDouble())
         assertTrue(path1.value.toDouble() >= result2.value.toDouble())
@@ -222,10 +240,14 @@ class GeospatialLiveTest {
     @Test
     fun testMutate() {
         val path = pathMutationResolver.newPath(listOf(
-                Coordinate(listOf(2.3f, 2.4f)),
-                Coordinate(listOf(1f, 1f)),
-                Coordinate(listOf(0f, 0f)),
-                Coordinate(listOf(44f, 55.6f))
+//                Coordinate(listOf(2.3f, 2.4f)),
+//                Coordinate(listOf(1f, 1f)),
+//                Coordinate(listOf(0f, 0f)),
+//                Coordinate(listOf(44f, 55.6f))
+                Patient("", "", "", Coordinate(listOf(2.3f, 2.4f)), listOf()),
+                Patient("", "", "", Coordinate(listOf(1f, 1f)), listOf()),
+                Patient("", "", "", Coordinate(listOf(0f, 0f)), listOf()),
+                Patient("", "", "", Coordinate(listOf(44f, 55.6f)), listOf())
         ))
         val result = path?.let { salesmanSetMutationResolver.mutate(it, 100, 100) }
         assertEquals(path?.places!!.distinct().size, result?.places!!.distinct().size)
@@ -250,20 +272,20 @@ class GeospatialLiveTest {
     fun check_burma14_datasetGreedyValue() {
         val salesmanSet = salesmanSetMutationResolver.newSalesmanSet(
                 listOf(
-                        Coordinate(listOf(16.47f - 90.0f, 96.10f - 90.0f)),
-                        Coordinate(listOf(16.47f - 90.0f, 94.44f - 90.0f)),
-                        Coordinate(listOf(20.09f - 90.0f, 92.54f - 90.0f)),
-                        Coordinate(listOf(22.39f - 90.0f, 93.37f - 90.0f)),
-                        Coordinate(listOf(25.23f - 90.0f, 97.24f - 90.0f)),
-                        Coordinate(listOf(22.00f - 90.0f, 96.05f - 90.0f)),
-                        Coordinate(listOf(20.47f - 90.0f, 97.02f - 90.0f)),
-                        Coordinate(listOf(17.20f - 90.0f, 96.29f - 90.0f)),
-                        Coordinate(listOf(16.30f - 90.0f, 97.38f - 90.0f)),
-                        Coordinate(listOf(14.05f - 90.0f, 98.12f - 90.0f)),
-                        Coordinate(listOf(16.53f - 90.0f, 97.38f - 90.0f)),
-                        Coordinate(listOf(21.52f - 90.0f, 95.59f - 90.0f)),
-                        Coordinate(listOf(19.41f - 90.0f, 97.13f - 90.0f)),
-                        Coordinate(listOf(20.09f - 90.0f, 94.55f - 90.0f))
+                        Patient("", "", "", Coordinate(listOf(16.47f - 90.0f, 96.10f - 90.0f), "co-birma-1"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(16.47f - 90.0f, 94.44f - 90.0f), "co-birma-2"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(20.09f - 90.0f, 92.54f - 90.0f), "co-birma-3"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(22.39f - 90.0f, 93.37f - 90.0f), "co-birma-4"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(25.23f - 90.0f, 97.24f - 90.0f), "co-birma-5"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(22.00f - 90.0f, 96.05f - 90.0f), "co-birma-6"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(20.47f - 90.0f, 97.02f - 90.0f), "co-birma-7"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(17.20f - 90.0f, 96.29f - 90.0f), "co-birma-8"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(16.30f - 90.0f, 97.38f - 90.0f), "co-birma-9"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(14.05f - 90.0f, 98.12f - 90.0f), "co-birma-10"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(16.53f - 90.0f, 97.38f - 90.0f), "co-birma-11"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(21.52f - 90.0f, 95.59f - 90.0f), "co-birma-12"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(19.41f - 90.0f, 97.13f - 90.0f), "co-birma-13"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(20.09f - 90.0f, 94.55f - 90.0f), "co-birma-14"), listOf())
                 )
         )
 
@@ -294,20 +316,20 @@ class GeospatialLiveTest {
     fun check_burma14_dataseGenetictValue() {
         val salesmanSet = salesmanSetMutationResolver.newSalesmanSet(
                 listOf(
-                        Coordinate(listOf(16.47f - 90.0f, 96.10f - 90.0f)),
-                        Coordinate(listOf(16.47f - 90.0f, 94.44f - 90.0f)),
-                        Coordinate(listOf(20.09f - 90.0f, 92.54f - 90.0f)),
-                        Coordinate(listOf(22.39f - 90.0f, 93.37f - 90.0f)),
-                        Coordinate(listOf(25.23f - 90.0f, 97.24f - 90.0f)),
-                        Coordinate(listOf(22.00f - 90.0f, 96.05f - 90.0f)),
-                        Coordinate(listOf(20.47f - 90.0f, 97.02f - 90.0f)),
-                        Coordinate(listOf(17.20f - 90.0f, 96.29f - 90.0f)),
-                        Coordinate(listOf(16.30f - 90.0f, 97.38f - 90.0f)),
-                        Coordinate(listOf(14.05f - 90.0f, 98.12f - 90.0f)),
-                        Coordinate(listOf(16.53f - 90.0f, 97.38f - 90.0f)),
-                        Coordinate(listOf(21.52f - 90.0f, 95.59f - 90.0f)),
-                        Coordinate(listOf(19.41f - 90.0f, 97.13f - 90.0f)),
-                        Coordinate(listOf(20.09f - 90.0f, 94.55f - 90.0f))
+                        Patient("", "", "", Coordinate(listOf(16.47f - 90.0f, 96.10f - 90.0f), "co-birma-1"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(16.47f - 90.0f, 94.44f - 90.0f), "co-birma-2"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(20.09f - 90.0f, 92.54f - 90.0f), "co-birma-3"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(22.39f - 90.0f, 93.37f - 90.0f), "co-birma-4"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(25.23f - 90.0f, 97.24f - 90.0f), "co-birma-5"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(22.00f - 90.0f, 96.05f - 90.0f), "co-birma-6"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(20.47f - 90.0f, 97.02f - 90.0f), "co-birma-7"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(17.20f - 90.0f, 96.29f - 90.0f), "co-birma-8"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(16.30f - 90.0f, 97.38f - 90.0f), "co-birma-9"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(14.05f - 90.0f, 98.12f - 90.0f), "co-birma-10"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(16.53f - 90.0f, 97.38f - 90.0f), "co-birma-11"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(21.52f - 90.0f, 95.59f - 90.0f), "co-birma-12"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(19.41f - 90.0f, 97.13f - 90.0f), "co-birma-13"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(20.09f - 90.0f, 94.55f - 90.0f), "co-birma-14"), listOf())
                 )
         )
 

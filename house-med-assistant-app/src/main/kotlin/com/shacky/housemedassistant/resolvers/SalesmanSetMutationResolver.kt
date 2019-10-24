@@ -12,6 +12,7 @@ import kotlin.streams.asSequence
 class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSetRepository,
                                   val salesmanSetQueryResolver: SalesmanSetQueryResolver,
                                   val coordinateQueryResolver: CoordinateQueryResolver,
+                                  val distanceMutationResolver: DistanceMutationResolver,
                                   val distanceQueryResolver: DistanceQueryResolver,
                                   val pathQueryResolver: PathQueryResolver,
                                   val patientQueryResolver: PatientQueryResolver,
@@ -76,7 +77,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
             val long = 89.0f + i.toFloat() / numberOfCoordinates
             val lat = 89.0f + i.toFloat() / numberOfCoordinates
 //            patients.add(coordinateMutationResolver.newCoordinate(listOf(long, lat)))
-            patients.add(Patient(generateRandomString(5), generateRandomString(6), generateRandomString(7), Coordinate(listOf(long, lat)), listOf()))
+            patients.add(Patient(generateRandomString(5), generateRandomString(6), generateRandomString(7), Coordinate(listOf(long, lat), "coordinate-" + i), listOf(), "patient-" + i))
         }
         val newCoordinates = patients.map { patient -> patient.coordinate };
         val neighborhoodMatrix = createNeighborhoodMatrixByGivedDistances(newCoordinates, distances)
@@ -116,13 +117,15 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                     println("" + index + " " + coordinates.indexOf(item1) + " " + coordinates.indexOf(item2))
                     throw ArrayIndexOutOfBoundsException()
                 }
+
 //                neighborhoodMatrix.add(distanceMutationResolver.newDistance(item1.location, item2.location, distance))
-                val startCoordinateId = coordinateQueryResolver.findOneByLocation(item1.location)?.id
-                val endCoordinateId = coordinateQueryResolver.findOneByLocation(item2.location)?.id
-                if (startCoordinateId != null && endCoordinateId != null) {
-                    val element = Distance(startCoordinateId, endCoordinateId, distance)
-                    neighborhoodMatrix.add(element)
-                }
+                neighborhoodMatrix.add(distanceMutationResolver.newDistance(item1, item2, distance))
+//                val startCoordinateId = coordinateQueryResolver.findOneByLocation(item1.location)?.id
+//                val endCoordinateId = coordinateQueryResolver.findOneByLocation(item2.location)?.id
+//                if (startCoordinateId != null && endCoordinateId != null) {
+//                    val element = Distance(startCoordinateId, endCoordinateId, distance)
+//                    neighborhoodMatrix.add(element)
+//                }
             }
         }
         return neighborhoodMatrix
@@ -145,6 +148,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         return neighborhoodMatrix
     }
 
+    //findGreedyPath jest bardzo podobna, tzrab przerefaktorować
     fun findFirstPath(salesmanSet: SalesmanSet): Path {
         val visited: MutableList<String> = mutableListOf();
         val pathPlaces: MutableList<Patient> = mutableListOf();
@@ -155,13 +159,13 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
         if (places.isNotEmpty()) {
             pathPlaces.add(salesmanSet.places[startElementIndex])
-            visited.add(salesmanSet.places[startElementIndex].id)
+            visited.add(salesmanSet.places[startElementIndex].coordinate.id)
         }
 
         for (i in places.indices) {
             val startPlace = places[startElementIndex]
             val pathElement = neighborhoodMatrix.filter { distance ->
-                distance.startCoordinateId.equals(startPlace.id) && !visited.contains(distance.endCoordinateId)
+                distance.startCoordinateId.equals(startPlace.coordinate.id) && !visited.contains(distance.endCoordinateId)
             }.minBy { distance -> distance.value }
             if (pathElement != null) {
                 val secondPlace: Patient = places.first { patient -> patient.coordinate.id.equals(pathElement.endCoordinateId) }
@@ -175,7 +179,8 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         return path;
     }
 
-    fun findGreedyPath(id: String, startCoordinateId: String = ""): Path {
+    //findFirstPath jest bardzo podobna, tzrab przerefaktorować
+    fun findGreedyPath(id: String, startPatientId: String = ""): Path {
         val salesmanSet = salesmanSetRepository.findById(id);
         val visited: MutableList<String> = mutableListOf();
         val pathPlaces: MutableList<Patient> = mutableListOf();
@@ -185,20 +190,21 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
             val neighborhoodMatrix = salesmanSet.get().neighborhoodMatrix
             var startElement: Patient = places[0];
             var startElementIndex = 0;
-            if (startCoordinateId.isNotEmpty()) {
-                startElement = patientQueryResolver.patientByCoordinate(startCoordinateId).first()  //TODO, metoda zwraca listę, nie wiem czy powinna
+            if (startPatientId.isNotEmpty()) {
+//                startElement = patientQueryResolver.patientByCoordinate(startPatientId).first()  //TODO, metoda zwraca listę, nie wiem czy powinna
+                startElement = places.first { place -> place.id == startPatientId }
                 startElementIndex = places.indexOf(startElement)
             }
 
             if (places.isNotEmpty()) {
                 pathPlaces.add(salesmanSet.get().places[startElementIndex])
-                visited.add(salesmanSet.get().places[startElementIndex].id)
+                visited.add(salesmanSet.get().places[startElementIndex].coordinate.id)
             }
 
             for (i in places.indices) {
                 val startPlace = places[startElementIndex]
                 val pathElement = neighborhoodMatrix.filter { distance ->
-                    distance.startCoordinateId.equals(startPlace.id) && !visited.contains(distance.endCoordinateId)
+                    distance.startCoordinateId.equals(startPlace.coordinate.id) && !visited.contains(distance.endCoordinateId)
                 }.minBy { distance -> distance.value }
                 if (pathElement != null) {
                     val secondPlace: Patient = places.first { patient -> patient.coordinate.id.equals(pathElement.endCoordinateId) }

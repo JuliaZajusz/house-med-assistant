@@ -15,6 +15,7 @@ export const addPatientToSalesmanSet = (patient) => dispatch => {
 };
 
 export const setSalesmanSet = (salesmanSet) => dispatch => {
+  console.log("setSalesmanSet", salesmanSet);
   history.push({
     pathname: `/${(salesmanSet && salesmanSet.id) ? salesmanSet.id : ""}`
   });
@@ -26,7 +27,7 @@ export const setSalesmanSet = (salesmanSet) => dispatch => {
 
 export const addNewSalesmanSet = () => (dispatch, getState) => {
   const mapSalesmanSet = getState().salesmanSetReducer.mapSalesmanSet;
-  console.log("mapSalesmanSet", mapSalesmanSet);
+  console.log("addNewSalesmanSet mapSalesmanSet", mapSalesmanSet);
   postSalesmanSet(mapSalesmanSet)
     .then(response => {
       if (response.data.updateSalesmanSet) {
@@ -39,6 +40,7 @@ export const addNewSalesmanSet = () => (dispatch, getState) => {
 };
 
 const repeat = (set) => {
+  console.log("repeat", set)
   // history.push({
   //     pathname: `/${set.id}`
   // });

@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component
 class DistanceMutationResolver(private val distanceRepository: DistanceRepository,
                                val distanceQueryResolver: DistanceQueryResolver,
                                val coordinateMutationResolver: CoordinateMutationResolver) : GraphQLMutationResolver {
-    fun newDistance(start: List<Float>, end: List<Float>, value: Float? = null): Distance {
-        val startCoordinate: Coordinate = coordinateMutationResolver.newCoordinate(start)
-        val endCoordinate: Coordinate = coordinateMutationResolver.newCoordinate(end)
+    fun newDistance(startCoordinate: Coordinate, endCoordinate: Coordinate, value: Float? = null): Distance {
+//        val startCoordinate: Coordinate = coordinateMutationResolver.newCoordinate(start)
+//        val endCoordinate: Coordinate = coordinateMutationResolver.newCoordinate(end)
         var calculatedValue: Float;
         if (value != null) {
             calculatedValue = value
