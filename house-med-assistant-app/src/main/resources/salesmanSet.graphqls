@@ -10,14 +10,14 @@ type Distance {
 
 type SalesmanSet {
     id: ID!
-    places: [Coordinate]
+    places: [Patient]
     paths: [Path]
     neighborhoodMatrix: [Distance]
 }
 
 input SalesmanSetInput {
     id: ID!
-    places: [CoordinateInput]
+    places: [PatientInput]
     paths: [PathInput]
     neighborhoodMatrix: [DistanceInput]
 }
@@ -25,7 +25,7 @@ input SalesmanSetInput {
 scalar ObjectScalar
 
 extend type Mutation {
-    newSalesmanSet(coordinates: [CoordinateInput]) : SalesmanSet!
+    newSalesmanSet(patients: [PatientInput]) : SalesmanSet!
     deleteSalesmanSet(id: ID!) : Boolean
     upgradeSalesmanSet(id: ID, timeInSec: Float, populationSize: Float!, parentPopulationSize: Float!): SalesmanSet
     doSomethingElse: Float
@@ -34,7 +34,7 @@ extend type Mutation {
 
 input PathInput {
     id: ID
-    places: [CoordinateInput]
+    places: [PatientInput]
     value: Float
 }
 

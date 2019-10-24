@@ -16,6 +16,15 @@ type Patient {
     tags: [Tag]
 }
 
+input PatientInput {
+    id: ID!
+    lastName: String
+    firstName: String
+    address: String
+    coordinate: CoordinateInput
+    tags: [String]
+}
+
 type Mutation {
     newPatient(lastName: String, firstName: String, address: String, location: [Float], tags: [String]) : Patient!
     deletePatient(id: ID!) : Boolean

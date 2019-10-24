@@ -1,6 +1,7 @@
 package com.shacky.housemedassistant
 
 import com.shacky.housemedassistant.entity.Coordinate
+import com.shacky.housemedassistant.entity.Patient
 import com.shacky.housemedassistant.repository.PatientRepository
 import com.shacky.housemedassistant.resolvers.*
 import org.slf4j.LoggerFactory
@@ -47,10 +48,10 @@ class DatabaseInit() {
 
         patientMutationResolver.newPatient("Kowalski", "Jan", "", listOf(-0.1268194f, 51.5007292f), listOf("Sektor A"))
         salesmanSetMutationResolver.newSalesmanSet(
-                listOf(Coordinate(listOf(2.3f, 2.4f)),
-                        Coordinate(listOf(44f, 55.6f)),
-                        Coordinate(listOf(0f, 0f)),
-                        Coordinate(listOf(1f, 1f))
+                listOf(Patient("", "", "", Coordinate(listOf(2.3f, 2.4f)), listOf()),
+                        Patient("", "", "", Coordinate(listOf(44f, 55.6f)), listOf()),
+                        Patient("", "", "", Coordinate(listOf(0f, 0f)), listOf()),
+                        Patient("", "", "", Coordinate(listOf(1f, 1f)), listOf())
                 )
         )
 

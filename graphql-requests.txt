@@ -1,209 +1,192 @@
-mutation nowyTag{
+mutation nowyTag {
   newTag(name: "Psie Pole") {
-  	id,
-  	name
-  }
-}
-
-mutation zmienNazweTaga{
-  updateTag(id: "1770f3f3-6cb1-4789-83ff-51c62845da5b", name: "Klecina") {
-  	id,
-  	name
-  }
-}
-
-query tagi{
-  tags {
-    id,
+    id
     name
   }
 }
 
-# wyciąganie wszystkich pacjentów z ich lokalizacjami z bazy
-query pacjenci{
+mutation zmienNazweTaga {
+  updateTag(id: "1770f3f3-6cb1-4789-83ff-51c62845da5b", name: "Klecina") {
+    id
+    name
+  }
+}
+
+query tagi {
+  tags {
+    id
+    name
+  }
+}
+
+query pacjenci {
   patients {
-    id,
-    lastName,
-    firstName,
-    address,
+    id
+    lastName
+    firstName
+    address
     coordinate {
-      id,
+      id
       location
-    },
+    }
     tags {
-      # id,
       name
     }
   }
 }
 
-#wyciaganie wszystkich koordynatow
-query koordynaty{
+query koordynaty {
   coordinates {
-    id,
+    id
     location
   }
 }
 
-
-#wyciaganie wszystkich scieżek
-query sciezki{
-	paths {
-  places {
-    id,
-    location
-  }
+query sciezki {
+  paths {
+    places {
+      id
+      firstName
+      lastName
+      address
+      coordinate {
+        id
+        location
+      }
+      tags {
+        name
+      }
+    }
     value
   }
 }
 
-#tworzenie nowego koordynatu
 mutation nowyKoordynat {
-    newCoordinate(
-    	location: [51.0656419, 16.988788]
-    ){
-        id, location
-    }
-}
-
-
-
-#tworzenie nowego pacjenta
-mutation nowyPacjent{
-  newPatient(lastName: "Wieża", firstName: "Eifflea",
-  address: "", location: [4.0, 5.6], tags: ["dr. Adamczyk", "Sektor A"]) {
-    id,
-    lastName,
-    firstName,
-    address,
-    coordinate {
-      id,
-      location
-    },
-        tags {
-      id,
-      name
-    }
-  }
-}
-
-
-
-
-#tworzenie nowej scieżki
-mutation nowaSciezka{
-  newPath(places: [      {
-        id: "d3535453-1975-4b4e-a42e-30aaf976dac1",
-        location: [
-          2,
-          2
-        ]
-      },
-      {
-        id: "00abfc6f-76d5-4509-9705-89bdbcf018eb",
-        location: [
-          4,
-          5.6
-        ]
-      }]) {
-  places {
-    id,
+  newCoordinate(location: [51.0656419, 16.988788]) {
+    id
     location
   }
-  }
 }
 
-#tworzenie nowej scieżki bez wczesniej utworzonych punktow
-mutation nowaSciezka2{
-  newPath(places: [      {
-        location: [
-          2.3,
-          2.4
-        ]
-      },
-      {
-        location: [
-          44,
-          55.6
-        ]
-      }]) {
-  places {
-    id,
-    location
-  }
-  }
-}
-
-
-query znajdzPacjentaPoNazwiskuIImieniu{
-  findPatientsByLastNameAndFirstName(lastName:"Kowalski", firstName: "Jan") {
-		id,
-    lastName,
-    firstName,
-    address,
+mutation nowyPacjent {
+  newPatient(lastName: "Wieża", firstName: "Eifflea", address: "", location: [4.0, 5.6], tags: ["dr. Adamczyk", "Sektor A"]) {
+    id
+    lastName
+    firstName
+    address
     coordinate {
-      id,
+      id
       location
-    },
+    }
     tags {
-      # id,
+      id
       name
     }
   }
 }
 
-query znajdzPacjentowPoTagu{
+mutation nowaSciezka {
+  newPath(places: [{id: "dadr", firstName: "", lastName: "", address: "", coordinate: {id: "d3535453-1975-4b4e-a42e-30aaf976dac1", location: [2, 2]}, tags: []}, {id: "ffsfw", firstName: "", lastName: "", address: "", coordinate: {id: "00abfc6f-76d5-4509-9705-89bdbcf018eb", location: [4, 5.6]}, tags: []}]) {
+    places {
+      id
+      lastName
+      firstName
+      address
+      coordinate {
+        id
+        location
+      }
+      tags {
+        id
+        name
+      }
+    }
+  }
+}
+
+mutation nowaSciezka2 {
+  newPath(places: [{id: "ald", firstName: "", lastName: "", address: "", coordinate: {location: [2.3, 2.4]}, tags: []}, {id: "ajld", firstName: "", lastName: "", address: "", coordinate: {location: [44, 55.6]}, tags: []}]) {
+    places {
+      id
+      firstName
+      lastName
+      address
+      coordinate {
+        id
+        location
+      }
+      tags {
+        name
+      }
+    }
+  }
+}
+
+query znajdzPacjentaPoNazwiskuIImieniu {
+  findPatientsByLastNameAndFirstName(lastName: "Kowalski", firstName: "Jan") {
+    id
+    lastName
+    firstName
+    address
+    coordinate {
+      id
+      location
+    }
+    tags {
+      name
+    }
+  }
+}
+
+query znajdzPacjentowPoTagu {
   findPatientsByTags(tags: ["Sektor A"]) {
-		id,
-    lastName,
-    firstName,
-    address,
+    id
+    lastName
+    firstName
+    address
     coordinate {
-      id,
+      id
       location
-    },
+    }
     tags {
-      # id,
       name
     }
   }
 }
 
-query znajdzPacjentowPoNazwieITagu{
+query znajdzPacjentowPoNazwieITagu {
   findPatientsByTextRespectingTags(searchedText: "a Eifflea", tags: ["Sektor A"]) {
-		id,
-    lastName,
-    firstName,
-    address,
+    id
+    lastName
+    firstName
+    address
     coordinate {
-      id,
+      id
       location
-    },
+    }
     tags {
-      # id,
       name
     }
   }
 }
 
-query znajdzPacjentowPoNazwieITagu2{
+query znajdzPacjentowPoNazwieITagu2 {
   findPatientsByTextRespectingTags(searchedText: "", tags: ["Sektor A"]) {
-		id,
-    lastName,
-    firstName,
-    address,
+    id
+    lastName
+    firstName
+    address
     coordinate {
-      id,
+      id
       location
-    },
+    }
     tags {
-      # id,
       name
     }
   }
 }
 
-query znajdzPacjentowPoNazwieITagu3{
+query znajdzPacjentowPoNazwieITagu3 {
   findPatientsByTextRespectingTags(searchedText: "Wie", tags: ["Sektor A"]) {
     id
     lastName
@@ -219,462 +202,329 @@ query znajdzPacjentowPoNazwieITagu3{
   }
 }
 
-query znajdzPacjentowPoNazwieITagu4{
+query znajdzPacjentowPoNazwieITagu4 {
   findPatientsByTextRespectingTags(searchedText: "", tags: []) {
-		id,
-    lastName,
-    firstName,
-    address,
+    id
+    lastName
+    firstName
+    address
     coordinate {
-      id,
+      id
       location
-    },
+    }
     tags {
-      # id,
       name
     }
   }
 }
 
-query znajdzPacjentowPoNiepelnejNazwieLubAdresie{
+query znajdzPacjentowPoNiepelnejNazwieLubAdresie {
   findPatientsByFullTextSearch(searchedText: "a Eifflea") {
-		id,
-    lastName,
-    firstName,
-    address,
+    id
+    lastName
+    firstName
+    address
     coordinate {
-      id,
+      id
       location
-    },
+    }
     tags {
-      # id,
       name
     }
   }
 }
 
-query znajdzPacjentowPoNiepelnejNazwieLubAdresie2{
+query znajdzPacjentowPoNiepelnejNazwieLubAdresie2 {
   findPatientsByFullTextSearch(searchedText: "") {
-		id,
-    lastName,
-    firstName,
-    address,
+    id
+    lastName
+    firstName
+    address
     coordinate {
-      id,
+      id
       location
-    },
+    }
     tags {
-      # id,
       name
     }
   }
 }
 
-
-
-
-
-query findCoordinateByLocation{
+query findCoordinateByLocation {
   findOneByLocation(location: [-0.1268194, 51.50073]) {
-    id,
+    id
     location
   }
 }
 
-
 query getAllSalesmanSets {
   salesmanSets {
-    id,
+    id
     places {
-      id,
-      location
-    }
-  paths {
-    places {
-      id,
-      location
-    },
-    value
-  }
-    neighborhoodMatrix {
-      startCoordinateId,
-      endCoordinateId,
-      value
-    }
-  }
-}
-
-
-mutation newSalesmanSet {
-  newSalesmanSet(
-    coordinates: [
-    {
-       location: [
-          2.3,
-          2.4
-        ]
-      },
-      {
-        location: [
-          44,
-          55.6
-        ]
-      },
-          {
-       location: [
-          0,
-          0
-        ]
-      },
-      {
-        location: [
-          1,
-          1
-        ]
-    }
-  ]
-  ) {
-    id,
-    places {
-      id,
-      location
+      id
+      firstName
+      lastName
+      address
+      coordinate {
+        id
+        location
+      }
+      tags {
+        name
+      }
     }
     paths {
-      id,
-    places {
-      id,
-      location
-    },
-    value
-  }
-
+      places {
+        id
+        firstName
+        lastName
+        address
+        coordinate {
+          id
+          location
+        }
+        tags {
+          name
+        }
+      }
+      value
+    }
     neighborhoodMatrix {
-      startCoordinateId,
-      endCoordinateId,
+      startCoordinateId
+      endCoordinateId
       value
     }
   }
 }
 
-
-
-
-mutation newSalesmanSet2 {
-                    newSalesmanSet(
-                        coordinates: [{location:[18.33,53.01]},{location:[18.77,47.92]},{location:[16.08,50.18]}]
-                    ) {
-                        id,
-                        places {
-                            id,
-                            location
-                        }
-                        paths {
-                          id,
-                            places {
-                                id,
-                                location
-                            },
-                            value
-                        }
-                        neighborhoodMatrix {
-                            startCoordinateId,
-                            endCoordinateId,
-                            value
-                        }
-                    }
-                }
-
-mutation upgradeSalesmanSet {
-  upgradeSalesmanSet(
-    id: "483c545c-4d70-497a-82f1-d90f8b0b6774",
-    timeInSec: 5,
-    populationSize: 20,
-    parentPopulationSize: 20
-  )  {
-    id,
+mutation newSalesmanSet {
+  newSalesmanSet(patients: [{id: "sfff", lastName: "Karenina", firstName: "Anna", address: "albania", coordinate: {location: [2.3, 2.4]}, tags: []}, {id: "sffdf", lastName: "A", firstName: "B", address: "C", coordinate: {location: [44, 55.6]}, tags: []}, {id: "sffsff", lastName: "D", firstName: "E", address: "F", coordinate: {location: [0, 0]}, tags: []}, {id: "sffwarf", lastName: "G", firstName: "H", address: "I", coordinate: {location: [1, 1]}, tags: []}]) {
+    id
     places {
-      id,
-      location
+      id
+      firstName
+      lastName
+      address
+      coordinate {
+        id
+        location
+      }
+      tags {
+        name
+      }
     }
     paths {
       id
-    places {
-      id,
-      location
-    },
-    value
-  }
-
+      places {
+        id
+        firstName
+        lastName
+        address
+        coordinate {
+          id
+          location
+        }
+        tags {
+          name
+        }
+      }
+      value
+    }
     neighborhoodMatrix {
-      startCoordinateId,
-      endCoordinateId,
+      startCoordinateId
+      endCoordinateId
       value
     }
   }
 }
 
-
-mutation updateSalesmanSet {
-  updateSalesmanSet(
-    salesmanSet: {
-    id: "483c545c-4d70-497a-82f1-d90f8b0b6774",
-      places: [
-        {
-          id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
-          location: [
-            18.33,
-            53.01
-          ]
-        },
-        {
-          id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
-          location: [
-            18.77,
-            47.92
-          ]
-        },
-        {
-          id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
-          location: [
-            16.08,
-            50.18
-          ]
-        }
-      ],
-      paths: [
-        {
-          places: [
-            {
-              id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
-              location: [
-                18.33,
-                53.01
-              ]
-            },
-            {
-              id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
-              location: [
-                16.08,
-                50.18
-              ]
-            },
-            {
-              id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
-              location: [
-                18.77,
-                47.92
-              ]
-            }
-          ],
-          value: 1236.4390869140625
-        },
-        {
-          places: [
-            {
-              id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
-              location: [
-                18.33,
-                53.01
-              ]
-            },
-            {
-              id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
-              location: [
-                16.08,
-                50.18
-              ]
-            },
-            {
-              id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
-              location: [
-                18.77,
-                47.92
-              ]
-            }
-          ],
-          value: 1236.4390869140625
-        }
-      ],
-      neighborhoodMatrix: [
-        {
-          startCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
-          endCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
-          value: 0
-        },
-        {
-          startCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
-          endCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
-          value: 566.8353
-        },
-        {
-          startCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
-          endCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
-          value: 350.9272
-        },
-        {
-          startCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
-          endCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
-          value: 566.8353
-        },
-        {
-          startCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
-          endCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
-          value: 0
-        },
-        {
-          startCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
-          endCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
-          value: 318.67657
-        },
-        {
-          startCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
-          endCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
-          value: 350.9272
-        },
-        {
-          startCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
-          endCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
-          value: 318.67657
-        },
-        {
-          startCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
-          endCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
-          value: 0
-        }
-      ]
-    }
-  )
-  {
-       id,
+mutation newSalesmanSet2 {
+  newSalesmanSet(patients: [{id: "gdgf", lastName: "G", firstName: "H", address: "I", coordinate: {location: [18.33, 53.01]}, tags: []}, {id: "sffwsgsarf", lastName: "G", firstName: "H", address: "I", coordinate: {location: [18.77, 47.92]}, tags: []}, {id: "siut", lastName: "G", firstName: "H", address: "I", coordinate: {location: [16.08, 50.18]}, tags: []}]) {
+    id
     places {
-      id,
-      location
+      id
+      firstName
+      lastName
+      address
+      coordinate {
+        id
+        location
+      }
+      tags {
+        name
+      }
     }
     paths {
-id
-    places {
-      id,
-      location
-    },
-    value
-  }
-
+      id
+      places {
+        id
+        firstName
+        lastName
+        address
+        coordinate {
+          id
+          location
+        }
+        tags {
+          name
+        }
+      }
+      value
+    }
     neighborhoodMatrix {
-      startCoordinateId,
-      endCoordinateId,
+      startCoordinateId
+      endCoordinateId
       value
     }
   }
 }
 
-
-mutation updateSalesmanSet2 {
-  updateSalesmanSet(
-    salesmanSet: {
-    id: "483c545c--497a-82f1-d90f8b0b6774",
-      places: [],
-      paths: [],
-      neighborhoodMatrix: []
+mutation upgradeSalesmanSet {
+  upgradeSalesmanSet(id: "483c545c-4d70-497a-82f1-d90f8b0b6774", timeInSec: 5, populationSize: 20, parentPopulationSize: 20) {
+    id
+    places {
+      id
+      firstName
+      lastName
+      address
+      coordinate {
+        id
+        location
+      }
+      tags {
+        name
+      }
     }
-  )
-  {
-       id
+    paths {
+      id
+      places {
+        id
+        firstName
+        lastName
+        address
+        coordinate {
+          id
+          location
+        }
+        tags {
+          name
+        }
+      }
+      value
+    }
+    neighborhoodMatrix {
+      startCoordinateId
+      endCoordinateId
+      value
+    }
   }
 }
 
+mutation updateSalesmanSet {
+  updateSalesmanSet(salesmanSet: {id: "64166d5a-d1b3-4027-9bba-ce8d43a3ef98", places: [{id: "sigtut", lastName: "", firstName: "", address: "", coordinate: {id: "1e6a5964-cfde-4aae-824d-9558faf2d30f", location: [18.33, 53.01]}, tags: []}, {id: "siuudtt", lastName: "", firstName: "", address: "", coordinate: {id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a", location: [18.77, 47.92]}, tags: []}, {id: "ufl", lastName: "", firstName: "", address: "", coordinate: {id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", location: [16.08, 50.18]}, tags: []}], paths: [{places: [{id: "sigtut", lastName: "", firstName: "", address: "", coordinate: {id: "1e6a5964-cfde-4aae-824d-9558faf2d30f", location: [18.33, 53.01]}, tags: []}, {id: "ufl", lastName: "", firstName: "", address: "", coordinate: {id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", location: [16.08, 50.18]}, tags: []}, {id: "siuudtt", lastName: "", firstName: "", address: "", coordinate: {id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a", location: [18.77, 47.92]}, tags: []}], value: 1236.4390869140625}, {places: [{id: "sigtut", lastName: "", firstName: "", address: "", coordinate: {id: "1e6a5964-cfde-4aae-824d-9558faf2d30f", location: [18.33, 53.01]}, tags: []}, {id: "ufl", lastName: "", firstName: "", address: "", coordinate: {id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", location: [16.08, 50.18]}, tags: []}, {id: "siuudtt", lastName: "", firstName: "", address: "", coordinate: {id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a", location: [18.77, 47.92]}, tags: []}], value: 1236.4390869140625}], neighborhoodMatrix: [{startCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f", endCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f", value: 0}, {startCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f", endCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a", value: 566.8353}, {startCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f", endCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", value: 350.9272}, {startCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a", endCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f", value: 566.8353}, {startCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a", endCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a", value: 0}, {startCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a", endCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", value: 318.67657}, {startCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", endCoordinateId: "1e6a5964-cfde-4aae-824d-9558faf2d30f", value: 350.9272}, {startCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", endCoordinateId: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a", value: 318.67657}, {startCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", endCoordinateId: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", value: 0}]}) {
+    id
+    places {
+      id
+      firstName
+      lastName
+      address
+      coordinate {
+        id
+        location
+      }
+      tags {
+        name
+      }
+    }
+    paths {
+      id
+      places {
+        id
+        firstName
+        lastName
+        address
+        coordinate {
+          id
+          location
+        }
+        tags {
+          name
+        }
+      }
+      value
+    }
+    neighborhoodMatrix {
+      startCoordinateId
+      endCoordinateId
+      value
+    }
+  }
+}
 
-
+mutation updateSalesmanSet2 {
+  updateSalesmanSet(salesmanSet: {id: "483c545c--497a-82f1-d90f8b0b6774", places: [], paths: [], neighborhoodMatrix: []}) {
+    id
+  }
+}
 
 mutation updateSalesmanSet3 {
   updateSalesmanSet(
     salesmanSet: {
-    id: "ccbceca5-0578-4fa3-881d-31109b1eec54",
-      places: [
-                    {
-              id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
-              location: [
-                18.33,
-                53.01
-              ]
-            },
-            {
-              id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
-              location: [
-                16.08,
-                50.18
-              ]
-            },
-            {
-              id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
-              location: [
-                18.77,
-                47.92
-              ]
-            },
-            {
-      id: "26014f50-fbed-4d94-b375-6aae8cf37b08",
-      location: [
-        16.988789,
-        51.065643
-      ]
-    }
-      ],
-      paths: [
-        {
-          places: [
-            {
-              id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
-              location: [
-                18.33,
-                53.01
-              ]
-            },
-            {
-              id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6",
-              location: [
-                16.08,
-                50.18
-              ]
-            },
-            {
-              id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a",
-              location: [
-                18.77,
-                47.92
-              ]
-            },
-            {
-      id: "26014f50-fbed-4d94-b375-6aae8cf37b08",
-      location: [
-        16.988789,
-        51.065643
-      ]
-    }
-          ],
-          value: 1236.4390869140625
-        }
-      ],
-      neighborhoodMatrix: []
-    }
-  )
-  {
-       id,
+      id: "64166d5a-d1b3-4027-9bba-ce8d43a3ef98",
+      places: [{
+        id: "12",
+        lastName: "",
+        firstName: "",
+        address: "",
+        coordinate: {
+          id: "1e6a5964-cfde-4aae-824d-9558faf2d30f",
+          location: [18.33, 53.01]
+        },
+        tags: []
+      }, {
+        id: "12f",lastName: "", firstName: "", address: "", coordinate: {id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", location: [16.08, 50.18]}, tags: []}, {
+          id: "142", lastName: "", firstName: "", address: "", coordinate: {id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a", location: [18.77, 47.92]}, tags: []}, {
+          id: "162", lastName: "", firstName: "", address: "", coordinate: {id: "26014f50-fbed-4d94-b375-6aae8cf37b08", location: [16.988789, 51.065643]}, tags: []}],
+      paths: [{places: [{
+        id: "125", lastName: "", firstName: "", address: "", coordinate: {id: "1e6a5964-cfde-4aae-824d-9558faf2d30f", location: [18.33, 53.01]}, tags: []}, {
+        id: "1632",lastName: "", firstName: "", address: "", coordinate: {id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", location: [16.08, 50.18]}, tags: []}, {
+          id: "112",lastName: "", firstName: "", address: "", coordinate: {id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a", location: [18.77, 47.92]}, tags: []}, {
+          id: "1232", lastName: "", firstName: "", address: "", coordinate: {id: "26014f50-fbed-4d94-b375-6aae8cf37b08", location: [16.988789, 51.065643]}, tags: []}],
+        value: 1236.4390869140625}], neighborhoodMatrix: []}) {
+    id
     places {
-      id,
-      location
+      id
+      firstName
+      lastName
+      address
+      coordinate {
+        id
+        location
+      }
+      tags {
+        name
+      }
     }
     paths {
-      id,
-    places {
-      id,
-      location
-    },
-    value
-  }
-
+      id
+      places {
+        id
+        firstName
+        lastName
+        address
+        coordinate {
+          id
+          location
+        }
+        tags {
+          name
+        }
+      }
+      value
+    }
     neighborhoodMatrix {
-      startCoordinateId,
-      endCoordinateId,
+      startCoordinateId
+      endCoordinateId
       value
     }
   }

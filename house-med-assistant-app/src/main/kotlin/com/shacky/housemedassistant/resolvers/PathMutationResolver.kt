@@ -1,9 +1,8 @@
 package com.shacky.housemedassistant.resolvers
 
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
-import com.shacky.housemedassistant.entity.Coordinate
-import com.shacky.housemedassistant.entity.Distance
 import com.shacky.housemedassistant.entity.Path
+import com.shacky.housemedassistant.entity.Patient
 import com.shacky.housemedassistant.repository.PathRepository
 import org.springframework.stereotype.Component
 import java.util.*
@@ -16,22 +15,18 @@ class PathMutationResolver(private val pathRepository: PathRepository,
 //                           val distanceMutationResolver: DistanceMutationResolver,
 //                           val distanceQueryResolver: DistanceQueryResolver
 ) : GraphQLMutationResolver {
-    fun newPath(coordinates: List<Coordinate>): Path? { //TODO dbanie o niedublowanie się koordynatów powinno być w coordinateMutationResolver.newCoordinate()
-        //TODO poza tym, ze należy usunąć stąd dodawanie koordynatów, to nie ma sensu.
-        val newCoordinates: MutableList<Coordinate> = mutableListOf();
-        for (item in coordinates) {
-            if (!item.id.isEmpty()) {
-//                try {
-                val itemById = coordinateQueryResolver.findById(item.id)
-                newCoordinates.add(itemById)
-//                } catch (e: NoSuchElementException) {
-//                    return null
-//                }
-            } else {
-                newCoordinates.add(coordinateMutationResolver.newCoordinate(item.location))
-            }
-        }
-        val path = Path(newCoordinates)
+    fun newPath(patients: List<Patient>): Path? { //TODO dbanie o niedublowanie się koordynatów powinno być w coordinateMutationResolver.newCoordinate()
+//        //TODO poza tym, ze należy usunąć stąd dodawanie koordynatów, to nie ma sensu.
+//        val newCoordinates: MutableList<Coordinate> = mutableListOf();
+//        for (item in patients) {
+//            if (!item.id.isEmpty()) {
+//                val itemById = coordinateQueryResolver.findById(item.id)
+//                newCoordinates.add(itemById)
+//            } else {
+//                newCoordinates.add(coordinateMutationResolver.newCoordinate(item.location))
+//            }
+//        }
+        val path = Path(patients, pathQueryResolver.calcPathValue(patients.map { patient -> patient.coordinate }))
         path.id = UUID.randomUUID().toString()
         pathRepository.save(path)
         return path
@@ -55,38 +50,13 @@ class PathMutationResolver(private val pathRepository: PathRepository,
         return path.get()
     }
 
-    fun updatePath(id: String, places: List<Coordinate>): Path {
+    fun updatePath(id: String, places: List<Patient>): Path {
         val path = pathRepository.findById(id)
         path.ifPresent {
             it.places = places
-            it.value = pathQueryResolver.calcPathValue(places)
+            it.value = pathQueryResolver.calcPathValue(places.map { patient -> patient.coordinate })
             pathRepository.save(it)
         }
         return path.get()
-    }
-
-//    fun calcPathValue(places: List<Coordinate>): Float {
-//        var value = 0.0;
-//        for (i in places.indices) {
-//            if (places.size - 1 > i) {
-////                value += distanceMutationResolver.getOrCreateDistanceByCoordinates(places[i], places[i + 1]).value
-//                val startCoordinate = places[i]
-//                val endCoordinate = places[i + 1]
-//                value += distanceQueryResolver.getDistanceByCoordinates(startCoordinate, endCoordinate)
-//                        ?: Distance(startCoordinate.id, endCoordinate.id, distanceQueryResolver.findDistanceBetweenCoordinates(startCoordinate, endCoordinate).toFloat())
-//            } else {
-////                value += distanceMutationResolver.getOrCreateDistanceByCoordinates(places[i], places[0]).value
-//                val startCoordinate = places[i]
-//                val endCoordinate = places[0]
-//                value += distanceQueryResolver.getDistanceByCoordinates(startCoordinate, endCoordinate)
-//                        ?: Distance(startCoordinate.id, endCoordinate.id, distanceQueryResolver.findDistanceBetweenCoordinates(startCoordinate, endCoordinate).toFloat())
-//
-//            }
-//        }
-//        return value.toFloat()
-//    }
-
-    private operator fun Double.plusAssign(distance: Distance) {
-
     }
 }

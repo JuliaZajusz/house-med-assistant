@@ -1,39 +1,36 @@
 package com.shacky.housemedassistant.resolvers
 
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
-import com.shacky.housemedassistant.entity.Coordinate
-import com.shacky.housemedassistant.entity.Distance
-import com.shacky.housemedassistant.entity.Path
-import com.shacky.housemedassistant.entity.SalesmanSet
+import com.shacky.housemedassistant.entity.*
 import com.shacky.housemedassistant.repository.SalesmanSetRepository
 import org.springframework.stereotype.Component
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
+import kotlin.streams.asSequence
 
 @Component
 class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSetRepository,
                                   val salesmanSetQueryResolver: SalesmanSetQueryResolver,
-//                                  val coordinateMutationResolver: CoordinateMutationResolver,
                                   val coordinateQueryResolver: CoordinateQueryResolver,
                                   val distanceQueryResolver: DistanceQueryResolver,
-//                                  val distanceMutationResolver: DistanceMutationResolver,
-//                                  val pathMutationResolver: PathMutationResolver
-                                  val pathQueryResolver: PathQueryResolver
+                                  val pathQueryResolver: PathQueryResolver,
+                                  val patientQueryResolver: PatientQueryResolver
 ) : GraphQLMutationResolver {
-    fun newSalesmanSet(coordinates: List<Coordinate>): SalesmanSet? {
-        var newCoordinates: MutableList<Coordinate> = mutableListOf();
-        for (item in coordinates) {
-            if (!item.id.isEmpty()) {
-                newCoordinates.add(item)
-            } else {
-//                newCoordinates.add(coordinateMutationResolver.newCoordinate(item.location))
-                newCoordinates.add(Coordinate(item.location))
-            }
-        }
-        var salesmanSet = salesmanSetQueryResolver.getSalesmanSetByCoordinates(newCoordinates)
+    fun newSalesmanSet(patients: List<Patient>): SalesmanSet? {
+//        var newCoordinates: MutableList<Patient> = mutableListOf();
+//        for (item in patients) {
+//            if (!item.id.isEmpty()) {
+//                newCoordinates.add(item)
+//            } else {
+////                newCoordinates.add(coordinateMutationResolver.newCoordinate(item.location))
+//                newCoordinates.add(Coordinate(item.location))
+//            }
+//        }
+        var salesmanSet = salesmanSetQueryResolver.getSalesmanSetByPatients(patients)
         if (salesmanSet == null) {
-            val neighborhoodMatrix = calcNeighborhoodMatrix(newCoordinates)
-            salesmanSet = SalesmanSet(newCoordinates, neighborhoodMatrix)
+            val coordinates = patients.map { patient -> patient.coordinate };
+            val neighborhoodMatrix = calcNeighborhoodMatrix(coordinates)
+            salesmanSet = SalesmanSet(patients, neighborhoodMatrix)
             salesmanSet.id = UUID.randomUUID().toString()
             salesmanSet.paths = mutableListOf(findFirstPath(salesmanSet))
             salesmanSetRepository.save(salesmanSet)
@@ -46,15 +43,17 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         val updatedSet = salesmanSet
         if (oldSalesmanSet.places != updatedSet.places) {
             println("rożne")
-            var newCoordinates: MutableList<Coordinate> = mutableListOf();
-            for (item in updatedSet.places) {
-                if (!item.id.isEmpty()) {
-                    newCoordinates.add(item)
-                } else {
-//                    newCoordinates.add(coordinateMutationResolver.newCoordinate(item.location))
-                    newCoordinates.add(Coordinate(item.location))
-                }
-            }
+//            var newCoordinates: MutableList<Coordinate> = mutableListOf();
+//            for (item in updatedSet.places) {
+//                if (!item.id.isEmpty()) {
+//                    newCoordinates.add(item)
+//                } else {
+////                    newCoordinates.add(coordinateMutationResolver.newCoordinate(item.location))
+//                    newCoordinates.add(Coordinate(item.location))
+//                }
+//            }
+            val newCoordinates = updatedSet.places.map { patient -> patient.coordinate };
+
             updatedSet.neighborhoodMatrix = calcNeighborhoodMatrix(newCoordinates)
             salesmanSet.paths = mutableListOf(findFirstPath(salesmanSet))
         }
@@ -76,21 +75,32 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
     }
 
     fun newSalesmanSetByDistance(numberOfCoordinates: Int, distances: List<Float>): SalesmanSet? {
-        var newCoordinates: MutableList<Coordinate> = mutableListOf();
+        val patients: MutableList<Patient> = mutableListOf();
         for (i in 0 until numberOfCoordinates) {
             val long = 89.0f + i.toFloat() / numberOfCoordinates
             val lat = 89.0f + i.toFloat() / numberOfCoordinates
-//            newCoordinates.add(coordinateMutationResolver.newCoordinate(listOf(long, lat)))
-            newCoordinates.add(Coordinate(listOf(long, lat)))
+//            patients.add(coordinateMutationResolver.newCoordinate(listOf(long, lat)))
+            patients.add(Patient(generateRandomString(5), generateRandomString(6), generateRandomString(7), Coordinate(listOf(long, lat)), listOf()))
         }
+        val newCoordinates = patients.map { patient -> patient.coordinate };
         val neighborhoodMatrix = createNeighborhoodMatrixByGivedDistances(newCoordinates, distances)
         var salesmanSet = salesmanSetQueryResolver.getSalesmanSetByDistances(neighborhoodMatrix)
         if (salesmanSet == null) {
-            salesmanSet = SalesmanSet(newCoordinates, neighborhoodMatrix)
+            salesmanSet = SalesmanSet(patients, neighborhoodMatrix)
             salesmanSet.id = UUID.randomUUID().toString()
             salesmanSetRepository.save(salesmanSet)
         }
         return salesmanSet
+    }
+
+    fun generateRandomString(length: Int): String {
+        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        val randomString = ThreadLocalRandom.current()
+                .ints(length.toLong(), 0, charPool.size)
+                .asSequence()
+                .map(charPool::get)
+                .joinToString("")
+        return randomString
     }
 
     fun deleteSalesmanSet(id: String): Boolean {
@@ -141,7 +151,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
     fun findFirstPath(salesmanSet: SalesmanSet): Path {
         val visited: MutableList<String> = mutableListOf();
-        val pathPlaces: MutableList<Coordinate> = mutableListOf();
+        val pathPlaces: MutableList<Patient> = mutableListOf();
 
         val places = salesmanSet.places
         val neighborhoodMatrix = salesmanSet.neighborhoodMatrix
@@ -158,13 +168,13 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                 distance.startCoordinateId.equals(startPlace.id) && !visited.contains(distance.endCoordinateId)
             }.minBy { distance -> distance.value }
             if (pathElement != null) {
-                val secondPlace: Coordinate = places.first { coordinate -> coordinate.id.equals(pathElement.endCoordinateId) }
+                val secondPlace: Patient = places.first { patient -> patient.coordinate.id.equals(pathElement.endCoordinateId) }
                 pathPlaces.add(secondPlace)
                 visited.add(pathElement.endCoordinateId)
                 startElementIndex = places.indexOf(secondPlace)
             }
         }
-        val pathValue: Float = pathQueryResolver.calcPathValue(pathPlaces)
+        val pathValue: Float = pathQueryResolver.calcPathValue(pathPlaces.map { patient -> patient.coordinate })
         val path: Path = Path(pathPlaces, pathValue);
         return path;
     }
@@ -172,15 +182,15 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
     fun findGreedyPath(id: String, startCoordinateId: String = ""): Path {
         val salesmanSet = salesmanSetRepository.findById(id);
         val visited: MutableList<String> = mutableListOf();
-        val pathPlaces: MutableList<Coordinate> = mutableListOf();
+        val pathPlaces: MutableList<Patient> = mutableListOf();
 
         if (salesmanSet.isPresent) {
             val places = salesmanSet.get().places
             val neighborhoodMatrix = salesmanSet.get().neighborhoodMatrix
-            var startElement: Coordinate = places[0];
+            var startElement: Patient = places[0];
             var startElementIndex = 0;
             if (startCoordinateId.isNotEmpty()) {
-                startElement = coordinateQueryResolver.findById(startCoordinateId)
+                startElement = patientQueryResolver.patientByCoordinate(startCoordinateId).first()  //TODO, metoda zwraca listę, nie wiem czy powinna
                 startElementIndex = places.indexOf(startElement)
             }
 
@@ -195,14 +205,14 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                     distance.startCoordinateId.equals(startPlace.id) && !visited.contains(distance.endCoordinateId)
                 }.minBy { distance -> distance.value }
                 if (pathElement != null) {
-                    val secondPlace: Coordinate = places.first { coordinate -> coordinate.id.equals(pathElement.endCoordinateId) }
+                    val secondPlace: Patient = places.first { patient -> patient.coordinate.id.equals(pathElement.endCoordinateId) }
                     pathPlaces.add(secondPlace)
                     visited.add(pathElement.endCoordinateId)
                     startElementIndex = places.indexOf(secondPlace)
                 }
             }
         }
-        val pathValue: Float = pathQueryResolver.calcPathValue(pathPlaces)
+        val pathValue: Float = pathQueryResolver.calcPathValue(pathPlaces.map { patient -> patient.coordinate })
         val path: Path = Path(pathPlaces, pathValue);
         return path;
     }
@@ -241,7 +251,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         var genomPath = newSalesmanSet.places
         for (i in newSalesmanSet.population.size until populationSize) {
             genomPath = getRandomGenom(genomPath)
-            val value = pathQueryResolver.calcPathValue(genomPath)
+            val value = pathQueryResolver.calcPathValue(genomPath.map { patient -> patient.coordinate })
             newSalesmanSet.population.add(Path(genomPath, value))
         }
         //rob
@@ -307,8 +317,8 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
     private fun crossover(parentOneGenom: Path, parentTwoGenom: Path, crossPoint1: Int, crossPoint2: Int): Path {
         val pathSize = parentTwoGenom.places.size
-        val childListOfCoordinates: MutableList<Coordinate?> = parentTwoGenom.places.toMutableList()  //środek
-        val checkForRepeat = mutableListOf<Coordinate>()
+        val childListOfCoordinates: MutableList<Patient?> = parentTwoGenom.places.toMutableList()  //środek
+        val checkForRepeat = mutableListOf<Patient>()
 
         for (i in crossPoint1 until crossPoint2)                //srodek
         {
@@ -329,7 +339,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
         for (i in crossPoint2 until pathSize)            //koniec
         {
-            var zm: Coordinate? = null;
+            var zm: Patient? = null;
             try {
                 zm = parentOneGenom.places[i];
             } catch (e: IndexOutOfBoundsException) {
@@ -358,7 +368,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
             }
         }
-        val pathValue: Float = pathQueryResolver.calcPathValue(childListOfCoordinates.filterNotNull())
+        val pathValue: Float = pathQueryResolver.calcPathValue(childListOfCoordinates.filterNotNull().map { patient -> patient.coordinate })
         val child: Path = Path(childListOfCoordinates.filterNotNull(), pathValue);
         return child;
     }
@@ -376,12 +386,12 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                 updatedGenomPath[city2] = temp;
             }
         }
-        val pathValue: Float = pathQueryResolver.calcPathValue(updatedGenomPath)
+        val pathValue: Float = pathQueryResolver.calcPathValue(updatedGenomPath.map { patient -> patient.coordinate })
         return Path(updatedGenomPath, pathValue)
     }
 
 
-    private fun getRandomGenom(genomPath: List<Coordinate>): List<Coordinate> {
+    private fun getRandomGenom(genomPath: List<Patient>): List<Patient> {
         return genomPath.shuffled()
     }
 

@@ -3,6 +3,7 @@ package com.shacky.housemedassistant.entity
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.TextIndexed
 import org.springframework.data.mongodb.core.mapping.Document
+import java.util.*
 
 @Document(collection = "patient")
 data class Patient(
@@ -16,5 +17,5 @@ data class Patient(
         var tags: List<Tag>
 ) {
     @Id
-    var id: String = ""
+    var id: String = UUID.randomUUID().toString()
 }
