@@ -6,6 +6,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from "@material-ui/core/IconButton";
 import {loadAllSalesmanSets, removeSalesmanSet, setSalesmanSet} from "../actions/salesmanSetActions";
 import connect from "react-redux/es/connect/connect";
+import {getContrastYIQ, hashCode, intToRGB} from "../utils/Utils";
+import Chip from "@material-ui/core/Chip";
 
 
 const useStyles = makeStyles(theme => ({
@@ -17,7 +19,10 @@ const useStyles = makeStyles(theme => ({
     background: "gold",
     padding: "5px",
     marginBottom: "10px"
-  }
+  },
+  patient_name: {
+    margin: 0,
+  },
 }));
 
 const mapStateToProps = (state) => {
@@ -77,16 +82,37 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
               </IconButton>
             </h4>
             {salesmanSet && salesmanSet.places
-              .map((place) => <Paper
-                  key={place.id}
+              .map((patient) => <Paper
+                key={patient.id}
                   className={classes.paper}
                 >
                   <p>
-                    {place.id}
+                    {patient.id}
                   </p>
+                <h4 className={classes.patient_name}>
+                  {patient.lastName} {patient.firstName}
+                </h4>
+                <p>
+                  {patient.address}
+                </p>
                   <p>
-                    {place.name} a: {place.coordinate.location[0]}, {place.coordinate.location[1]}
+                    {patient.coordinate.location[0]}, {patient.coordinate.location[1]}
                   </p>
+                {patient.tags.map((tag, tagIdx) => {
+                  let backgroundColor = '#' + intToRGB(hashCode(tag.name));
+                  return (
+                    <Chip
+                      key={tagIdx}
+                      style={{
+                        // background: 'linear-gradient(to right bottom, #430089, #82ffa1)'
+                        background: backgroundColor,
+                        color: getContrastYIQ(backgroundColor),
+                        margin: '5px',
+                      }}
+                      label={tag.name}
+                      size="small"
+                    />)
+                })}
                 </Paper>
               )}
           </Paper>

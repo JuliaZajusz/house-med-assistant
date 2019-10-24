@@ -32,8 +32,8 @@ class SalesmanSetQueryResolver(val salesmanSetRepository: SalesmanSetRepository,
 //        return salesmanSetRepository.findSalesmanSetByPlaces(coordinates)
 //    }
 
-    fun getSalesmanSetByPatients(patients: List<Patient>): SalesmanSet? {
-        return salesmanSetRepository.findSalesmanSetByPlaces(patients)
+    fun getSalesmanSetByPatients(places: List<Patient>): SalesmanSet? {
+        return salesmanSetRepository.findSalesmanSetByPlaces(places)
     }
 
     fun getSalesmanSetByDistances(neighborhoodMatrix: List<Distance>): SalesmanSet? {

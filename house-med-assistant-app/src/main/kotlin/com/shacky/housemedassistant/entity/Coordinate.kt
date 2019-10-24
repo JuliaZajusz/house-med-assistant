@@ -4,8 +4,6 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed
 import org.springframework.data.mongodb.core.mapping.Document
-import java.util.*
-import kotlin.collections.ArrayList
 
 @Document(collection = "coordinate")
 data class Coordinate(
@@ -13,5 +11,5 @@ data class Coordinate(
         var location: List<Float> = ArrayList()  //[longitude, latitude] //x,y
 ) {
         @Id
-        var id: String = UUID.randomUUID().toString()
+        var id: String = ""
 }

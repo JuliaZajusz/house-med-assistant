@@ -98,18 +98,6 @@ const mapDispatchToProps = dispatch => ({
 export default connect(mapStateToProps, mapDispatchToProps)(function SidePanel(props) {
     const classes = useStyles();
 
-    const addNewSalesmanSet = () => {
-        props.addNewSalesmanSet()
-    }
-    //
-    // const addToSet = (place) => {
-    //     props.onAddToSet(place)
-    // }
-    //
-    // const loadData = () => {
-    //     props.onLoadData()
-    // }
-
     return (
         <Grid
             className={classes.side_container}
@@ -165,12 +153,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SidePanel(p
                 </Paper>)
                 }
                 <Fab
-                    variant="extended"
-                    size="small"
-                    color="primary"
-                    aria-label="add"
-                    className={classes.margin}
-                    onClick={() => addNewSalesmanSet()}
+                  variant="extended"
+                  size="small"
+                  color="primary"
+                  aria-label="add"
+                  className={classes.margin}
+                  onClick={() => props.addNewSalesmanSet()}
                 >
                     Wylicz trasę
                 </Fab>

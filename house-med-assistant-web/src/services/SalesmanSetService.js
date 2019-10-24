@@ -122,6 +122,8 @@ export const postSalesmanSet = (set) => {
     //     return {location: place.location}
     // })
 
+
+    //chyba niepotrzebne
     let places = set.places.map((place) => {
         return {
             ...place,
@@ -185,17 +187,17 @@ export const postSalesmanSet = (set) => {
 }
 
 export const putSalesmanSet = (set) => {
-    let places = set.places.map((place) => {
-        return {
-            id: place.id,
-            location: place.location
-        }
-    })
+    // let places = set.places.map((place) => {
+    //     return {
+    //         id: place.id,
+    //         location: place.location
+    //     }
+    // })
     let mappedSet = {
         id: set.id,
         paths: set.paths,
         neighborhoodMatrix: set.neighborhoodMatrix,
-        places: places
+        places: set.places
     }
     let json = JSON.stringify(mappedSet).replace(/\"([^(\")"]+)\":/g, "$1:");
 

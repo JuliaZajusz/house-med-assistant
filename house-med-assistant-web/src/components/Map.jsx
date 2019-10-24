@@ -117,7 +117,7 @@ class MapWrapper extends Component {
         let lat = Math.round(e.latlng.lat * 100) / 100
         let lng = Math.round(e.latlng.lng * 100) / 100
         markers.push([lat, lng])
-        this.props.addCoordinateToSalesmanSet([lng, lat])
+      // this.props.addCoordinateToSalesmanSet([lng, lat])
     }
 
     polyline = [[51.505, -0.09], [51.51, -0.1], [51.51, -0.12]]
