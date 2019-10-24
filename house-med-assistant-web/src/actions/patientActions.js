@@ -31,6 +31,16 @@ export const getPatientsAction = (text, tags) => async (dispatch, getState) => {
   }
 };
 
+
+//nieużywane, być może przenieść do salesmanSetActions
+export const getPatientByCoordinateId = (id) => async (dispatch) => {
+  let response = await getPatientByCoordinateId(id);
+  dispatch({
+    type: 'SET_SET_PATIENTS',
+    payload: response.data.patientByCoordinate
+  })
+}
+
 export const getTagsAction = (tags) => async (dispatch, getState) => {
   let response = await getAllTags();
   dispatch({

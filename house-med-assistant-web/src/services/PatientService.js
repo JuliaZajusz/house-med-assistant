@@ -135,6 +135,28 @@ export const getPatientsByLastNameAndFirstName = (lastName, firstName) => {
 };
 
 
+export const getPatientByCoordinateId = (id) => {
+  return client
+  .query({
+      query: gql`{
+          patientByCoordinate(coordinateId:${id}) {
+              id,
+              lastName,
+              firstName,
+              coordinate {
+                  id,
+                  location
+              },
+              tags {
+                  # id,
+                  name
+              }
+          }
+      }`
+    }
+  );
+}
+
 export const postPatient = (patient) => {
   const lastName = patient.lastName;
   const firstName = patient.firstName;

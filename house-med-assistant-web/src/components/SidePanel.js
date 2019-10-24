@@ -131,9 +131,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SidePanel(p
                 >
                     <Grid item>
                         <ButtonGroup size="small" aria-label="small outlined button group">
-                            <Button
-                              onClick={() => props.setSalesmanSet()}
-                            >Wyczyść</Button>
+                            <Button onClick={() => props.setSalesmanSet()}>Wyczyść</Button>
                             {/*<Button>Two</Button>*/}
                             {/*<Button>Three</Button>*/}
                         </ButtonGroup>

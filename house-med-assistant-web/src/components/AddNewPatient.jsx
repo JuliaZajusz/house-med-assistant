@@ -32,8 +32,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
   // getTagsAction: () => dispatch(getTagsAction()),
   getCoordinatesByAddress: (addr) => dispatch(getCoordinatesByAddress(addr)),
-  // setActiveTagsAction: (activeTags) => dispatch(setActiveTagsAction(activeTags)),
-  // getPatientsAction: (text, tags) => dispatch(getPatientsAction(text, tags)),
   addNewPatient: (patient) => dispatch(addNewPatient(patient)),
 });
 
@@ -46,8 +44,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
     });
 
     const [addNewPatient, setAddNewPatient] = useState(
-      // false
-      true
+      false
+      // true
     );
 
     const createNewPatient = () => {

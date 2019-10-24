@@ -5,6 +5,7 @@ import {history} from "../App";
 export const addCoordinateToSalesmanSet = (coordinate) => dispatch => {
   // console.log(coordinate)
   //nie wiem, ale tu chyba nie trzeba pchać tego na backend jeszcze
+  console.log(coordinate)
   addCoordinate(coordinate)
     .then(result => {
         dispatch({

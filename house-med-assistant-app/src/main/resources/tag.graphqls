@@ -1,5 +1,6 @@
 extend type Query {
     tags: [Tag]
+    searchTagsByText(searchedText: String): [Tag]
 }
 
 type Tag {

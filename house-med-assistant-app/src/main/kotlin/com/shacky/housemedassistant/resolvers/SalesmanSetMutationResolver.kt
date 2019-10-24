@@ -41,7 +41,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         return salesmanSet
     }
 
-    fun updateSalesmanSet(salesmanSet: SalesmanSet): SalesmanSet {
+    fun updateSalesmanSet(salesmanSet: SalesmanSet): SalesmanSet { //chyba tylko ostatnia linijka jest potrzebna
         val oldSalesmanSet = salesmanSetRepository.findById(salesmanSet.id).get();
         val updatedSet = salesmanSet
         if (oldSalesmanSet.places != updatedSet.places) {
@@ -49,8 +49,6 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
             var newCoordinates: MutableList<Coordinate> = mutableListOf();
             for (item in updatedSet.places) {
                 if (!item.id.isEmpty()) {
-//                    val itemById = coordinateQueryResolver.findById(item.id)
-//                    newCoordinates.add(itemById)
                     newCoordinates.add(item)
                 } else {
                     newCoordinates.add(coordinateMutationResolver.newCoordinate(item.location))
