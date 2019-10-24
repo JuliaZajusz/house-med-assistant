@@ -196,10 +196,10 @@ class GeospatialLiveTest {
     @Test
     fun findBestPathUsingGeneticAlgorythmTest() {
         val salesmanSet = salesmanSetMutationResolver.newSalesmanSet(
-                listOf(Patient("", "", "", Coordinate(listOf(2.3f, 2.4f)), listOf()),
-                        Patient("", "", "", Coordinate(listOf(44f, 55.6f)), listOf()),
-                        Patient("", "", "", Coordinate(listOf(0f, 0f)), listOf()),
-                        Patient("", "", "", Coordinate(listOf(1f, 1f)), listOf())
+                listOf(Patient("", "", "", Coordinate(listOf(2.3f, 2.4f), "co-0"), listOf(), "pa-0"),
+                        Patient("", "", "", Coordinate(listOf(44f, 55.6f), "co-1"), listOf(), "pa-1"),
+                        Patient("", "", "", Coordinate(listOf(0f, 0f), "co-2"), listOf(), "pa-2"),
+                        Patient("", "", "", Coordinate(listOf(1f, 1f), "co-3"), listOf(), "pa-3")
                 )
         )
         val result1 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
@@ -218,10 +218,11 @@ class GeospatialLiveTest {
 //                coordinateQueryResolver.findOneByLocation(listOf(1f, 1f)),
 //                coordinateQueryResolver.findOneByLocation(listOf(0f, 0f)),
 //                coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
-                Patient("", "", "", Coordinate(listOf(2.3f, 2.4f)), listOf()),
-                Patient("", "", "", Coordinate(listOf(1f, 1f)), listOf()),
-                Patient("", "", "", Coordinate(listOf(0f, 0f)), listOf()),
-                Patient("", "", "", Coordinate(listOf(44f, 55.6f)), listOf())
+
+                Patient("", "", "", Coordinate(listOf(2.3f, 2.4f), "co-0"), listOf(), "pa-0"),
+                Patient("", "", "", Coordinate(listOf(1f, 1f), "co-3"), listOf(), "pa-3"),
+                Patient("", "", "", Coordinate(listOf(0f, 0f), "co-2"), listOf(), "pa-2"),
+                Patient("", "", "", Coordinate(listOf(44f, 55.6f), "co-1"), listOf(), "pa-1")
         ))
         path1.value = pathQueryResolver.calcPathValue(path1.places.map { patient -> patient.coordinate })
 
@@ -244,10 +245,10 @@ class GeospatialLiveTest {
 //                Coordinate(listOf(1f, 1f)),
 //                Coordinate(listOf(0f, 0f)),
 //                Coordinate(listOf(44f, 55.6f))
-                Patient("", "", "", Coordinate(listOf(2.3f, 2.4f)), listOf()),
-                Patient("", "", "", Coordinate(listOf(1f, 1f)), listOf()),
-                Patient("", "", "", Coordinate(listOf(0f, 0f)), listOf()),
-                Patient("", "", "", Coordinate(listOf(44f, 55.6f)), listOf())
+                Patient("", "", "", Coordinate(listOf(2.3f, 2.4f), "co-0"), listOf(), "pa-0"),
+                Patient("", "", "", Coordinate(listOf(1f, 1f), "co-3"), listOf(), "pa-3"),
+                Patient("", "", "", Coordinate(listOf(0f, 0f), "co-2"), listOf(), "pa-2"),
+                Patient("", "", "", Coordinate(listOf(44f, 55.6f), "co-1"), listOf(), "pa-1")
         ))
         val result = path?.let { salesmanSetMutationResolver.mutate(it, 100, 100) }
         assertEquals(path?.places!!.distinct().size, result?.places!!.distinct().size)
