@@ -2,6 +2,7 @@ package com.shacky.housemedassistant.resolvers
 
 import com.coxautodev.graphql.tools.GraphQLMutationResolver
 import com.shacky.housemedassistant.entity.Coordinate
+import com.shacky.housemedassistant.entity.Distance
 import com.shacky.housemedassistant.entity.Path
 import com.shacky.housemedassistant.repository.PathRepository
 import org.springframework.stereotype.Component
@@ -11,8 +12,9 @@ import java.util.*
 class PathMutationResolver(private val pathRepository: PathRepository,
                            val coordinateMutationResolver: CoordinateMutationResolver,
                            val coordinateQueryResolver: CoordinateQueryResolver,
-                           val distanceMutationResolver: DistanceMutationResolver,
-                           val distanceQueryResolver: DistanceQueryResolver
+                           val pathQueryResolver: PathQueryResolver
+//                           val distanceMutationResolver: DistanceMutationResolver,
+//                           val distanceQueryResolver: DistanceQueryResolver
 ) : GraphQLMutationResolver {
     fun newPath(coordinates: List<Coordinate>): Path? { //TODO dbanie o niedublowanie się koordynatów powinno być w coordinateMutationResolver.newCoordinate()
         //TODO poza tym, ze należy usunąć stąd dodawanie koordynatów, to nie ma sensu.
@@ -57,21 +59,34 @@ class PathMutationResolver(private val pathRepository: PathRepository,
         val path = pathRepository.findById(id)
         path.ifPresent {
             it.places = places
-            it.value = calcPathValue(places)
+            it.value = pathQueryResolver.calcPathValue(places)
             pathRepository.save(it)
         }
         return path.get()
     }
 
-    fun calcPathValue(places: List<Coordinate>): Float {
-        var value = 0.0;
-        for (i in places.indices) {
-            if (places.size - 1 > i) {
-                value += distanceMutationResolver.getOrCreateDistanceByCoordinates(places[i], places[i + 1]).value
-            } else {
-                value += distanceMutationResolver.getOrCreateDistanceByCoordinates(places[i], places[0]).value
-            }
-        }
-        return value.toFloat()
+//    fun calcPathValue(places: List<Coordinate>): Float {
+//        var value = 0.0;
+//        for (i in places.indices) {
+//            if (places.size - 1 > i) {
+////                value += distanceMutationResolver.getOrCreateDistanceByCoordinates(places[i], places[i + 1]).value
+//                val startCoordinate = places[i]
+//                val endCoordinate = places[i + 1]
+//                value += distanceQueryResolver.getDistanceByCoordinates(startCoordinate, endCoordinate)
+//                        ?: Distance(startCoordinate.id, endCoordinate.id, distanceQueryResolver.findDistanceBetweenCoordinates(startCoordinate, endCoordinate).toFloat())
+//            } else {
+////                value += distanceMutationResolver.getOrCreateDistanceByCoordinates(places[i], places[0]).value
+//                val startCoordinate = places[i]
+//                val endCoordinate = places[0]
+//                value += distanceQueryResolver.getDistanceByCoordinates(startCoordinate, endCoordinate)
+//                        ?: Distance(startCoordinate.id, endCoordinate.id, distanceQueryResolver.findDistanceBetweenCoordinates(startCoordinate, endCoordinate).toFloat())
+//
+//            }
+//        }
+//        return value.toFloat()
+//    }
+
+    private operator fun Double.plusAssign(distance: Distance) {
+
     }
 }

@@ -109,7 +109,7 @@ class GeospatialLiveTest {
 
     @Test
     fun checkFindDistanceBetweenCoordinates() {
-        val result = distanceMutationResolver.findDistanceBetweenCoordinates(0, 0, 1, 1)
+        val result = distanceQueryResolver.findDistanceBetweenCoordinates(0, 0, 1, 1)
         assertEquals(157.24938127194397, result, 0.0)
     }
 
@@ -161,7 +161,7 @@ class GeospatialLiveTest {
                 coordinateQueryResolver.findOneByLocation(listOf(0f, 0f)),
                 coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
         )?.let { Path(it as List<Coordinate>) }
-        path1.value = pathMutationResolver.calcPathValue(path1.places)
+        path1.value = pathQueryResolver.calcPathValue(path1.places)
 
         assertEquals(path1.places, result1.places)
         assertEquals(path1.value, result1.value)
@@ -173,7 +173,7 @@ class GeospatialLiveTest {
                 coordinateQueryResolver.findOneByLocation(listOf(2.3f, 2.4f)),
                 coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
         )?.let { Path(it as List<Coordinate>) }
-        path2.value = pathMutationResolver.calcPathValue(path2.places)
+        path2.value = pathQueryResolver.calcPathValue(path2.places)
 
         assertEquals(path2.places, result2.places)
         assertEquals(path2.value, result2.value)
@@ -205,7 +205,7 @@ class GeospatialLiveTest {
                 coordinateQueryResolver.findOneByLocation(listOf(0f, 0f)),
                 coordinateQueryResolver.findOneByLocation(listOf(44f, 55.6f))
         )?.let { Path(it as List<Coordinate>) }
-        path1.value = pathMutationResolver.calcPathValue(path1.places)
+        path1.value = pathQueryResolver.calcPathValue(path1.places)
 
         assertTrue(path1.value.toDouble() >= result1.value.toDouble())
         assertTrue(path1.value.toDouble() >= result2.value.toDouble())
