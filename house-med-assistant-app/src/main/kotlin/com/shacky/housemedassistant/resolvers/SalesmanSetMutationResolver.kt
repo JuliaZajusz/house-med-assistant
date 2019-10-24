@@ -77,7 +77,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
             val long = 89.0f + i.toFloat() / numberOfCoordinates
             val lat = 89.0f + i.toFloat() / numberOfCoordinates
 //            patients.add(coordinateMutationResolver.newCoordinate(listOf(long, lat)))
-            patients.add(Patient(generateRandomString(5), generateRandomString(6), generateRandomString(7), Coordinate(listOf(long, lat), "coordinate-" + i), listOf(), "patient-" + i))
+            patients.add(Patient(generateRandomString(5), generateRandomString(6), generateRandomString(7), Coordinate(listOf(long, lat), "coordinate-" + i), listOf()))
         }
         val newCoordinates = patients.map { patient -> patient.coordinate };
         val neighborhoodMatrix = createNeighborhoodMatrixByGivedDistances(newCoordinates, distances)
@@ -180,7 +180,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
     }
 
     //findFirstPath jest bardzo podobna, tzrab przerefaktorować
-    fun findGreedyPath(id: String, startPatientId: String = ""): Path {
+    fun findGreedyPath(id: String, startCoordinateId: String = ""): Path {
         val salesmanSet = salesmanSetRepository.findById(id);
         val visited: MutableList<String> = mutableListOf();
         val pathPlaces: MutableList<Patient> = mutableListOf();
@@ -190,9 +190,9 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
             val neighborhoodMatrix = salesmanSet.get().neighborhoodMatrix
             var startElement: Patient = places[0];
             var startElementIndex = 0;
-            if (startPatientId.isNotEmpty()) {
-//                startElement = patientQueryResolver.patientByCoordinate(startPatientId).first()  //TODO, metoda zwraca listę, nie wiem czy powinna
-                startElement = places.first { place -> place.id == startPatientId }
+            if (startCoordinateId.isNotEmpty()) {
+//                startElement = patientQueryResolver.patientByCoordinate(startCoordinateId).first()  //TODO, metoda zwraca listę, nie wiem czy powinna
+                startElement = places.first { place -> place.coordinate.id == startCoordinateId }
                 startElementIndex = places.indexOf(startElement)
             }
 

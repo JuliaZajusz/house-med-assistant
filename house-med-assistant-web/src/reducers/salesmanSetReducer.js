@@ -21,12 +21,14 @@ export default (state = {
         salesmanSets: action.payload
       };
     case 'REMOVE_SALESMAN_SET':
+      let newSalesmanSets = [...state.salesmanSets.filter(function (value, index, arr) {
+        console.log(!action.payload === value.id, action.payload, value.id)
+        return !action.payload === value.id;
+      })];
+      console.log("newSalesmanSets: ", newSalesmanSets)
       return {
         ...state,
-        salesmanSets: state.salesmanSets.filter(function (value, index, arr) {
-          console.log(!action.payload === value.id, action.payload, value.id)
-          return !action.payload === value.id;
-        })
+        salesmanSets: newSalesmanSets
       };
     default:
       return state

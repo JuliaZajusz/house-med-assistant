@@ -48,10 +48,10 @@ class DatabaseInit() {
 
         patientMutationResolver.newPatient("Kowalski", "Jan", "", listOf(-0.1268194f, 51.5007292f), listOf("Sektor A"))
         salesmanSetMutationResolver.newSalesmanSet(
-                listOf(Patient("", "", "", Coordinate(listOf(2.3f, 2.4f), "co-0"), listOf(), "pa-0"),
-                        Patient("", "", "", Coordinate(listOf(44f, 55.6f), "co-1"), listOf(), "pa-1"),
-                        Patient("", "", "", Coordinate(listOf(0f, 0f), "co-2"), listOf(), "pa-2"),
-                        Patient("", "", "", Coordinate(listOf(1f, 1f), "co-3"), listOf(), "pa-3")
+                listOf(Patient("", "", "", Coordinate(listOf(2.3f, 2.4f), "co-0"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(44f, 55.6f), "co-1"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(0f, 0f), "co-2"), listOf()),
+                        Patient("", "", "", Coordinate(listOf(1f, 1f), "co-3"), listOf())
                 )
         )
 

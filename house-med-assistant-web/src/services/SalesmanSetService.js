@@ -123,7 +123,6 @@ export const postSalesmanSet = (set) => {
     // })
 
 
-    //chyba niepotrzebne
     let places = set.places.map((place) => {
         return {
             ...place,
@@ -187,20 +186,23 @@ export const postSalesmanSet = (set) => {
 }
 
 export const putSalesmanSet = (set) => {
-    // let places = set.places.map((place) => {
-    //     return {
-    //         id: place.id,
-    //         location: place.location
-    //     }
-    // })
+    let places = set.places.map((place) => {
+        return {
+            ...place,
+            tags: place.tags.map((tag) => {
+                return tag.name
+            })
+        }
+    })
     let mappedSet = {
         id: set.id,
         paths: set.paths,
         neighborhoodMatrix: set.neighborhoodMatrix,
-        places: set.places
+        places: places
     }
     let json = JSON.stringify(mappedSet).replace(/\"([^(\")"]+)\":/g, "$1:");
 
+    console.log("updateSalesmanSet json", json)
     return client
     .mutate({
             mutation: gql`

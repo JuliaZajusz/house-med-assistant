@@ -177,6 +177,7 @@ export const postPatient = (patient) => {
                   id,
                   lastName,
                   firstName,
+                  address,
                   coordinate {
                       id,
                       location

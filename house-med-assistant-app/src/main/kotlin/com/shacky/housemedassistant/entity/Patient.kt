@@ -13,9 +13,8 @@ data class Patient(
 //        @TextIndexed
         var address: String,
         var coordinate: Coordinate,
-        var tags: List<Tag>,
-        @Id
-        var id: String = ""
+        var tags: List<Tag>
 ) {
-
+    @Id
+    var id: String = ""
 }
