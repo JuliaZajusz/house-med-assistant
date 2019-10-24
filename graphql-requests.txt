@@ -339,7 +339,7 @@ mutation newSalesmanSet {
 }
 
 mutation newSalesmanSet2 {
-  newSalesmanSet(patients: [{id: "gdgf", lastName: "G", firstName: "H", address: "I", coordinate: {location: [18.33, 53.01]}, tags: []}, {id: "sffwsgsarf", lastName: "G", firstName: "H", address: "I", coordinate: {location: [18.77, 47.92]}, tags: []}, {id: "siut", lastName: "G", firstName: "H", address: "I", coordinate: {location: [16.08, 50.18]}, tags: []}]) {
+  newSalesmanSet(patients: [{id: "gdfegfdgf", lastName: "G", firstName: "H", address: "I", coordinate: {location: [18.33, 53.01]}, tags: ["ala123"]}, {id: "sffwsgsarf", lastName: "G", firstName: "H", address: "I", coordinate: {location: [18.77, 47.92]}, tags: []}, {id: "siut", lastName: "G", firstName: "H", address: "I", coordinate: {location: [16.08, 50.18]}, tags: []}]) {
     id
     places {
       id

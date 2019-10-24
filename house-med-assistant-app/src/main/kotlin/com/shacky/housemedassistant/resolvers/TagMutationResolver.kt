@@ -19,6 +19,10 @@ class TagMutationResolver(private val tagRepository: TagRepository) : GraphQLMut
         return tag
     }
 
+    fun addTag(tag: Tag): Tag {
+        return tagRepository.getTagByName(tag.name) ?: tagRepository.save(tag)
+    }
+
     fun deleteTag(name: String): Boolean {
         tagRepository.deleteByName(name)
         return true

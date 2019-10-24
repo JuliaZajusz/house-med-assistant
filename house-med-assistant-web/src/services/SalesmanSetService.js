@@ -118,13 +118,22 @@ export const postSalesmanSet = (set) => {
         return putSalesmanSet(set)
     }
     ;
+    // let places = set.places.map((place) => {
+    //     return {location: place.location}
+    // })
+
     let places = set.places.map((place) => {
-        return {location: place.location}
+        return {
+            ...place,
+            tags: place.tags.map((tag) => {
+                return tag.name
+            })
+        }
     })
 
     let json = JSON.stringify(places).replace(/\"([^(\")"]+)\":/g, "$1:");
 
-    console.log(json)
+    console.log("json", json)
     return client
     .mutate({
             mutation: gql`

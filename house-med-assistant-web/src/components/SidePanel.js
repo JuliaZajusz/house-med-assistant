@@ -155,11 +155,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SidePanel(p
                           </div>
                           <Delete fontSize="small"/>
                       </Grid>
-                    {place.name && <div>
-                        {place.name}
-                    </div>}
+                      <div>
+                          {place.lastName} {place.firstName}
+                      </div>
                     <div>
-                        {place.location[0]}, {place.location[1]}
+                        {place.coordinate.location[0]}, {place.coordinate.location[1]}
                     </div>
 
                 </Paper>)

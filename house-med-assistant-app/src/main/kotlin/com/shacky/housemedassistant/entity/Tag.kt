@@ -5,9 +5,12 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
 @Document(collection = "tag")
-data class Tag(
-        var name: String
-) {
+class Tag() {
     @Id
     var id: String = UUID.randomUUID().toString()
+    var name: String = ""
+
+    constructor (name: String) : this() {
+        this.name = name
+    }
 }

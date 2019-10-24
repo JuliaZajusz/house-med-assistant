@@ -10,13 +10,18 @@ import org.springframework.stereotype.Component
 
 @Component
 class TagQueryResolver(val tagRepository: TagRepository,
+                       val tagMutationResolver: TagMutationResolver,
                        private val mongoOperations: MongoOperations) : GraphQLQueryResolver {
     fun tags(): List<Tag> {
         return tagRepository.findAll()
     }
 
-    fun getTagByName(name: String): Tag? {
-        return tagRepository.getTagByName(name);
+    fun getTagByName(name: String): Tag {
+        var result = tagRepository.getTagByName(name);
+        if (result == null) {
+            result = tagMutationResolver.newTag(name)
+        }
+        return result
 //        val query = Query()
 //        query.addCriteria(Criteria.where("name").`is`(name))
 //        return mongoOperations.find(query, Review::class.java)

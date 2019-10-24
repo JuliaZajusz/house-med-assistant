@@ -5,7 +5,7 @@ import L from 'leaflet';
 import * as _ from 'lodash';
 import {withStyles} from "@material-ui/styles";
 import connect from "react-redux/es/connect/connect";
-import {addCoordinateToSalesmanSet} from "../actions/salesmanSetActions";
+import {addPatientToSalesmanSet} from "../actions/salesmanSetActions";
 
 delete L.Icon.Default.prototype._getIconUrl;
 
@@ -69,7 +69,7 @@ class MapWrapper extends Component {
     static getDerivedStateFromProps = (props, state) => {
         console.log("state", state)
         // console.log("props", props)
-        let markers = props.data ? props.data.places.map((place) => [place.location[1], place.location[0]]) : []
+        let markers = props.data ? props.data.places.map((place) => [place.coordinate.location[1], place.coordinate.location[0]]) : []
         let path = (props.data && props.data.paths && props.data.paths[state.selectedPathIndex]) ? props.data.paths[state.selectedPathIndex].places.map((place) => [place.location[1], place.location[0]]) : []
         let paths = (props.data && props.data.paths) ?
             props.data.paths
@@ -193,7 +193,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
-    addCoordinateToSalesmanSet: (coordinates) => dispatch(addCoordinateToSalesmanSet(coordinates))
+    addCoordinateToSalesmanSet: (coordinates) => dispatch(addPatientToSalesmanSet(coordinates))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(classes)(MapWrapper));

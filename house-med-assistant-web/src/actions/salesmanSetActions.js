@@ -1,4 +1,3 @@
-import {addCoordinate} from "../services/DefaultService";
 import {
   deleteSalesmanSet,
   getAllSalesmanSets,
@@ -7,18 +6,12 @@ import {
 } from "../services/SalesmanSetService";
 import {history} from "../App";
 
-export const addCoordinateToSalesmanSet = (coordinate) => dispatch => {
-  // console.log(coordinate)
-  //nie wiem, ale tu chyba nie trzeba pchać tego na backend jeszcze
-  console.log(coordinate)
-  addCoordinate(coordinate)
-    .then(result => {
+export const addPatientToSalesmanSet = (patient) => dispatch => {
+  console.log(patient)
         dispatch({
           type: 'ADD_COORDINATE_TO_SALESMAN_SET',
-          payload: result.data.newCoordinate
+          payload: patient
         });
-      }
-    );
 };
 
 export const setSalesmanSet = (salesmanSet) => dispatch => {
@@ -33,6 +26,7 @@ export const setSalesmanSet = (salesmanSet) => dispatch => {
 
 export const addNewSalesmanSet = () => (dispatch, getState) => {
   const mapSalesmanSet = getState().salesmanSetReducer.mapSalesmanSet;
+  console.log("mapSalesmanSet", mapSalesmanSet);
   postSalesmanSet(mapSalesmanSet)
     .then(response => {
       if (response.data.updateSalesmanSet) {

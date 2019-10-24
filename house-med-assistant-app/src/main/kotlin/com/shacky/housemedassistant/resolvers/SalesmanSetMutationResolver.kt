@@ -14,20 +14,19 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                                   val coordinateQueryResolver: CoordinateQueryResolver,
                                   val distanceQueryResolver: DistanceQueryResolver,
                                   val pathQueryResolver: PathQueryResolver,
-                                  val patientQueryResolver: PatientQueryResolver
+                                  val patientQueryResolver: PatientQueryResolver,
+                                  val tagQueryResolver: TagQueryResolver,
+                                  val tagMutationResolver: TagMutationResolver
 ) : GraphQLMutationResolver {
     fun newSalesmanSet(patients: List<Patient>): SalesmanSet? {
-//        var newCoordinates: MutableList<Patient> = mutableListOf();
-//        for (item in patients) {
-//            if (!item.id.isEmpty()) {
-//                newCoordinates.add(item)
-//            } else {
-////                newCoordinates.add(coordinateMutationResolver.newCoordinate(item.location))
-//                newCoordinates.add(Coordinate(item.location))
-//            }
-//        }
         var salesmanSet = salesmanSetQueryResolver.getSalesmanSetByPatients(patients)
         if (salesmanSet == null) {
+            patients.forEach { patient ->
+                patient.tags.forEach { tag ->
+                    tagMutationResolver.addTag(tag)
+                }
+                patient
+            }
             val coordinates = patients.map { patient -> patient.coordinate };
             val neighborhoodMatrix = calcNeighborhoodMatrix(coordinates)
             salesmanSet = SalesmanSet(patients, neighborhoodMatrix)
@@ -39,26 +38,23 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
     }
 
     fun updateSalesmanSet(salesmanSet: SalesmanSet): SalesmanSet { //chyba tylko ostatnia linijka jest potrzebna
+        println(salesmanSet)
         val oldSalesmanSet = salesmanSetRepository.findById(salesmanSet.id).get();
         val updatedSet = salesmanSet
         if (oldSalesmanSet.places != updatedSet.places) {
             println("rożne")
-//            var newCoordinates: MutableList<Coordinate> = mutableListOf();
-//            for (item in updatedSet.places) {
-//                if (!item.id.isEmpty()) {
-//                    newCoordinates.add(item)
-//                } else {
-////                    newCoordinates.add(coordinateMutationResolver.newCoordinate(item.location))
-//                    newCoordinates.add(Coordinate(item.location))
-//                }
-//            }
             val newCoordinates = updatedSet.places.map { patient -> patient.coordinate };
 
             updatedSet.neighborhoodMatrix = calcNeighborhoodMatrix(newCoordinates)
+            updatedSet.places.forEach { patient ->
+                patient.tags.forEach { tag ->
+                    tagMutationResolver.addTag(tag)
+                }
+                patient
+            }
             salesmanSet.paths = mutableListOf(findFirstPath(salesmanSet))
         }
         return salesmanSetRepository.save(updatedSet)
-//        return salesmanSetRepository.insert(updatedSet)
     }
 
     fun upgradeSalesmanSet(id: String, timeInSec: Int, populationSize: Int = 200, parentPopulationSize: Int = 20): SalesmanSet {

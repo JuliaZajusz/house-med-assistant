@@ -7,7 +7,7 @@ import {getPatientsAction} from "../actions/patientActions";
 import {Edit} from "@material-ui/icons";
 import Chip from "@material-ui/core/Chip";
 import {getContrastYIQ, hashCode, intToRGB} from "../utils/Utils";
-import {addCoordinateToSalesmanSet} from "../actions/salesmanSetActions";
+import {addPatientToSalesmanSet} from "../actions/salesmanSetActions";
 
 
 const useStyles = makeStyles(theme => ({
@@ -47,7 +47,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => ({
   getPatientsAction: (text, tags) => dispatch(getPatientsAction(text, tags)),
-  addCoordinateToSalesmanSet: (coordinate) => dispatch(addCoordinateToSalesmanSet(coordinate))
+  addPatientToSalesmanSet: (coordinate) => dispatch(addPatientToSalesmanSet(coordinate))
 });
 
 
@@ -79,7 +79,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsLis
               key={patient.id}
               className={classes.patient_paper}
               onClick={() => {
-                props.addCoordinateToSalesmanSet(patient.coordinate.location)
+                props.addPatientToSalesmanSet(patient)
               }}
             >
               <Grid
