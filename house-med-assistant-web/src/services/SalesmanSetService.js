@@ -13,12 +13,30 @@ export const getAllSalesmanSets = () => {
                   id,
                   places {
                       id,
-                      location
+                      firstName
+                      lastName
+                      address
+                      coordinate {
+                          id
+                          location
+                      }
+                      tags {
+                          name
+                      }
                   }
                   paths {
                       places {
                           id,
-                          location
+                          firstName
+                          lastName
+                          address
+                          coordinate {
+                              id
+                              location
+                          }
+                          tags {
+                              name
+                          }
                       },
                       value
                   }
@@ -55,12 +73,30 @@ export const upgradeSalesmanSet = (id,
                         id,
                         places {
                             id,
-                            location
+                            firstName
+                            lastName
+                            address
+                            coordinate {
+                                id
+                                location
+                            }
+                            tags {
+                                name
+                            }
                         }
                         paths {
                             places {
                                 id,
-                                location
+                                firstName
+                                lastName
+                                address
+                                coordinate {
+                                    id
+                                    location
+                                }
+                                tags {
+                                    name
+                                }
                             },
                             value
                         }
@@ -88,23 +124,42 @@ export const postSalesmanSet = (set) => {
 
     let json = JSON.stringify(places).replace(/\"([^(\")"]+)\":/g, "$1:");
 
+    console.log(json)
     return client
     .mutate({
             mutation: gql`
                 mutation newSalesmanSet {
                     newSalesmanSet(
-                        coordinates: ${json}
+                        patients: ${json}
                     ) {
                         id,
                         places {
                             id,
-                            location
+                            firstName
+                            lastName
+                            address
+                            coordinate {
+                                id
+                                location
+                            }
+                            tags {
+                                name
+                            }
                         }
                         paths {
                             id,
                             places {
                                 id,
-                                location
+                                firstName
+                                lastName
+                                address
+                                coordinate {
+                                    id
+                                    location
+                                }
+                                tags {
+                                    name
+                                }
                             },
                             value
                         }
@@ -145,13 +200,31 @@ export const putSalesmanSet = (set) => {
                         id,
                         places {
                             id,
-                            location
+                            firstName
+                            lastName
+                            address
+                            coordinate {
+                                id
+                                location
+                            }
+                            tags {
+                                name
+                            }
                         }
                         paths {
                             id,
                             places {
                                 id,
-                                location
+                                firstName
+                                lastName
+                                address
+                                coordinate {
+                                    id
+                                    location
+                                }
+                                tags {
+                                    name
+                                }
                             },
                             value
                         }

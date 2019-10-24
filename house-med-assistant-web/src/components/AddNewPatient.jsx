@@ -50,6 +50,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
 
     const createNewPatient = () => {
       props.addNewPatient(patient)
+      setAddNewPatient(false)
     };
 
     const handleChange = (e) => {
@@ -129,7 +130,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
           </Grid>
         </Grid>}
         <Fab size="small"
-             variant={addNewPatient && "extended"}
+             variant={addNewPatient ? "extended" : "round"}
              color="secondary"
              aria-label="add"
              className={classes.margin}

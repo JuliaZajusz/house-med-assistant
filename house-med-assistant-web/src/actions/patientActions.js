@@ -76,7 +76,12 @@ export const getCoordinatesByAddress = (address) => dispatch => {
 
 
 export const addNewPatient = (patient) => dispatch => {
-  postPatient(patient)
+  postPatient(patient).then((res) => {
+    dispatch({
+      type: 'ADD_PATIENT',
+      payload: res.data.newPatient
+    });
+  })
 };
 
 // export const simpleAction = () => dispatch => {

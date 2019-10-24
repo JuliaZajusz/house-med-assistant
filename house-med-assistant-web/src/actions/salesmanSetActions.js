@@ -1,5 +1,10 @@
 import {addCoordinate} from "../services/DefaultService";
-import {postSalesmanSet, upgradeSalesmanSet} from "../services/SalesmanSetService";
+import {
+  deleteSalesmanSet,
+  getAllSalesmanSets,
+  postSalesmanSet,
+  upgradeSalesmanSet
+} from "../services/SalesmanSetService";
 import {history} from "../App";
 
 export const addCoordinateToSalesmanSet = (coordinate) => dispatch => {
@@ -49,6 +54,27 @@ const repeat = (set) => {
       //TODO jeśli stan się zmienił, doszedł nowy punkt to nie update'uj, przerwij request
       setSalesmanSet(response.data.upgradeSalesmanSet)
     })
+};
+
+export const loadAllSalesmanSets = () => dispatch => {
+  getAllSalesmanSets()
+    .then((res) => {
+      dispatch({
+        type: 'GET_SALESMAN_SETS',
+        payload: res.data.salesmanSets
+      })
+    })
+};
+
+export const removeSalesmanSet = (id) => dispatch => {
+  deleteSalesmanSet(id).then((res) => {
+      console.log("res: ", res);
+      dispatch({
+        type: 'REMOVE_SALESMAN_SET',
+        payload: res ? id : ""
+      })
+    }
+  )
 }
 
 // export const simpleAction = () => dispatch => {

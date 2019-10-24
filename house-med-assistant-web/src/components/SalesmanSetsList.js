@@ -1,11 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import DeleteIcon from '@material-ui/icons/Delete';
-import {deleteSalesmanSet, getAllSalesmanSets} from "../services/SalesmanSetService";
 import IconButton from "@material-ui/core/IconButton";
-import {setSalesmanSet} from "../actions/salesmanSetActions";
+import {loadAllSalesmanSets, removeSalesmanSet, setSalesmanSet} from "../actions/salesmanSetActions";
 import connect from "react-redux/es/connect/connect";
 
 
@@ -23,45 +22,35 @@ const useStyles = makeStyles(theme => ({
 
 const mapStateToProps = (state) => {
   return {
+    salesmanSets: state.salesmanSetReducer.salesmanSets,
     mapSalesmanSet: state.salesmanSetReducer.mapSalesmanSet,
   }
 };
 
 const mapDispatchToProps = dispatch => ({
-  setSalesmanSet: (salesmanSet) => dispatch(setSalesmanSet(salesmanSet))
+  setSalesmanSet: (salesmanSet) => dispatch(setSalesmanSet(salesmanSet)),
+  getAllSalesmanSets: () => dispatch(loadAllSalesmanSets()),
+  removeSalesmanSet: (id) => dispatch(removeSalesmanSet(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSetsList(props) {
   const classes = useStyles();
 
-  const [salesmanSets, setSalesmanSets] = useState(
-    []
-  );
-
   useEffect(() => {
-    // Your code here
-    // console.log("useEffect SalesmanSetsList")
-    getAllSalesmanSets()
-      .then(result => {
-          setSalesmanSets(result.data.salesmanSets);
-          // console.log(result)
-          // let set = result.data.salesmanSets[1]
-          // setSalesmanSet({...set, places: [...salesmanSet.places, ...set.places]})
-        }
-      )
-  });
+    props.getAllSalesmanSets();
+  }, [])
 
-  // console.log("salesmanSets", salesmanSets)
 
   const deleteDalesmanSet = (e, id) => {
     e.stopPropagation();
-    deleteSalesmanSet(id).then((res) => {
-        if (res.data.deleteSalesmanSet) {
-          setSalesmanSets(salesmanSets.filter((salesmanSet) => salesmanSet.id != id))
-        }
-        return res
-      }
-    )
+    props.removeSalesmanSet(id);
+    // deleteSalesmanSet(id).then((res) => {
+    //     if (res.data.deleteSalesmanSet) {
+    //       // setSalesmanSets(salesmanSets.filter((salesmanSet) => salesmanSet.id != id))
+    //     }
+    //     return res
+    //   }
+    // )
   }
 
   return (
@@ -74,7 +63,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
       className={classes.side_panel__salesman_list}
     >
 
-      {salesmanSets && salesmanSets.map((salesmanSet) => {
+      {props.salesmanSets && props.salesmanSets.map((salesmanSet) => {
           return <Paper
             key={salesmanSet.id}
             className={classes.salesmanSet_paper}
@@ -96,7 +85,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
                     {place.id}
                   </p>
                   <p>
-                    {place.name}: {place.location[0]}, {place.location[1]}
+                    {place.name} a: {place.coordinate.location[0]}, {place.coordinate.location[1]}
                   </p>
                 </Paper>
               )}
