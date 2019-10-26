@@ -75,14 +75,29 @@ export const getCoordinatesByAddress = (address) => dispatch => {
 };
 
 
-export const addNewPatient = (patient) => dispatch => {
+export const addNewPatient = (patient) => (dispatch, getState) => {
   console.log("addNewPatient", patient)
   postPatient(patient).then((res) => {
     dispatch({
       type: 'ADD_PATIENT',
       payload: res.data.newPatient
     });
+    console.log("przed ustawieniem tagów", getState())
     dispatch(getTagsAction())
+    console.log("po ustawieniu tagów", getState())
+  })
+};
+
+export const showModal = (action) => dispatch => {
+  dispatch({
+    type: 'SHOW_MODAL',
+    payload: action
+  })
+};
+
+export const hideModal = () => dispatch => {
+  dispatch({
+    type: 'HIDE_MODAL',
   })
 };
 

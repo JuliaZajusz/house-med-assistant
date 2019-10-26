@@ -54,43 +54,33 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function App(props, state) {
+export default function App(props, state) {
     const classes = useStyles();
 
-
-    // const simpleAction = (event) => {
-    // //     props.simpleAction().then((res) =>
-    // //       console.log("THEN", res));
-    // //     console.log("2", props);
-    //     console.log(props)
-    // };
-
-
+    console.log("render App");
     return (
-        <div className={classes.app}>
-            <BrowserRouter history={history}>
-                <ThemeProvider theme={theme}>
-                    <AppBar position="static">
-                        <Toolbar>
-                            <Typography variant="h6" className={classes.title}>
-                                house med assistant
-                            </Typography>
-                        </Toolbar>
-                        {/*<Link to="/about">Home</Link>*/}
-                        {/*<button onClick={(e) => simpleAction(e)}>Test redux action</button>*/}
-                    </AppBar>
-                    <Grid container
-                          direction="row"
-                          justify="center"
-                          className={classes.main_layout_box}
-                          alignItems='stretch'
-                    >
-                        <Grid item xs={3}
-                              flexgrow={1}
-                              className={classes.side_container_container}
-                        >
-                            <SidePanel/>
-                        </Grid>
+      <div className={classes.app}>
+          <BrowserRouter history={history}>
+              <ThemeProvider theme={theme}>
+                  <AppBar position="static">
+                      <Toolbar>
+                          <Typography variant="h6" className={classes.title}>
+                              house med assistant
+                          </Typography>
+                      </Toolbar>
+                  </AppBar>
+                  <Grid container
+                        direction="row"
+                        justify="center"
+                        className={classes.main_layout_box}
+                        alignItems='stretch'
+                  >
+                      <Grid item xs={3}
+                            flexgrow={1}
+                            className={classes.side_container_container}
+                      >
+                          <SidePanel/>
+                      </Grid>
                       <Grid item xs={6}>
                           <MapWrapper/>
                       </Grid>
@@ -100,11 +90,10 @@ function App(props, state) {
                       >
                           <PatientsPanel/>
                       </Grid>
-                    </Grid>
-                </ThemeProvider>
-            </BrowserRouter>
-        </div>
+                  </Grid>
+              </ThemeProvider>
+          </BrowserRouter>
+      </div>
     );
 }
 
-export default App;

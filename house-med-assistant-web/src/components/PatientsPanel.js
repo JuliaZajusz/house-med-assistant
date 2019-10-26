@@ -11,10 +11,12 @@ import {
   getCoordinatesByAddress,
   getPatientsAction,
   getTagsAction,
-  setActiveTagsAction
+  setActiveTagsAction,
+  showModal
 } from "../actions/patientActions";
 import {connect} from "react-redux";
 import AddNewPatient from "./AddNewPatient";
+import TransisionModal from "./TransisionModal";
 
 
 const useStyles = makeStyles(theme => ({
@@ -103,6 +105,7 @@ const mapStateToProps = (state) => {
     tags: state.patientReducer.tags,
     activeTags: state.patientReducer.activeTags,
     coordinatesByAddress: state.patientReducer.coordinatesByAddress,
+    patientModal: state.patientReducer.modal,
 
   }
 };
@@ -112,6 +115,7 @@ const mapDispatchToProps = dispatch => ({
   getCoordinatesByAddress: (addr) => dispatch(getCoordinatesByAddress(addr)),
   setActiveTagsAction: (activeTags) => dispatch(setActiveTagsAction(activeTags)),
   getPatientsAction: (text, tags) => dispatch(getPatientsAction(text, tags)),
+  showModal: (action) => dispatch(showModal(action)),
 });
 
 
@@ -138,6 +142,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
     props.setActiveTagsAction(activeTags);
     props.getPatientsAction(searchValue, props.activeTags);
   };
+
+  const showModal = (e) => {
+    console.log("showModal")
+    props.showModal("add")
+  }
 
   useEffect(() => {
     props.getTagsAction()
@@ -188,6 +197,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
           </div>
         </div>
       </Grid>
+      <button onClick={(e) => showModal(e)}>show modal</button>
+      {props.patientModal.isOpen && <TransisionModal/>}
       <AddNewPatient/>
 
       {/*<Grid*/}

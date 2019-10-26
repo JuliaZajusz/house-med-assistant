@@ -65,7 +65,11 @@ export default (state = {
       },
       "types": ["street_address"]
     }
-  ]
+  ],
+  modal: {
+    isOpen: false,
+    operation: null
+  }
 }, action) => {
   switch (action.type) {
     case 'SET_PATIENTS':
@@ -92,6 +96,22 @@ export default (state = {
       return {
         ...state,
         patients: [...state.patients, action.payload]
+      };
+    case 'SHOW_MODAL':
+      return {
+        ...state,
+        modal: {
+          isOpen: true,
+          operation: action.payload
+        }
+      };
+    case 'HIDE_MODAL':
+      return {
+        ...state,
+        modal: {
+          isOpen: false,
+          operation: null
+        }
       };
     default:
       return state
