@@ -65,7 +65,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
     >
 
       {props.salesmanSets && props.salesmanSets
-        .filter((salesmanSet) => props.mapSalesmanSet && props.mapSalesmanSet.id && props.mapSalesmanSet.id !== salesmanSet.id)
+        .filter((salesmanSet) => !props.mapSalesmanSet || (props.mapSalesmanSet && props.mapSalesmanSet.id && props.mapSalesmanSet.id !== salesmanSet.id))
         .map((salesmanSet) => {
           return <Paper
             key={salesmanSet.id}
