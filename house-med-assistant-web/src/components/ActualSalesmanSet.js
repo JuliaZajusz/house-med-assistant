@@ -74,9 +74,11 @@ const useStyles = makeStyles(theme => ({
       width: 200,
     },
   },
-  // flexWrapNowrap: {
-  //     flexWrap: 'nowrap',
-  // }
+  salesmanset_id: {
+    flexWrap: "nowrap",
+    marginTop: "5px",
+    marginBottom: "5px",
+  }
 }));
 
 const mapStateToProps = (state) => {
@@ -116,9 +118,25 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
           </ButtonGroup>
         </Grid>
       </Grid>
+      {props.mapSalesmanSet && props.mapSalesmanSet.id &&
+      <Grid container
+            direction="row"
+            justify="space-between"
+            className={classes.salesmanset_id}
+            alignItems='center'
+      >
+        <div style={{fontSize: '10px', color: 'grey'}}>
+          {props.mapSalesmanSet.id}
+        </div>
+        {/*<div>*/}
+        {/*  <Delete fontSize="small" className={classes.deleteButton}*/}
+        {/*          onClick={(e) => deleteDalesmanSet(e, salesmanSet.id)}/>*/}
+        {/*</div>*/}
+      </Grid>
+      }
       {props.mapSalesmanSet && props.mapSalesmanSet.places && props.mapSalesmanSet.places.map((place) =>
         <PatientPaper patient={place} onDelete={(id) => {
-          console.log(id);
+          console.log("onDelete", id);
           return true
         }}/>)}
       <Fab

@@ -2,11 +2,10 @@ import React, {useEffect} from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import DeleteIcon from '@material-ui/icons/Delete';
-import IconButton from "@material-ui/core/IconButton";
 import {loadAllSalesmanSets, removeSalesmanSet, setSalesmanSet} from "../actions/salesmanSetActions";
 import connect from "react-redux/es/connect/connect";
 import PatientPaper from "./PatientPaper";
+import {Delete} from "@material-ui/icons";
 
 
 const useStyles = makeStyles(theme => ({
@@ -17,8 +16,15 @@ const useStyles = makeStyles(theme => ({
   salesmanSet_paper: {
     background: "gold",
     padding: "5px",
-    marginBottom: "10px"
+    marginBottom: "10px",
+    width: "calc(100% - 10px)",
   },
+  flexWrapNowrap: {
+    flexWrap: "nowrap"
+  },
+  deleteButton: {
+    cursor: "pointer"
+  }
 }));
 
 const mapStateToProps = (state) => {
@@ -45,14 +51,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
   const deleteDalesmanSet = (e, id) => {
     e.stopPropagation();
     props.removeSalesmanSet(id);
-    // deleteSalesmanSet(id).then((res) => {
-    //     if (res.data.deleteSalesmanSet) {
-    //       // setSalesmanSets(salesmanSets.filter((salesmanSet) => salesmanSet.id != id))
-    //     }
-    //     return res
-    //   }
-    // )
-  }
+  };
 
   return (
     <Grid
@@ -72,16 +71,21 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
             className={classes.salesmanSet_paper}
             onClick={() => props.setSalesmanSet(salesmanSet)}
           >
-            <h4>
-              {salesmanSet.id}
-              <IconButton aria-label="delete" className={classes.margin}
-                          onClick={(e) => deleteDalesmanSet(e, salesmanSet.id)}>
-                <DeleteIcon fontSize="small"/>
-              </IconButton>
-            </h4>
-            {salesmanSet && salesmanSet.places
-              .map((patient) => <PatientPaper patient={patient}/>
-              )}
+            <Grid container
+                  direction="row"
+                  justify="space-between"
+                  className={classes.flexWrapNowrap}
+                  alignItems='center'
+            >
+              <div style={{fontSize: '10px', color: 'grey'}}>
+                {salesmanSet.id}
+              </div>
+              <div>
+                <Delete fontSize="small" className={classes.deleteButton}
+                        onClick={(e) => deleteDalesmanSet(e, salesmanSet.id)}/>
+              </div>
+            </Grid>
+            {salesmanSet && salesmanSet.places.map((patient) => <PatientPaper patient={patient}/>)}
           </Paper>
         }
       )

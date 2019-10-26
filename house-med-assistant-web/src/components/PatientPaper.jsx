@@ -45,7 +45,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientPape
             direction="row"
             justify="space-between"
             className={classes.flexWrapNowrap}
-        // flexWrap="nowrap"
             alignItems='center'
       >
         <div style={{fontSize: '10px', color: 'grey'}}>
