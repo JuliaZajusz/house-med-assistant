@@ -8,7 +8,7 @@ import PatientPaper from "./PatientPaper";
 
 
 const useStyles = makeStyles(theme => ({
-  side_panel__patients_list__container: {
+  vertical_scroll_box_container: {
     // position: 'relative',
     flex: "1 1 auto",
     height: '0px',
@@ -62,7 +62,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsLis
 
   return (
     <div
-      className={classes.side_panel__patients_list__container}>
+      className={classes.vertical_scroll_box_container}>
       <Grid
         item
         container

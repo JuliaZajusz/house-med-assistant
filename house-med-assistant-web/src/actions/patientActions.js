@@ -41,7 +41,7 @@ export const getPatientByCoordinateId = (id) => async (dispatch) => {
   })
 }
 
-export const getTagsAction = (tags) => async (dispatch, getState) => {
+export const getTagsAction = () => async (dispatch) => {
   let response = await getAllTags();
   dispatch({
     type: 'SET_TAGS',
@@ -76,11 +76,13 @@ export const getCoordinatesByAddress = (address) => dispatch => {
 
 
 export const addNewPatient = (patient) => dispatch => {
+  console.log("addNewPatient", patient)
   postPatient(patient).then((res) => {
     dispatch({
       type: 'ADD_PATIENT',
       payload: res.data.newPatient
     });
+    dispatch(getTagsAction())
   })
 };
 

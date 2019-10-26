@@ -88,6 +88,13 @@ const useStyles = makeStyles(theme => ({
       width: 200,
     },
   },
+  horizontal_scroll_box_container: {
+    overflowX: "scroll",
+  },
+  horizontal_scroll_box: {
+    display: "flex",
+    flexWrap: "noWrap",
+  },
 }));
 
 const mapStateToProps = (state) => {
@@ -132,33 +139,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
     props.getPatientsAction(searchValue, props.activeTags);
   };
 
-  // const createNewPatient = () => {
-  //   setAddNewPatient(true)
-  // };
-  //
-  // const handleChange = (e) => {
-  //   setValue(e.target.value)
-  // }
-  //
-  // const handleTextFieldKeyDown = event => {
-  //   switch (event.key) {
-  //     case 'Enter':
-  //       console.log(value);
-  //       searchForCoordinates(value.replace(/ /g, "+"))
-  //       // call corresponding handler
-  //       break
-  //     case 'Escape':
-  //       // etc...
-  //       break
-  //     default:
-  //       break
-  //   }
-  // };
-  //
-  // const searchForCoordinates = (addr) => {
-  //   props.getCoordinatesByAddress(addr);
-  // }
-
   useEffect(() => {
     props.getTagsAction()
   }, []);
@@ -184,26 +164,29 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
             onChange={(e) => search(e)}
           />
         </div>
-        {
-          props.tags && props.tags.map((tag) => {
-            let backgroundColor = '#' + intToRGB(hashCode(tag.name));
-            return (
-              <Chip
-                key={tag.id}
-                style={{
-                  background: backgroundColor,
-                  color: getContrastYIQ(backgroundColor),
-                  margin: '5px',
-                  opacity: !props.activeTags.includes(tag.name) ? 0.5 : 1,
-                }}
-                label={tag.name}
-                size="small"
-                // disabled={!props.activeTags.includes(tag.name)}
-                onClick={() => changeTagActivity(tag.name)}
-              />
-            )
-          })
-        }
+        <div className={classes.horizontal_scroll_box_container}>
+          <div className={classes.horizontal_scroll_box}>
+            {
+              props.tags && props.tags.map((tag) => {
+                let backgroundColor = '#' + intToRGB(hashCode(tag.name));
+                return (
+                  <Chip
+                    key={tag.id}
+                    style={{
+                      background: backgroundColor,
+                      color: getContrastYIQ(backgroundColor),
+                      margin: '5px',
+                      opacity: !props.activeTags.includes(tag.name) ? 0.5 : 1,
+                    }}
+                    label={tag.name}
+                    size="small"
+                    onClick={() => changeTagActivity(tag.name)}
+                  />
+                )
+              })
+            }
+          </div>
+        </div>
       </Grid>
       <AddNewPatient/>
 

@@ -162,7 +162,8 @@ export const postPatient = (patient) => {
   const firstName = patient.firstName;
   const address = patient.address;
   const location = JSON.stringify(patient.coordinate.location).replace(/\"([^(\")"]+)\":/g, "$1:");
-  const tags = patient.tags;
+  const tags = JSON.stringify(patient.tags).replace(/\"([^(\")"]+)\":/g, "$1:");
+  console.log("tags", tags);
   return client
   .mutate({
       mutation: gql`
@@ -172,7 +173,7 @@ export const postPatient = (patient) => {
                   firstName: "${firstName}",
                   address: "${address}",
                   location: ${location},
-                  tags: "${tags}",
+                  tags: ${tags},
               ) {
                   id,
                   lastName,

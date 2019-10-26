@@ -9,9 +9,15 @@ import {addNewPatient, getCoordinatesByAddress} from "../actions/patientActions"
 import {connect} from "react-redux";
 
 const useStyles = makeStyles(theme => ({
-  search_panel: {
-    padding: '8px',
-    background: theme.palette.secondary.dark
+  vertical_scroll_box_container: {
+    flex: "1 1 auto",
+    height: '0px',
+    overflowY: "auto",
+  },
+  vertical_scroll_box: {
+    minHeight: "calc(100% - 16px)",
+    background: theme.palette.secondary.dark,
+    padding: "8px",
   },
   address_coordinates_paper: {
     cursor: 'pointer',
@@ -54,7 +60,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
     };
 
     const handleChange = (e) => {
-      setPatient({...patient, [e.target.id]: e.target.value})
+      if (e.target.id === "tags") {
+        setPatient({...patient, [e.target.id]: e.target.value.split(', ')})
+      } else {
+        setPatient({...patient, [e.target.id]: e.target.value})
+      }
     }
 
     const handleTextFieldKeyDown = event => {
@@ -88,7 +98,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
     };
 
     return (
-      <Grid className={classes.search_panel}>
+      <div
+        className={addNewPatient && classes.vertical_scroll_box_container}>
+        <div className={classes.vertical_scroll_box}>
+          <Grid>
         {addNewPatient && <Grid>
           <TextField
             label="Nazwisko"
@@ -128,12 +141,21 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
               )
             })}
           </Grid>
+          <TextField
+            label="Tagi"
+            id="tags"
+            helperText="Dodaj tagi"
+            margin="normal"
+            value={patient.tags ? patient.tags.join(", ") : ""}
+            onChange={handleChange}
+          />
         </Grid>}
         <Fab size="small"
              variant={addNewPatient ? "extended" : "round"}
              color="secondary"
              aria-label="add"
              className={classes.margin}
+             disabled={addNewPatient && !patient.coordinate}
              onClick={() => {
                addNewPatient ? createNewPatient() : setAddNewPatient(true)
              }}
@@ -142,6 +164,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
             : <Add/>}
         </Fab>
       </Grid>
+        </div>
+      </div>
     )
   }
 )
