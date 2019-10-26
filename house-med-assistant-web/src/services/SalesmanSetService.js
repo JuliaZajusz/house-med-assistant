@@ -57,58 +57,58 @@ export const upgradeSalesmanSet = (id,
                                    parentPopulationSize) => {
 
     console.log(id,
-        timeInSec,
-        populationSize,
-        parentPopulationSize)
+      timeInSec,
+      populationSize,
+      parentPopulationSize)
     return client
     .mutate({
-            mutation: gql`
-                mutation upgradeSalesmanSet {
-                    upgradeSalesmanSet(
-                        id: "${id}",
-                        timeInSec: ${timeInSec},
-                        populationSize: ${populationSize},
-                        parentPopulationSize: ${parentPopulationSize}
-                    ) {
-                        id,
-                        places {
-                            id,
-                            firstName
-                            lastName
-                            address
-                            coordinate {
-                                id
-                                location
-                            }
-                            tags {
-                                name
-                            }
-                        }
-                        paths {
-                            places {
-                                id,
-                                firstName
-                                lastName
-                                address
-                                coordinate {
-                                    id
-                                    location
-                                }
-                                tags {
-                                    name
-                                }
-                            },
-                            value
-                        }
-                        neighborhoodMatrix {
-                            startCoordinateId,
-                            endCoordinateId,
-                            value
-                        }
-                    }
-                }
-            `
-        }
+          mutation: gql`
+              mutation upgradeSalesmanSet {
+                  upgradeSalesmanSet(
+                      id: "${id}",
+                      timeInSec: ${timeInSec},
+                      populationSize: ${populationSize},
+                      parentPopulationSize: ${parentPopulationSize}
+                  ) {
+                      id,
+                      places {
+                          id,
+                          firstName
+                          lastName
+                          address
+                          coordinate {
+                              id
+                              location
+                          }
+                          tags {
+                              name
+                          }
+                      }
+                      paths {
+                          places {
+                              id,
+                              firstName
+                              lastName
+                              address
+                              coordinate {
+                                  id
+                                  location
+                              }
+                              tags {
+                                  name
+                              }
+                          },
+                          value
+                      }
+                      neighborhoodMatrix {
+                          startCoordinateId,
+                          endCoordinateId,
+                          value
+                      }
+                  }
+              }
+          `
+      }
     );
 }
 
@@ -137,51 +137,51 @@ export const postSalesmanSet = (set) => {
     console.log("json", json)
     return client
     .mutate({
-            mutation: gql`
-                mutation newSalesmanSet {
-                    newSalesmanSet(
-                        patients: ${json}
-                    ) {
-                        id,
-                        places {
-                            id,
-                            firstName
-                            lastName
-                            address
-                            coordinate {
-                                id
-                                location
-                            }
-                            tags {
-                                name
-                            }
-                        }
-                        paths {
-                            id,
-                            places {
-                                id,
-                                firstName
-                                lastName
-                                address
-                                coordinate {
-                                    id
-                                    location
-                                }
-                                tags {
-                                    name
-                                }
-                            },
-                            value
-                        }
-                        neighborhoodMatrix {
-                            startCoordinateId,
-                            endCoordinateId,
-                            value
-                        }
-                    }
-                }
-            `
-        }
+          mutation: gql`
+              mutation newSalesmanSet {
+                  newSalesmanSet(
+                      patients: ${json}
+                  ) {
+                      id,
+                      places {
+                          id,
+                          firstName
+                          lastName
+                          address
+                          coordinate {
+                              id
+                              location
+                          }
+                          tags {
+                              name
+                          }
+                      }
+                      paths {
+                          id,
+                          places {
+                              id,
+                              firstName
+                              lastName
+                              address
+                              coordinate {
+                                  id
+                                  location
+                              }
+                              tags {
+                                  name
+                              }
+                          },
+                          value
+                      }
+                      neighborhoodMatrix {
+                          startCoordinateId,
+                          endCoordinateId,
+                          value
+                      }
+                  }
+              }
+          `
+      }
     );
 }
 
@@ -194,62 +194,80 @@ export const putSalesmanSet = (set) => {
             })
         }
     })
+
+    let paths = set.paths.map((path) => {
+        return {
+            ...path,
+            places: path.places.map((place) => {
+                return {
+                    ...place,
+                    tags: place.tags.map((tag) => {
+                        return tag.name
+                    })
+                }
+            })
+        }
+    })
+
+    console.log("updateSalesmanSet", set.id)
+    // console.log("updateSalesmanSet places: ", places)
+    // console.log("updateSalesmanSet paths: ", paths)
     let mappedSet = {
         id: set.id,
-        paths: set.paths,
+        paths: paths,
         neighborhoodMatrix: set.neighborhoodMatrix,
         places: places
     }
     let json = JSON.stringify(mappedSet).replace(/\"([^(\")"]+)\":/g, "$1:");
 
-    console.log("updateSalesmanSet json", json)
+    // console.log("updateSalesmanSet json", json)
     return client
     .mutate({
-            mutation: gql`
-                mutation updateSalesmanSet {
-                    updateSalesmanSet(
-                        salesmanSet: ${json}
-                    ) {
-                        id,
-                        places {
-                            id,
-                            firstName
-                            lastName
-                            address
-                            coordinate {
-                                id
-                                location
-                            }
-                            tags {
-                                name
-                            }
-                        }
-                        paths {
-                            id,
-                            places {
-                                id,
-                                firstName
-                                lastName
-                                address
-                                coordinate {
-                                    id
-                                    location
-                                }
-                                tags {
-                                    name
-                                }
-                            },
-                            value
-                        }
-                        neighborhoodMatrix {
-                            startCoordinateId,
-                            endCoordinateId,
-                            value
-                        }
-                    }
-                }
-            `
-        }
+          mutation: gql`
+              mutation updateSalesmanSet {
+                  updateSalesmanSet(
+                      salesmanSet: ${json}
+                  ) {
+                      id,
+                      places {
+                          id,
+                          firstName
+                          lastName
+                          address
+                          coordinate {
+                              id
+                              location
+                          }
+                          tags {
+                              name
+                          }
+                      }
+                      paths {
+                          id,
+                          places {
+                              id,
+                              firstName
+                              lastName
+                              address
+                              coordinate {
+                                  id
+                                  location
+                              }
+                              tags {
+                                  name
+                              }
+                          },
+                          value
+                      }
+                      neighborhoodMatrix {
+                          startCoordinateId,
+                          endCoordinateId,
+                          value
+                      }
+                  }
+              }
+          `
+      }
     );
 }
 

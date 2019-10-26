@@ -9,7 +9,7 @@ import {history} from "../App";
 export const addPatientToSalesmanSet = (patient) => dispatch => {
   console.log(patient)
         dispatch({
-          type: 'ADD_COORDINATE_TO_SALESMAN_SET',
+          type: 'ADD_PATIENT_TO_SALESMAN_SET',
           payload: patient
         });
 };
@@ -31,24 +31,24 @@ export const addNewSalesmanSet = () => (dispatch, getState) => {
   postSalesmanSet(mapSalesmanSet)
     .then(response => {
       if (response.data.updateSalesmanSet) {
-        repeat(response.data.updateSalesmanSet);
+        dispatch(repeat(response.data.updateSalesmanSet));
       }
       if (response.data.newSalesmanSet) {
-        repeat(response.data.newSalesmanSet);
+        dispatch(repeat(response.data.newSalesmanSet));
       }
     })
 };
 
-const repeat = (set) => {
+const repeat = (set) => dispatch => {
   console.log("repeat", set)
   // history.push({
   //     pathname: `/${set.id}`
   // });
-  setSalesmanSet(set);
+  dispatch(setSalesmanSet(set));
   upgradeSalesmanSet(set.id, 2, 20, 20)
     .then((response) => {
       //TODO jeśli stan się zmienił, doszedł nowy punkt to nie update'uj, przerwij request
-      setSalesmanSet(response.data.upgradeSalesmanSet)
+      dispatch(setSalesmanSet(response.data.upgradeSalesmanSet))
     })
 };
 

@@ -44,7 +44,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => ({
   getPatientsAction: (text, tags) => dispatch(getPatientsAction(text, tags)),
-  addPatientToSalesmanSet: (coordinate) => dispatch(addPatientToSalesmanSet(coordinate))
+  addPatientToSalesmanSet: (patient) => dispatch(addPatientToSalesmanSet(patient))
 });
 
 
@@ -72,7 +72,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsLis
         className={classes.side_panel__patients_list}
       >
         {props.patients && props.patients.map((patient) => {
-          return <PatientPaper patient={patient} onEdit={(e, id) => editPatient(e, id)}/>
+          return <PatientPaper patient={patient} onEdit={(e, id) => editPatient(e, id)} onSelect={(e) => {
+            e.stopPropagation();
+            props.addPatientToSalesmanSet(patient)
+          }}/>
         })
         }
       </Grid>

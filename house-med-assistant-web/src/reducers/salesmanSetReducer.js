@@ -8,7 +8,7 @@ export default (state = {
         ...state,
         mapSalesmanSet: action.payload
       };
-    case 'ADD_COORDINATE_TO_SALESMAN_SET':
+    case 'ADD_PATIENT_TO_SALESMAN_SET':
       return {
         ...state,
         mapSalesmanSet: state.mapSalesmanSet
@@ -21,11 +21,7 @@ export default (state = {
         salesmanSets: action.payload
       };
     case 'REMOVE_SALESMAN_SET':
-      let newSalesmanSets = [...state.salesmanSets.filter(function (value, index, arr) {
-        console.log(!action.payload === value.id, action.payload, value.id)
-        return !action.payload === value.id;
-      })];
-      console.log("newSalesmanSets: ", newSalesmanSets)
+      let newSalesmanSets = [...state.salesmanSets.filter((value) => !(action.payload === value.id))];
       return {
         ...state,
         salesmanSets: newSalesmanSets

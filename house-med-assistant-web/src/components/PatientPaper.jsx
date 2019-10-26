@@ -33,12 +33,13 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({});
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(function PatientPaper({patient, onDelete, onEdit}) {
+export default connect(mapStateToProps, mapDispatchToProps)(function PatientPaper({patient, onDelete, onEdit, onSelect}) {
   const classes = useStyles();
   return (
     <Paper
       key={patient.id}
       className={classes.paper}
+      onClick={(e) => onSelect && onSelect(e)}
     >
       <Grid container
             direction="row"
