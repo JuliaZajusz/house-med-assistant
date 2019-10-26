@@ -1,5 +1,6 @@
 extend type Query {
     salesmanSets: [SalesmanSet]
+    findSalesmanSetById(id: ID!) : SalesmanSet
 }
 
 type Distance {

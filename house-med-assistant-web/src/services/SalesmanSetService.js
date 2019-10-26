@@ -51,6 +51,52 @@ export const getAllSalesmanSets = () => {
     );
 }
 
+export const findSalesmanSetById = (id) => {
+  return client
+  .query({
+      query: gql`{
+          findSalesmanSetById(id: "${id}") {
+              id,
+              places {
+                  id,
+                  firstName
+                  lastName
+                  address
+                  coordinate {
+                      id
+                      location
+                  }
+                  tags {
+                      name
+                  }
+              }
+              paths {
+                  places {
+                      id,
+                      firstName
+                      lastName
+                      address
+                      coordinate {
+                          id
+                          location
+                      }
+                      tags {
+                          name
+                      }
+                  },
+                  value
+              }
+              neighborhoodMatrix {
+                  startCoordinateId,
+                  endCoordinateId,
+                  value
+              }
+          }
+      }`
+    }
+  );
+}
+
 export const upgradeSalesmanSet = (id,
                                    timeInSec,
                                    populationSize,

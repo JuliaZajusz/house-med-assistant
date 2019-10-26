@@ -64,7 +64,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
       className={classes.side_panel__salesman_list}
     >
 
-      {props.salesmanSets && props.salesmanSets.map((salesmanSet) => {
+      {props.salesmanSets && props.salesmanSets
+        .filter((salesmanSet) => props.mapSalesmanSet && props.mapSalesmanSet.id && props.mapSalesmanSet.id !== salesmanSet.id)
+        .map((salesmanSet) => {
           return <Paper
             key={salesmanSet.id}
             className={classes.salesmanSet_paper}

@@ -15,7 +15,7 @@ class SalesmanSetQueryResolver(val salesmanSetRepository: SalesmanSetRepository,
         return list;
     }
 
-    fun findById(id: String): SalesmanSet {
+    fun findSalesmanSetById(id: String): SalesmanSet {
         return salesmanSetRepository.findById(id).orElseThrow { NoSuchElementException(id) }
     }
 

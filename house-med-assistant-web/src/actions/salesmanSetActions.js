@@ -1,11 +1,24 @@
 import {
   deleteSalesmanSet,
+  findSalesmanSetById,
   getAllSalesmanSets,
   postSalesmanSet,
   upgradeSalesmanSet
 } from "../services/SalesmanSetService";
 import {history} from "../App";
 
+export const getSalesmanSet = (salesmanSetId) => dispatch => {
+  if (salesmanSetId != null && salesmanSetId !== "") {
+    console.log(salesmanSetId)
+    findSalesmanSetById(salesmanSetId).then(res => {
+        dispatch({
+          type: 'SET_SALESMAN_SET',
+          payload: res.data.findSalesmanSetById
+        });
+      }
+    )
+  }
+}
 export const addPatientToSalesmanSet = (patient) => dispatch => {
   console.log(patient)
         dispatch({

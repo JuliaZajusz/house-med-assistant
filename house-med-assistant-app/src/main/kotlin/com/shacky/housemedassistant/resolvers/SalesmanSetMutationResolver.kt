@@ -60,7 +60,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
     fun upgradeSalesmanSet(id: String, timeInSec: Int, populationSize: Int = 200, parentPopulationSize: Int = 20): SalesmanSet {
         findBestPathUsingGeneticAlgorythm(id, timeInSec, populationSize, parentPopulationSize)
-        return salesmanSetQueryResolver.findById(id);
+        return salesmanSetQueryResolver.findSalesmanSetById(id);
     }
 
     fun doSomethingElse(): Float {
@@ -221,7 +221,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
 
     fun findBestPathUsingGeneticAlgorythm(id: String, timeInSec: Int, populationSize: Int, parentPopulationSize: Int): Path {
-        var salesmanSet: SalesmanSet = salesmanSetQueryResolver.findById(id);
+        var salesmanSet: SalesmanSet = salesmanSetQueryResolver.findSalesmanSetById(id);
         val greedyPath = findGreedyPath(salesmanSet.id)
         if (!salesmanSet.paths.contains(greedyPath)) {
             salesmanSet.paths.add(greedyPath)
