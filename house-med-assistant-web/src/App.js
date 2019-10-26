@@ -1,18 +1,16 @@
 import React from 'react';
 import './App.css';
 import MapWrapper from "./components/Map";
-import {Toolbar} from '@material-ui/core';
-import Typography from "@material-ui/core/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import {createMuiTheme} from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
-import AppBar from "@material-ui/core/AppBar";
 import SidePanel from "./components/SidePanel";
 import {BrowserRouter} from "react-router-dom";
 import {createBrowserHistory} from 'history';
 import PatientsPanel from "./components/PatientsPanel";
+import Header from "./components/Header";
 
 export const history = createBrowserHistory();
 
@@ -62,13 +60,7 @@ export default function App(props, state) {
       <div className={classes.app}>
           <BrowserRouter history={history}>
               <ThemeProvider theme={theme}>
-                  <AppBar position="static">
-                      <Toolbar>
-                          <Typography variant="h6" className={classes.title}>
-                              house med assistant
-                          </Typography>
-                      </Toolbar>
-                  </AppBar>
+                  <Header/>
                   <Grid container
                         direction="row"
                         justify="center"
