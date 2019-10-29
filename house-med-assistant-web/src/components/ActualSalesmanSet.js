@@ -95,6 +95,11 @@ const mapDispatchToProps = dispatch => ({
 export default connect(mapStateToProps, mapDispatchToProps)(function ActualSalesmanSet(props) {
   const classes = useStyles();
 
+
+  const calculatePath = () => {
+    props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
+    // props.addNewSalesmanSet()
+  };
   return (
     <Grid
       item
@@ -145,7 +150,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
         color="primary"
         aria-label="add"
         className={classes.margin}
-        onClick={() => props.addNewSalesmanSet()}
+        onClick={calculatePath}
       >
         Wylicz trasę
       </Fab>

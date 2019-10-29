@@ -2,6 +2,7 @@ package com.shacky.housemedassistant
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.shacky.housemedassistant.resolvers.SalesmanSetMutationResolver
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.socket.CloseStatus
 import org.springframework.web.socket.TextMessage
@@ -16,7 +17,8 @@ import java.util.concurrent.atomic.AtomicLong
 class User(val id: Long, val name: String)
 class Message(val msgType: String, val data: Any)
 
-class ChatHandler : TextWebSocketHandler() {
+//@Component
+class ChatHandler(val salesmanSetMutationResolver: SalesmanSetMutationResolver) : TextWebSocketHandler() {
 
     val sessionList = HashMap<WebSocketSession, User>()
     var uids = AtomicLong(0)
@@ -44,7 +46,11 @@ class ChatHandler : TextWebSocketHandler() {
                 broadcast(Message("say", json.get("data").asText()))
             }
             "jul" -> {
-                emit(session, Message("jul", json.get("data").asText()))
+                val id = json.get("data").asText();
+//                val salesmanSetUtils = SalesmanSetUtils();
+                val salesmanSet = salesmanSetMutationResolver.upgradeSalesmanSet(id, 5);
+                println("!!!!!!!!!" + salesmanSet.paths[0].value)
+                emit(session, Message("value", salesmanSet.paths[0].value))
             }
         }
     }
@@ -56,8 +62,8 @@ class ChatHandler : TextWebSocketHandler() {
 
 @Configuration
 @EnableWebSocket
-class WSConfig : WebSocketConfigurer {
+class WSConfig(val salesmanSetMutationResolver: SalesmanSetMutationResolver) : WebSocketConfigurer {
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(ChatHandler(), "/chat").setAllowedOrigins("*").withSockJS()
+        registry.addHandler(ChatHandler(salesmanSetMutationResolver), "/chat").setAllowedOrigins("*").withSockJS()
     }
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import './App.css';
 import MapWrapper from "./components/Map";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -11,6 +11,7 @@ import {BrowserRouter} from "react-router-dom";
 import {createBrowserHistory} from 'history';
 import PatientsPanel from "./components/PatientsPanel";
 import Header from "./components/Header";
+import SockJS from "sockjs-client"
 
 export const history = createBrowserHistory();
 
@@ -52,33 +53,72 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function App(props, state) {
-    const classes = useStyles();
+export default class App extends Component {
+    // classes = useStyles();
+    classes = {};
 
-    console.log("render App");
-    return (
-      <div className={classes.app}>
+    constructor(props) {
+        super(props);
+        this.state = {
+            messages: ["lala", "aa"]
+        }
+
+
+        const sock = new SockJS('http://localhost:9000/chat');
+        // const sock = new SockJS('https://chat-server.azurewebsites.net/chat');
+
+        sock.onopen = () => {
+            console.log("onopen")
+        }
+
+
+        sock.onmessage = e => {
+            let data = JSON.parse(e.data).data
+            this.setState({messages: [data, ...this.state.messages]});
+            console.log("onmessage", e.data, data)
+        };
+
+        sock.onclose = () => {
+            console.log("onclose")
+        }
+
+
+        this.sock = sock;
+    }
+
+    onSockSend = (e) => {
+        // e.preventDefault();
+        console.log("handleFormSubmit")
+        // this.sock.send(JSON.stringify({type: "say", data:e.target[0].value}));
+        this.sock.send(JSON.stringify({type: "jul", data: e.target[0].value}));
+    }
+
+
+    render() {
+        console.log("render App");
+        return (
+          <div className={this.classes.app}>
           <BrowserRouter history={history}>
               <ThemeProvider theme={theme}>
-                  <Header/>
+                  <Header messages={this.state.messages} onSockSend={(e) => this.onSockSend(e)}/>
                   <Grid container
                         direction="row"
                         justify="center"
-                        className={classes.main_layout_box}
+                        className={this.classes.main_layout_box}
                         alignItems='stretch'
                   >
                       <Grid item xs={3}
                             flexgrow={1}
-                            className={classes.side_container_container}
+                            className={this.classes.side_container_container}
                       >
-                          <SidePanel/>
+                          <SidePanel onSockSend={(e) => this.onSockSend(e)}/>
                       </Grid>
                       <Grid item xs={6}>
                           <MapWrapper/>
                       </Grid>
                       <Grid item xs={3}
                             flexgrow={1}
-                            className={classes.side_container_container}
+                            className={this.classes.side_container_container}
                       >
                           <PatientsPanel/>
                       </Grid>
@@ -86,6 +126,7 @@ export default function App(props, state) {
               </ThemeProvider>
           </BrowserRouter>
       </div>
-    );
+        )
+    }
 }
 

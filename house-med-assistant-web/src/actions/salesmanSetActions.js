@@ -2,7 +2,6 @@ import {
   deleteSalesmanSet,
   findSalesmanSetById,
   getAllSalesmanSets,
-  postSalesmanSet,
   upgradeSalesmanSet
 } from "../services/SalesmanSetService";
 import {history} from "../App";
@@ -38,19 +37,43 @@ export const setSalesmanSet = (salesmanSet) => dispatch => {
   });
 };
 
+
 export const addNewSalesmanSet = () => (dispatch, getState) => {
-  const mapSalesmanSet = getState().salesmanSetReducer.mapSalesmanSet;
-  console.log("addNewSalesmanSet mapSalesmanSet", mapSalesmanSet);
-  postSalesmanSet(mapSalesmanSet)
-    .then(response => {
-      if (response.data.updateSalesmanSet) {
-        dispatch(repeat(response.data.updateSalesmanSet));
-      }
-      if (response.data.newSalesmanSet) {
-        dispatch(repeat(response.data.newSalesmanSet));
-      }
-    })
+  // const mapSalesmanSet = getState().salesmanSetReducer.mapSalesmanSet;
+  // const sock = new SockJS('http://localhost:9000/chat');
+  //
+  // sock.onopen = () => {
+  //   console.log("onopen")
+  // }
+  //
+  //
+  // sock.onmessage = e => {
+  //   let data = JSON.parse(e.data).data
+  //   this.setState({messages: [data, ...this.state.messages]});
+  //   console.log("onmessage", e.data, data)
+  // };
+  //
+  // sock.onclose = () => {
+  //   console.log("onclose")
+  // }
+  //
+  // sock.send(JSON.stringify({type: "jul", data: "katia"}));
+
 };
+
+// export const addNewSalesmanSet = () => (dispatch, getState) => {
+//   const mapSalesmanSet = getState().salesmanSetReducer.mapSalesmanSet;
+//   console.log("addNewSalesmanSet mapSalesmanSet", mapSalesmanSet);
+//   postSalesmanSet(mapSalesmanSet)
+//     .then(response => {
+//       if (response.data.updateSalesmanSet) {
+//         dispatch(repeat(response.data.updateSalesmanSet));
+//       }
+//       if (response.data.newSalesmanSet) {
+//         dispatch(repeat(response.data.newSalesmanSet));
+//       }
+//     })
+// };
 
 const repeat = (set) => dispatch => {
   console.log("repeat", set)

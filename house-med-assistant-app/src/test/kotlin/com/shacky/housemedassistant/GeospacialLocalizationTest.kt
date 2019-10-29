@@ -202,16 +202,16 @@ class GeospatialLiveTest {
                         Patient("", "", "", Coordinate(listOf(1f, 1f), "co-3"), listOf())
                 )
         )
-        val result1 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
-        val result2 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
-        val result3 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
-        val result4 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
-        val result5 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
-        val result6 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
-        val result7 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
-        val result8 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
-        val result9 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
-        val result10 = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result1 = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result2 = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result3 = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result4 = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result5 = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result6 = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result7 = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result8 = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result9 = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
+        val result10 = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)  //to nie dziala, czasem zwraca krótsze sciezki :/
 
         val path1: Path = Path(listOf(
 //                coordinateQueryResolver.findOneByLocation(listOf(2.3f, 2.4f)),
@@ -226,16 +226,16 @@ class GeospatialLiveTest {
         ))
         path1.value = pathQueryResolver.calcPathValue(path1.places.map { patient -> patient.coordinate })
 
-        assertTrue(path1.value.toDouble() >= result1.value.toDouble())
-        assertTrue(path1.value.toDouble() >= result2.value.toDouble())
-        assertTrue(path1.value.toDouble() >= result3.value.toDouble())
-        assertTrue(path1.value.toDouble() >= result4.value.toDouble())
-        assertTrue(path1.value.toDouble() >= result5.value.toDouble())
-        assertTrue(path1.value.toDouble() >= result6.value.toDouble())
-        assertTrue(path1.value.toDouble() >= result7.value.toDouble())
-        assertTrue(path1.value.toDouble() >= result8.value.toDouble())
-        assertTrue(path1.value.toDouble() >= result9.value.toDouble())
-        assertTrue(path1.value.toDouble() >= result10.value.toDouble())
+        assertTrue(path1.value.toDouble() >= result1.paths[0].value.toDouble())
+        assertTrue(path1.value.toDouble() >= result2.paths[0].value.toDouble())
+        assertTrue(path1.value.toDouble() >= result3.paths[0].value.toDouble())
+        assertTrue(path1.value.toDouble() >= result4.paths[0].value.toDouble())
+        assertTrue(path1.value.toDouble() >= result5.paths[0].value.toDouble())
+        assertTrue(path1.value.toDouble() >= result6.paths[0].value.toDouble())
+        assertTrue(path1.value.toDouble() >= result7.paths[0].value.toDouble())
+        assertTrue(path1.value.toDouble() >= result8.paths[0].value.toDouble())
+        assertTrue(path1.value.toDouble() >= result9.paths[0].value.toDouble())
+        assertTrue(path1.value.toDouble() >= result10.paths[0].value.toDouble())
     }
 
     @Test
@@ -250,7 +250,7 @@ class GeospatialLiveTest {
                 Patient("", "", "", Coordinate(listOf(0f, 0f), "co-2"), listOf()),
                 Patient("", "", "", Coordinate(listOf(44f, 55.6f), "co-1"), listOf())
         ))
-        val result = path?.let { salesmanSetMutationResolver.mutate(it, 100, 100) }
+        val result = path?.let { SalesmanSetUtils(pathQueryResolver).mutate(it, 100, 100) }
         assertEquals(path?.places!!.distinct().size, result?.places!!.distinct().size)
     }
 
@@ -306,11 +306,11 @@ class GeospatialLiveTest {
                 50.0f, 54.0f, 60.0f, 52.0f, 38.0f, 0.0f
         ))
 
-        val result = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)
+        val result = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)
         val greedy = salesmanSetMutationResolver.findGreedyPath(salesmanSet.id)
-        println("check_6_1_datasetGeneticValue result: " + result.value)
-        assertTrue(greedy.value.toDouble() >= result.value.toDouble())
-        assertTrue(132.0 <= result.value.toDouble())
+        println("check_6_1_datasetGeneticValue result: " + result.paths[0].value)
+        assertTrue(greedy.value.toDouble() >= result.paths[0].value.toDouble())
+        assertTrue(132.0 <= result.paths[0].value.toDouble())
     }
 
     @Test
@@ -334,11 +334,11 @@ class GeospatialLiveTest {
                 )
         )
 
-        val result = salesmanSetMutationResolver.findBestPathUsingGeneticAlgorythm(salesmanSet!!.id, 1, 200, 10)
+        val result = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)
         val greedy = salesmanSetMutationResolver.findGreedyPath(salesmanSet.id)
-        println("check_burma14_dataseGenetictValue result: " + result.value)
-        assertTrue(greedy.value.toDouble() >= result.value.toDouble())
-        assertTrue(3323.0 <= result.value.toDouble())
+        println("check_burma14_dataseGenetictValue result: " + result.paths[0].value)
+        assertTrue(greedy.value.toDouble() >= result.paths[0].value.toDouble())
+        assertTrue(3323.0 <= result.paths[0].value.toDouble())
     }
 
 }

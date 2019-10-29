@@ -11,12 +11,9 @@ import kotlin.streams.asSequence
 @Component
 class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSetRepository,
                                   val salesmanSetQueryResolver: SalesmanSetQueryResolver,
-                                  val coordinateQueryResolver: CoordinateQueryResolver,
                                   val distanceMutationResolver: DistanceMutationResolver,
                                   val distanceQueryResolver: DistanceQueryResolver,
                                   val pathQueryResolver: PathQueryResolver,
-                                  val patientQueryResolver: PatientQueryResolver,
-                                  val tagQueryResolver: TagQueryResolver,
                                   val tagMutationResolver: TagMutationResolver
 ) : GraphQLMutationResolver {
     fun newSalesmanSet(patients: List<Patient>): SalesmanSet? {
@@ -39,11 +36,10 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
     }
 
     fun updateSalesmanSet(salesmanSet: SalesmanSet): SalesmanSet { //chyba tylko ostatnia linijka jest potrzebna
-        println(salesmanSet)
+        println("updateSalesmanSet")
         val oldSalesmanSet = salesmanSetRepository.findById(salesmanSet.id).get();
         val updatedSet = salesmanSet
         if (oldSalesmanSet.places != updatedSet.places) {
-            println("rożne")
             val newCoordinates = updatedSet.places.map { patient -> patient.coordinate };
 
             updatedSet.neighborhoodMatrix = calcNeighborhoodMatrix(newCoordinates)
@@ -59,16 +55,11 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
     }
 
     fun upgradeSalesmanSet(id: String, timeInSec: Int, populationSize: Int = 200, parentPopulationSize: Int = 20): SalesmanSet {
-        findBestPathUsingGeneticAlgorythm(id, timeInSec, populationSize, parentPopulationSize)
-        return salesmanSetQueryResolver.findSalesmanSetById(id);
-    }
-
-    fun doSomethingElse(): Float {
-        for (i in 0..10) {
-            println("doSomethingElse $i")
-            Thread.sleep(1000)
-        }
-        return 11.10f
+        val salesmanSet: SalesmanSet = salesmanSetQueryResolver.findSalesmanSetById(id);
+        val updatedSalesmanSet = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet, timeInSec, populationSize, parentPopulationSize)
+        updateSalesmanSet(updatedSalesmanSet)
+        return updatedSalesmanSet;
+//        return salesmanSetQueryResolver.findSalesmanSetById(id);
     }
 
     fun newSalesmanSetByDistance(numberOfCoordinates: Int, distances: List<Float>): SalesmanSet? {
@@ -84,6 +75,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         var salesmanSet = salesmanSetQueryResolver.getSalesmanSetByDistances(neighborhoodMatrix)
         if (salesmanSet == null) {
             salesmanSet = SalesmanSet(patients, neighborhoodMatrix)
+            salesmanSet.paths = mutableListOf(findFirstPath(salesmanSet))
             salesmanSet.id = UUID.randomUUID().toString()
             salesmanSetRepository.save(salesmanSet)
         }
@@ -218,208 +210,208 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         val path: Path = Path(pathPlaces, pathValue);
         return path;
     }
-
-
-    fun findBestPathUsingGeneticAlgorythm(id: String, timeInSec: Int, populationSize: Int, parentPopulationSize: Int): Path {
-        var salesmanSet: SalesmanSet = salesmanSetQueryResolver.findSalesmanSetById(id);
-        val greedyPath = findGreedyPath(salesmanSet.id)
-        if (!salesmanSet.paths.contains(greedyPath)) {
-            salesmanSet.paths.add(greedyPath)
-        }
-        val start = System.currentTimeMillis();
-        val end = start + timeInSec * 1000; // 60 seconds * 1000 ms/sec
-        while (System.currentTimeMillis() < end) {
-            salesmanSet = doGenetic(salesmanSet, populationSize, parentPopulationSize)
-        }
-        salesmanSet.paths = salesmanSet.paths.distinct().sortedBy { it.value.toFloat() }.toMutableList()
-        if (salesmanSet.paths.size > 10) {
-            salesmanSet.paths = salesmanSet.paths.subList(0, 10)  //to chyba nie działa
-        }
-//        salesmanSet.population = salesmanSet.population.distinct().toMutableList()  //desperacja
-        salesmanSet.population = mutableListOf()  //desperacja
-        salesmanSet.parentPopulation = mutableListOf()  //desperacja
-        updateSalesmanSet(salesmanSet)
-        return salesmanSet.paths.first()
-    }
-
-    fun doGenetic(salesmanSet: SalesmanSet, populationSize: Int, parentPopulationSize: Int, mutationsProbability: Int = 1, swapsInMutation: Int = 10): SalesmanSet {
-        println("doGenetic")
-        var newSalesmanSet = salesmanSet
-        newSalesmanSet.population = mutableListOf()
-        if (salesmanSet.paths.isNotEmpty()) {
-            newSalesmanSet.population.add(salesmanSet.paths.first())
-        }
-        //create population
-        var genomPath = newSalesmanSet.places
-        for (i in newSalesmanSet.population.size until populationSize) {
-            genomPath = getRandomGenom(genomPath)
-            val value = pathQueryResolver.calcPathValue(genomPath.map { patient -> patient.coordinate })
-            newSalesmanSet.population.add(Path(genomPath, value))
-        }
-        //rob
-        var i = 0;
-        while (true) {
-            println("while true $i")
-            //jesli warunek konca nie zostal osiagniety
-            if (i < 10) {
-                newSalesmanSet.population = newSalesmanSet.population.distinct().toMutableList()
-                //        sortuj populację
-                newSalesmanSet.population = newSalesmanSet.population.sortedBy { it.value.toFloat() }.toMutableList()
-                //        jesli jest za duża to usuń część osobników
-                if (newSalesmanSet.population.size > populationSize) {
-                    newSalesmanSet.population = newSalesmanSet.population.subList(0, populationSize - 1)
-                }
-//        wybierz populację rodzicielską (ruletka, turniej)
-                newSalesmanSet.parentPopulation = chooseParentPopulationByRouletteMethod(newSalesmanSet.population, parentPopulationSize)
-//        krzyżuj
-                newSalesmanSet = reproducePopulation(newSalesmanSet, mutationsProbability, swapsInMutation)
-//        mutuj
-//                for (i in 0 until newSalesmanSet.population.size) {
 //
+//
+//    fun findBestPathUsingGeneticAlgorythm(id: String, timeInSec: Int, populationSize: Int, parentPopulationSize: Int): Path {
+//        var salesmanSet: SalesmanSet = salesmanSetQueryResolver.findSalesmanSetById(id);
+//        val greedyPath = findGreedyPath(salesmanSet.id)
+//        if (!salesmanSet.paths.contains(greedyPath)) {
+//            salesmanSet.paths.add(greedyPath)
+//        }
+//        val start = System.currentTimeMillis();
+//        val end = start + timeInSec * 1000; // 60 seconds * 1000 ms/sec
+//        while (System.currentTimeMillis() < end) {
+//            salesmanSet = doGenetic(salesmanSet, populationSize, parentPopulationSize)
+//        }
+//        salesmanSet.paths = salesmanSet.paths.distinct().sortedBy { it.value.toFloat() }.toMutableList()
+//        if (salesmanSet.paths.size > 10) {
+//            salesmanSet.paths = salesmanSet.paths.subList(0, 10)  //to chyba nie działa
+//        }
+////        salesmanSet.population = salesmanSet.population.distinct().toMutableList()  //desperacja
+//        salesmanSet.population = mutableListOf()  //desperacja
+//        salesmanSet.parentPopulation = mutableListOf()  //desperacja
+//        updateSalesmanSet(salesmanSet)
+//        return salesmanSet.paths.first()
+//    }
+//
+//    fun doGenetic(salesmanSet: SalesmanSet, populationSize: Int, parentPopulationSize: Int, mutationsProbability: Int = 1, swapsInMutation: Int = 10): SalesmanSet {
+//        println("doGenetic")
+//        var newSalesmanSet = salesmanSet
+//        newSalesmanSet.population = mutableListOf()
+//        if (salesmanSet.paths.isNotEmpty()) {
+//            newSalesmanSet.population.add(salesmanSet.paths.first())
+//        }
+//        //create population
+//        var genomPath = newSalesmanSet.places
+//        for (i in newSalesmanSet.population.size until populationSize) {
+//            genomPath = getRandomGenom(genomPath)
+//            val value = pathQueryResolver.calcPathValue(genomPath.map { patient -> patient.coordinate })
+//            newSalesmanSet.population.add(Path(genomPath, value))
+//        }
+//        //rob
+//        var i = 0;
+//        while (true) {
+//            println("while true $i")
+//            //jesli warunek konca nie zostal osiagniety
+//            if (i < 10) {
+//                newSalesmanSet.population = newSalesmanSet.population.distinct().toMutableList()
+//                //        sortuj populację
+//                newSalesmanSet.population = newSalesmanSet.population.sortedBy { it.value.toFloat() }.toMutableList()
+//                //        jesli jest za duża to usuń część osobników
+//                if (newSalesmanSet.population.size > populationSize) {
+//                    newSalesmanSet.population = newSalesmanSet.population.subList(0, populationSize - 1)
 //                }
-
-                i++;
-            } else { //jesli zostal osiagniety
-//        sortuj populację
-                newSalesmanSet.population = newSalesmanSet.population.sortedBy { it.value.toFloat() } as MutableList<Path>
-//        zwróc najlepszą ścieżkę (dodaj do paths)
-                newSalesmanSet.paths.add(newSalesmanSet.population.first())
-                break;
-            }
-        }
-        return newSalesmanSet
-    }
-
-    private fun reproducePopulation(salesmanSet: SalesmanSet, mutationsProbability: Int, swapsInMutation: Int): SalesmanSet {
-        var updatedSalesmanSet = salesmanSet
-        val populationSize = salesmanSet.population.size
-        val parentPopulationSize = salesmanSet.parentPopulation.size
-        val parentCouples = salesmanSet.parentPopulation.size / 2;
-        val pathSize = salesmanSet.places.size;
-        for (i in 0 until parentCouples)
-        //dla kazdej pary rodzicow utworz pare dzieci
-        {
-            val crossPoint1: Int = ThreadLocalRandom.current().nextInt(0, pathSize - 1)
-            val crossPoint2: Int = ThreadLocalRandom.current().nextInt(crossPoint1, pathSize - 1)
-
-            var a = crossover(salesmanSet.parentPopulation[2 * i], salesmanSet.parentPopulation[2 * i + 1], crossPoint1, crossPoint2)  //dziecko1
-            var b = crossover(salesmanSet.parentPopulation[2 * i + 1], salesmanSet.parentPopulation[2 * i], crossPoint1, crossPoint2)  //dziecko2
-            a = mutate(a, mutationsProbability, swapsInMutation)
-            b = mutate(b, mutationsProbability, swapsInMutation)
-            if (a.places.size != salesmanSet.places.size || b.places.size != salesmanSet.places.size || a.places.distinct().size < salesmanSet.places.size || b.places.distinct().size < salesmanSet.places.size) {
-                println("" + crossPoint1 + " " + crossPoint2)
-                throw Exception()
-            }
-
-            updatedSalesmanSet.population.add(a)
-            updatedSalesmanSet.population.add(b)
-        }
-        return updatedSalesmanSet;
-    }
-
-    private fun crossover(parentOneGenom: Path, parentTwoGenom: Path, crossPoint1: Int, crossPoint2: Int): Path {
-        val pathSize = parentTwoGenom.places.size
-        val childListOfCoordinates: MutableList<Patient?> = parentTwoGenom.places.toMutableList()  //środek
-        val checkForRepeat = mutableListOf<Patient>()
-
-        for (i in crossPoint1 until crossPoint2)                //srodek
-        {
-            checkForRepeat.add(parentTwoGenom.places[i])
-        }
-
-        for (i in 0 until crossPoint1)                //poczatek
-        {
-            val zm = parentOneGenom.places[i];
-
-            if (!checkForRepeat.contains(zm)) {
-                childListOfCoordinates[i] = zm;
-                checkForRepeat.add(zm);
-            } else {
-                childListOfCoordinates[i] = null;
-            }
-        }
-
-        for (i in crossPoint2 until pathSize)            //koniec
-        {
-            var zm: Patient? = null;
-            try {
-                zm = parentOneGenom.places[i];
-            } catch (e: IndexOutOfBoundsException) {
-                println("" + parentOneGenom + parentTwoGenom + crossPoint1 + crossPoint2)
-            }
-
-            if (!checkForRepeat.contains(zm)) {
-                childListOfCoordinates[i] = zm;
-                if (zm != null) {
-                    checkForRepeat.add(zm)
-                };
-            } else {
-                childListOfCoordinates[i] = null;
-            }
-        }
-
-        for (i in 0 until pathSize) {
-            if (childListOfCoordinates[i] == null) {
-                for (j in 0 until pathSize) {
-                    if (!checkForRepeat.contains(parentOneGenom.places[j])) {
-                        childListOfCoordinates[i] = parentOneGenom.places[j];
-                        checkForRepeat.add(parentOneGenom.places[j]);
-                        break;
-                    }
-                }
-
-            }
-        }
-        val pathValue: Float = pathQueryResolver.calcPathValue(childListOfCoordinates.filterNotNull().map { patient -> patient.coordinate })
-        val child: Path = Path(childListOfCoordinates.filterNotNull(), pathValue);
-        return child;
-    }
-
-    fun mutate(genomPath: Path, mutationsProbability: Int, swapsInMutation: Int): Path {
-        val chance = ThreadLocalRandom.current().nextInt(0, 100)
-        val updatedGenomPath = genomPath.places.toMutableList()
-
-        if (chance <= mutationsProbability) {
-            for (i in 0 until swapsInMutation) {
-                val city1 = ThreadLocalRandom.current().nextInt(0, updatedGenomPath.size)
-                val city2 = ThreadLocalRandom.current().nextInt(0, updatedGenomPath.size)
-                val temp = updatedGenomPath[city1];
-                updatedGenomPath[city1] = updatedGenomPath[city2];
-                updatedGenomPath[city2] = temp;
-            }
-        }
-        val pathValue: Float = pathQueryResolver.calcPathValue(updatedGenomPath.map { patient -> patient.coordinate })
-        return Path(updatedGenomPath, pathValue)
-    }
-
-
-    private fun getRandomGenom(genomPath: List<Patient>): List<Patient> {
-        return genomPath.shuffled()
-    }
-
-    private fun chooseParentPopulationByRouletteMethod(population: List<Path>, parentPopulationSize: Int): List<Path> {
-        var parentPopulation: MutableList<Path> = mutableListOf<Path>()
-        var populationValueSum: Float = 0.0f;
-        population.forEach { genomPath -> populationValueSum += 1 / genomPath.value.toFloat() }
-
-        var rouletteList = mutableListOf<Float>(0.0f)
-        population.forEach { genomPath ->
-            val pathPercentage = (1 / genomPath.value.toFloat()) * (1 / populationValueSum) * 100
-            rouletteList.add(rouletteList[rouletteList.size - 1] + pathPercentage)
-        }
-
-        for (i in 0 until parentPopulationSize) {
-            val randomInteger = ThreadLocalRandom.current().nextInt(0, 100)
-
-            loop@ for (i in 0 until rouletteList.size) {
-                if (rouletteList[i] < randomInteger && (i + 1 == rouletteList.size || rouletteList[i + 1] > randomInteger)) {
-                    parentPopulation.add(population[i])
-                    break@loop
-                }
-            }
-
-        }
-        return parentPopulation
-    }
+////        wybierz populację rodzicielską (ruletka, turniej)
+//                newSalesmanSet.parentPopulation = chooseParentPopulationByRouletteMethod(newSalesmanSet.population, parentPopulationSize)
+////        krzyżuj
+//                newSalesmanSet = reproducePopulation(newSalesmanSet, mutationsProbability, swapsInMutation)
+////        mutuj
+////                for (i in 0 until newSalesmanSet.population.size) {
+////
+////                }
+//
+//                i++;
+//            } else { //jesli zostal osiagniety
+////        sortuj populację
+//                newSalesmanSet.population = newSalesmanSet.population.sortedBy { it.value.toFloat() } as MutableList<Path>
+////        zwróc najlepszą ścieżkę (dodaj do paths)
+//                newSalesmanSet.paths.add(newSalesmanSet.population.first())
+//                break;
+//            }
+//        }
+//        return newSalesmanSet
+//    }
+//
+//    private fun reproducePopulation(salesmanSet: SalesmanSet, mutationsProbability: Int, swapsInMutation: Int): SalesmanSet {
+//        var updatedSalesmanSet = salesmanSet
+//        val populationSize = salesmanSet.population.size
+//        val parentPopulationSize = salesmanSet.parentPopulation.size
+//        val parentCouples = salesmanSet.parentPopulation.size / 2;
+//        val pathSize = salesmanSet.places.size;
+//        for (i in 0 until parentCouples)
+//        //dla kazdej pary rodzicow utworz pare dzieci
+//        {
+//            val crossPoint1: Int = ThreadLocalRandom.current().nextInt(0, pathSize - 1)
+//            val crossPoint2: Int = ThreadLocalRandom.current().nextInt(crossPoint1, pathSize - 1)
+//
+//            var a = crossover(salesmanSet.parentPopulation[2 * i], salesmanSet.parentPopulation[2 * i + 1], crossPoint1, crossPoint2)  //dziecko1
+//            var b = crossover(salesmanSet.parentPopulation[2 * i + 1], salesmanSet.parentPopulation[2 * i], crossPoint1, crossPoint2)  //dziecko2
+//            a = mutate(a, mutationsProbability, swapsInMutation)
+//            b = mutate(b, mutationsProbability, swapsInMutation)
+//            if (a.places.size != salesmanSet.places.size || b.places.size != salesmanSet.places.size || a.places.distinct().size < salesmanSet.places.size || b.places.distinct().size < salesmanSet.places.size) {
+//                println("" + crossPoint1 + " " + crossPoint2)
+//                throw Exception()
+//            }
+//
+//            updatedSalesmanSet.population.add(a)
+//            updatedSalesmanSet.population.add(b)
+//        }
+//        return updatedSalesmanSet;
+//    }
+//
+//    private fun crossover(parentOneGenom: Path, parentTwoGenom: Path, crossPoint1: Int, crossPoint2: Int): Path {
+//        val pathSize = parentTwoGenom.places.size
+//        val childListOfCoordinates: MutableList<Patient?> = parentTwoGenom.places.toMutableList()  //środek
+//        val checkForRepeat = mutableListOf<Patient>()
+//
+//        for (i in crossPoint1 until crossPoint2)                //srodek
+//        {
+//            checkForRepeat.add(parentTwoGenom.places[i])
+//        }
+//
+//        for (i in 0 until crossPoint1)                //poczatek
+//        {
+//            val zm = parentOneGenom.places[i];
+//
+//            if (!checkForRepeat.contains(zm)) {
+//                childListOfCoordinates[i] = zm;
+//                checkForRepeat.add(zm);
+//            } else {
+//                childListOfCoordinates[i] = null;
+//            }
+//        }
+//
+//        for (i in crossPoint2 until pathSize)            //koniec
+//        {
+//            var zm: Patient? = null;
+//            try {
+//                zm = parentOneGenom.places[i];
+//            } catch (e: IndexOutOfBoundsException) {
+//                println("" + parentOneGenom + parentTwoGenom + crossPoint1 + crossPoint2)
+//            }
+//
+//            if (!checkForRepeat.contains(zm)) {
+//                childListOfCoordinates[i] = zm;
+//                if (zm != null) {
+//                    checkForRepeat.add(zm)
+//                };
+//            } else {
+//                childListOfCoordinates[i] = null;
+//            }
+//        }
+//
+//        for (i in 0 until pathSize) {
+//            if (childListOfCoordinates[i] == null) {
+//                for (j in 0 until pathSize) {
+//                    if (!checkForRepeat.contains(parentOneGenom.places[j])) {
+//                        childListOfCoordinates[i] = parentOneGenom.places[j];
+//                        checkForRepeat.add(parentOneGenom.places[j]);
+//                        break;
+//                    }
+//                }
+//
+//            }
+//        }
+//        val pathValue: Float = pathQueryResolver.calcPathValue(childListOfCoordinates.filterNotNull().map { patient -> patient.coordinate })
+//        val child: Path = Path(childListOfCoordinates.filterNotNull(), pathValue);
+//        return child;
+//    }
+//
+//    fun mutate(genomPath: Path, mutationsProbability: Int, swapsInMutation: Int): Path {
+//        val chance = ThreadLocalRandom.current().nextInt(0, 100)
+//        val updatedGenomPath = genomPath.places.toMutableList()
+//
+//        if (chance <= mutationsProbability) {
+//            for (i in 0 until swapsInMutation) {
+//                val city1 = ThreadLocalRandom.current().nextInt(0, updatedGenomPath.size)
+//                val city2 = ThreadLocalRandom.current().nextInt(0, updatedGenomPath.size)
+//                val temp = updatedGenomPath[city1];
+//                updatedGenomPath[city1] = updatedGenomPath[city2];
+//                updatedGenomPath[city2] = temp;
+//            }
+//        }
+//        val pathValue: Float = pathQueryResolver.calcPathValue(updatedGenomPath.map { patient -> patient.coordinate })
+//        return Path(updatedGenomPath, pathValue)
+//    }
+//
+//
+//    private fun getRandomGenom(genomPath: List<Patient>): List<Patient> {
+//        return genomPath.shuffled()
+//    }
+//
+//    private fun chooseParentPopulationByRouletteMethod(population: List<Path>, parentPopulationSize: Int): List<Path> {
+//        var parentPopulation: MutableList<Path> = mutableListOf<Path>()
+//        var populationValueSum: Float = 0.0f;
+//        population.forEach { genomPath -> populationValueSum += 1 / genomPath.value.toFloat() }
+//
+//        var rouletteList = mutableListOf<Float>(0.0f)
+//        population.forEach { genomPath ->
+//            val pathPercentage = (1 / genomPath.value.toFloat()) * (1 / populationValueSum) * 100
+//            rouletteList.add(rouletteList[rouletteList.size - 1] + pathPercentage)
+//        }
+//
+//        for (i in 0 until parentPopulationSize) {
+//            val randomInteger = ThreadLocalRandom.current().nextInt(0, 100)
+//
+//            loop@ for (i in 0 until rouletteList.size) {
+//                if (rouletteList[i] < randomInteger && (i + 1 == rouletteList.size || rouletteList[i + 1] > randomInteger)) {
+//                    parentPopulation.add(population[i])
+//                    break@loop
+//                }
+//            }
+//
+//        }
+//        return parentPopulation
+//    }
 
 }

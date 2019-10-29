@@ -37,7 +37,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SidePanel(p
         <Grid
             className={classes.side_container}
         >
-            <ActualSalesmanSet/>
+          <ActualSalesmanSet onSockSend={(e) => props.onSockSend(e)}/>
             <SalesmanSetsList/>
         </Grid>
     );
