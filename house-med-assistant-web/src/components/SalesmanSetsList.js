@@ -55,6 +55,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
     props.removeSalesmanSet(id);
   };
 
+  const isActualSalesmanSet = (salesmanSet) => {
+    const isAnyActualSalesmanSet = props.mapSalesmanSet && props.mapSalesmanSet.id;
+    return isAnyActualSalesmanSet && props.mapSalesmanSet.id === salesmanSet.id;
+  }
+
   return (
     <Grid
       item
@@ -66,7 +71,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
     >
 
       {props.salesmanSets && props.salesmanSets
-        .filter((salesmanSet) => !props.mapSalesmanSet || (props.mapSalesmanSet && props.mapSalesmanSet.id && props.mapSalesmanSet.id !== salesmanSet.id))
+        .filter((salesmanSet) => !isActualSalesmanSet(salesmanSet))
         .map((salesmanSet) => {
           return <Paper
             key={salesmanSet.id}
