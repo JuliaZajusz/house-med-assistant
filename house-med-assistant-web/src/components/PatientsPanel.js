@@ -26,33 +26,12 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
   },
-  button: {
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-    color: 'white',
-    border: 0,
-    borderRadius: 3,
-    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-  },
-  top_side_panel: {
-    padding: '8px',
-    alignItems: 'stretch',
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-  },
-  side_panel: {
-    paddingBottom: '1px',
-    alignItems: 'stretch',
-  },
-  top_paper: {
-    marginBottom: '8px',
-    padding: '8px',
-  },
-  paper: {
-    padding: '8px',
-    borderRadius: 0,
-  },
   search_panel: {
     padding: '8px',
-    background: theme.palette.primary.main
+    background: `linear-gradient(45deg, ${theme.palette[theme.themeMotive].primary.light} 30%, ${theme.palette[theme.themeMotive].primary.broken} 90%)`,
+    color: getContrastYIQ(theme.palette[theme.themeMotive].primary.light),
+// background: theme.palette[theme.themeMotive].primary.main,
+    // color: getContrastYIQ(theme.palette[theme.themeMotive].primary.main),
   },
   search: {
     position: 'relative',
@@ -63,7 +42,7 @@ const useStyles = makeStyles(theme => ({
     },
     marginLeft: 0,
     width: '100%',
-    border: '1px solid grey',
+    border: `1px solid ${getContrastYIQ(theme.palette[theme.themeMotive].primary.light) === "black" ? "grey" : "white"}`,
     overflow: 'hidden',
   },
   searchIcon: {
@@ -92,6 +71,17 @@ const useStyles = makeStyles(theme => ({
   horizontal_scroll_box: {
     display: "flex",
     flexWrap: "noWrap",
+  },
+  chip: {
+    margin: '5px',
+    opacity: 0.5,
+    "&:hover": {
+      opacity: 0.7,
+    }
+  },
+  chip_selected: {
+    margin: '5px',
+    opacity: 1,
   },
 }));
 
@@ -160,11 +150,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
                 return (
                   <Chip
                     key={tag.id}
+                    className={`${props.activeTags.includes(tag.name) ? classes.chip_selected : classes.chip}`}
                     style={{
                       background: backgroundColor,
                       color: getContrastYIQ(backgroundColor),
-                      margin: '5px',
-                      opacity: !props.activeTags.includes(tag.name) ? 0.5 : 1,
                     }}
                     label={tag.name}
                     size="small"

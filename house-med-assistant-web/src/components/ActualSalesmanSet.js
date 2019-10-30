@@ -8,21 +8,15 @@ import connect from "react-redux/es/connect/connect";
 import {addNewSalesmanSet, setSalesmanSet} from "../actions/salesmanSetActions";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import PatientPaper from "./PatientPaper";
+import {getContrastYIQ} from "../utils/Utils";
 
 
 const useStyles = makeStyles(theme => ({
-  button: {
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-    color: 'white',
-    border: 0,
-    borderRadius: 3,
-    boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-  },
   top_side_panel: {
     padding: '5px',
     paddingRight: '13px',
     alignItems: 'stretch',
-    background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+    background: `linear-gradient(45deg, ${theme.palette[theme.themeMotive].primary.light} 30%, ${theme.palette[theme.themeMotive].primary.broken} 90%)`,
   },
   side_panel: {
     paddingBottom: '1px',
@@ -85,6 +79,10 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "flex-end",
   },
+  fab_button: {
+    background: theme.palette[theme.themeMotive].primary.main,
+    color: getContrastYIQ(theme.palette[theme.themeMotive].primary.main),
+  },
 }));
 
 const mapStateToProps = (state) => {
@@ -103,19 +101,10 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
 
 
   const calculatePath = () => {
-    // if(props.mapSalesmanSet.id) {
-    //   props.addNewSalesmanSet()
-    //     .then((salesmanSet) =>
-    //       props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
-    //     )
-    //   // props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
-    // } else {
     props.addNewSalesmanSet()
-      .then((salesmanSet) =>
+      .then(() =>
         props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
       )
-
-    // }
   };
   return (
     <Grid
@@ -128,7 +117,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
     >
       <Grid item className={classes.button_container}>
           <ButtonGroup size="small" aria-label="small outlined button group">
-            <Button onClick={() => props.setSalesmanSet()}>Wyczyść</Button>
+            <Button
+              // className={classes.outlined_button}
+              onClick={() => props.setSalesmanSet()}>Wyczyść</Button>
             {/*<Button>Two</Button>*/}
             {/*<Button>Three</Button>*/}
           </ButtonGroup>
@@ -143,10 +134,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
         <div style={{fontSize: '10px', color: 'grey'}}>
           {props.mapSalesmanSet.id}
         </div>
-        {/*<div>*/}
-        {/*  <Delete fontSize="small" className={classes.deleteButton}*/}
-        {/*          onClick={(e) => deleteDalesmanSet(e, salesmanSet.id)}/>*/}
-        {/*</div>*/}
       </Grid>
       }
       {props.mapSalesmanSet && props.mapSalesmanSet.places && props.mapSalesmanSet.places.map((place) =>
@@ -157,9 +144,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
       <Fab
         variant="extended"
         size="small"
-        color="primary"
+        // color="blueTheme.primary.main"
         aria-label="add"
-        className={classes.margin}
+        className={classes.fab_button}
         onClick={calculatePath}
       >
         Wylicz trasę

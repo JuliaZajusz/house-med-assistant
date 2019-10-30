@@ -3,7 +3,6 @@ import './App.css';
 import MapWrapper from "./components/Map";
 import Grid from "@material-ui/core/Grid";
 import {createMuiTheme} from '@material-ui/core/styles';
-import purple from '@material-ui/core/colors/purple';
 import ThemeProvider from "@material-ui/styles/ThemeProvider";
 import SidePanel from "./components/SidePanel";
 import {BrowserRouter} from "react-router-dom";
@@ -15,17 +14,37 @@ import {withStyles} from '@material-ui/styles';
 
 export const history = createBrowserHistory();
 
-const theme = createMuiTheme({
+export const theme = createMuiTheme({
+    themeMotive: "blueTheme",
+    // themeMotive: "salmonTheme",
     palette: {
-        primary: purple,
+        primary: {
+            main: '#292370',
+            light: '#463db8',
+            broken: '#3d89b8',
+        },
         secondary: {
             main: '#f44336',
             dark: '#424242',
             light: '#fefefe',
-          lightMedium: '#eeeeee',
-          lightMediumBorder: '#c0c0c0',
+            lightMedium: '#eeeeee',
+            lightMediumBorder: '#c0c0c0',
         },
-      background: '#ffffff',
+        background: '#ffffff',
+        salmonTheme: {
+            primary: {
+                main: "#a12049",
+                light: '#FE6B8B',
+                broken: "#FF8E53",
+            }
+        },
+        blueTheme: {
+            primary: {
+                main: "#292370",
+                light: '#463db8',
+                broken: "#3d89b8",
+            }
+        }
     },
     shape: {
         borderRadius: '3px',
@@ -98,37 +117,37 @@ class App extends Component {
 
 
     render() {
-      const {classes} = this.props;
+        const {classes} = this.props;
         console.log("render App");
         return (
           <div className={classes.app}>
-          <BrowserRouter history={history}>
-              <ThemeProvider theme={theme}>
-                  <Header messages={this.state.messages} onSockSend={(e) => this.onSockSend(e)}/>
-                  <Grid container
-                        direction="row"
-                        justify="center"
-                        className={classes.main_layout_box}
-                        alignItems='stretch'
-                  >
-                      <Grid item xs={3}
-                            flexgrow={1}
-                            className={classes.side_container_container}
+              <BrowserRouter history={history}>
+                  <ThemeProvider theme={theme}>
+                      <Header messages={this.state.messages} onSockSend={(e) => this.onSockSend(e)}/>
+                      <Grid container
+                            direction="row"
+                            justify="center"
+                            className={classes.main_layout_box}
+                            alignItems='stretch'
                       >
-                          <SidePanel onSockSend={(e) => this.onSockSend(e)}/>
+                          <Grid item xs={3}
+                                flexgrow={1}
+                                className={classes.side_container_container}
+                          >
+                              <SidePanel onSockSend={(e) => this.onSockSend(e)}/>
+                          </Grid>
+                          <Grid item xs={6}>
+                              <MapWrapper/>
+                          </Grid>
+                          <Grid item xs={3}
+                                flexgrow={1}
+                                className={classes.side_container_container}
+                          >
+                              <PatientsPanel/>
+                          </Grid>
                       </Grid>
-                      <Grid item xs={6}>
-                          <MapWrapper/>
-                      </Grid>
-                      <Grid item xs={3}
-                            flexgrow={1}
-                            className={classes.side_container_container}
-                      >
-                          <PatientsPanel/>
-                      </Grid>
-                  </Grid>
-              </ThemeProvider>
-          </BrowserRouter>
+                  </ThemeProvider>
+              </BrowserRouter>
       </div>
         )
     }

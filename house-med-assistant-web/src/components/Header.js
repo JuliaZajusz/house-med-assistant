@@ -3,11 +3,15 @@ import {Toolbar} from '@material-ui/core';
 import Typography from "@material-ui/core/Typography";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import AppBar from "@material-ui/core/AppBar";
+import {ReactComponent as Logo} from '../images/logo.svg';
 
 const useStyles = makeStyles(theme => ({
   title: {
     flexGrow: 1,
   },
+  app_bar: {
+    background: theme.palette[theme.themeMotive].primary.main
+  }
 }));
 
 export default function Header(props, state) {
@@ -15,8 +19,13 @@ export default function Header(props, state) {
 
   console.log("render Header", props, state)
   return (
-    <AppBar position="static">
+    <AppBar position="static"
+            className={classes.app_bar}
+      // color={`theme.palette.${theme.themeMotive}.primary.main`}
+    >
       <Toolbar>
+        <Logo style={{height: "40px", marginRight: "8px"}}/>
+        {/*<img src="../images/logo.svg" alt=""/>*/}
         <Typography variant="h6" className={classes.title}>
           house med assistant
         </Typography>
