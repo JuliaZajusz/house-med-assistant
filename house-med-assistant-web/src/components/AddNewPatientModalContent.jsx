@@ -34,6 +34,12 @@ const useStyles = makeStyles(theme => ({
   },
   selected: {
     background: "pink",
+  },
+  text_fields__row__text_field: {
+    marginRight: "10px",
+    ":last-child": {
+      marginRight: 0,
+    }
   }
 }));
 
@@ -120,6 +126,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
           {addNewPatient && <Grid>
             <div className={classes.text_fields__row}>
               <TextField
+                className={classes.text_fields__row__text_field}
                 label="Nazwisko"
                 id="lastName"
                 margin="normal"
@@ -180,7 +187,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
           </Grid>}
           <Fab size="small"
                variant={addNewPatient ? "extended" : "round"}
-               color="secondary"
+               color="primary"
                aria-label="add"
                className={classes.margin}
                disabled={addNewPatient && !patient.coordinate}

@@ -54,6 +54,12 @@ export const setActiveTagsAction = (activeTags) => ({
   payload: activeTags
 });
 
+export const cleanCoordinates = () => dispatch => {
+  dispatch({
+    type: 'SET_COORDINATES_BY_ADDRESS',
+    payload: []
+  });
+};
 
 export const getCoordinatesByAddress = (address) => async dispatch => {
   const addr = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&key=' + GOOGLE_API_KEY;
@@ -64,7 +70,7 @@ export const getCoordinatesByAddress = (address) => async dispatch => {
         throw(res);
       }
       dispatch({
-        type: 'GET_COORDINATES_BY_ADDRESS',
+        type: 'SET_COORDINATES_BY_ADDRESS',
         payload: res.results
       });
       console.log(res.results);

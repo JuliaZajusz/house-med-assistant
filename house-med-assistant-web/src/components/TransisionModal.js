@@ -3,7 +3,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
-import {hideModal} from "../actions/patientActions";
+import {cleanCoordinates, hideModal} from "../actions/patientActions";
 import {connect} from "react-redux";
 import AddNewPatientModalContent from "./AddNewPatientModalContent";
 
@@ -15,9 +15,10 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     backgroundColor: theme.palette.background,
-    // border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+    width: '60%',
+    minWidth: '100px',
   },
 }));
 
@@ -29,6 +30,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => ({
   hideModal: () => dispatch(hideModal()),
+  cleanCoordinates: () => dispatch(cleanCoordinates()),
 });
 
 
@@ -36,7 +38,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(function TransisionM
     const classes = useStyles();
 
     const handleClose = () => {
-      props.hideModal()
+      props.hideModal();
+      props.cleanCoordinates();
     };
 
     console.log("render modal");
@@ -57,9 +60,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(function TransisionM
           <div className={classes.paper}>
 
 
-            <h2 id="transition-modal-title">Transition modal</h2>
-            <p id="transition-modal-description">react-transition-group animates me.</p>
-
+            <h2 id="transition-modal-title">Dodaj pacjenta</h2>
+            {/*<p id="transition-modal-description">react-transition-group animates me.</p>*/}
             <AddNewPatientModalContent/>
 
           </div>
