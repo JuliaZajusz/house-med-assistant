@@ -58,7 +58,7 @@ export const theme = createMuiTheme({
         primary: metaTheme.palette[metaTheme.themeMotive].primary,
         secondary: metaTheme.palette[metaTheme.themeMotive].secondary
           ? metaTheme.palette[theme.themeMotive].secondary
-          : metaTheme.secondary,
+          : metaTheme.palette.secondary,
     }
 });
 
