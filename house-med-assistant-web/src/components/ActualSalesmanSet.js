@@ -92,7 +92,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => ({
   addNewSalesmanSet: () => dispatch(addNewSalesmanSet()),
-  setSalesmanSet: () => dispatch(setSalesmanSet()),
+  setSalesmanSet: (salesmanSet) => dispatch(setSalesmanSet(salesmanSet)),
   changeSalesmanSetName: (name) => dispatch(changeSalesmanSetName(name)),
 });
 
@@ -119,7 +119,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
 
   const handleTextFieldKeyDown = event => {
     if (event.key === 'Enter') {
-      saveName();
+      saveName(event.target.value);
     }
   };
 
@@ -129,9 +129,22 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
     }
   }, [props.mapSalesmanSet])
 
-  const saveName = () => {
+  const saveName = (newName) => {
     setIsNameEditable(false);
-    props.changeSalesmanSetName(name)
+    console.log("saveName: ", newName);
+    props.changeSalesmanSetName(newName)
+  };
+
+  const onDelete = (id) => {
+    console.log("onDelete", id);
+    let salesmanSet = props.mapSalesmanSet;
+    salesmanSet.places = [...salesmanSet.places.filter((place) => {
+      console.log(place.id !== id, place.id, id);
+      return place.id !== id
+    })];
+    console.log(salesmanSet.places);
+    props.setSalesmanSet(salesmanSet);
+    return true
   };
 
   return (
@@ -175,16 +188,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
         value={name}
         onChange={handleNameChange}
         onKeyDown={handleTextFieldKeyDown}
-        onBlur={saveName}
+        onBlur={() => saveName(name)}
         disabled={!isNameEditable}
       />
 
       }
       {props.mapSalesmanSet && props.mapSalesmanSet.places && props.mapSalesmanSet.places.map((place) =>
-        <PatientPaper patient={place} onDelete={(id) => {
-          console.log("onDelete", id);
-          return true
-        }}/>)}
+        <PatientPaper patient={place} onDelete={onDelete}/>)}
       <Fab
         variant="extended"
         size="small"

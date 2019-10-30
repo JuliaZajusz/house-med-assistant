@@ -9,7 +9,8 @@ export const getAllTags = () => {
               id,
               name
           }
-      }`
+      }`,
+    fetchPolicy: 'network-only'
     }
   );
 };

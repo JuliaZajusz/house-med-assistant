@@ -17,6 +17,7 @@ export const setSalesmanSetName = (id, name) => {
 }
 
 export const getAllSalesmanSets = () => {
+  console.log("getAllSalesmanSets")
     return client
     .query({
           query: gql`{
@@ -58,7 +59,8 @@ export const getAllSalesmanSets = () => {
                       value
                   }
               }
-          }`
+          }`,
+      fetchPolicy: 'network-only'
       }
     );
 }

@@ -8,6 +8,14 @@ export default (state = {
         ...state,
         mapSalesmanSet: action.payload
       };
+    case 'SET_SALESMAN_SET_NAME':
+      return {
+        ...state,
+        mapSalesmanSet: {
+          ...state.mapSalesmanSet,
+          name: action.payload
+        }
+      }
     case 'ADD_PATIENT_TO_SALESMAN_SET':
       return {
         ...state,

@@ -58,6 +58,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                 patient
             }
             salesmanSet.paths = mutableListOf(findFirstPath(salesmanSet))
+            salesmanSet.name = oldSalesmanSet.name
         }
         return salesmanSetRepository.save(updatedSet)
     }
