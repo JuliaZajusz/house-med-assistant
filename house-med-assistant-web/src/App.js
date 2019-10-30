@@ -78,8 +78,8 @@ class App extends Component {
 
         sock.onmessage = e => {
             let data = JSON.parse(e.data).data
-            this.setState({messages: [data, ...this.state.messages]});
-            console.log("onmessage", e.data, data)
+            this.setState({messages: [data.paths[0].value, ...this.state.messages]});
+            console.log("onmessage", data, data.paths[0].value)
         };
 
         sock.onclose = () => {

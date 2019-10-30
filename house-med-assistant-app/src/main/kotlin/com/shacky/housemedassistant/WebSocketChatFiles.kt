@@ -50,7 +50,7 @@ class ChatHandler(val salesmanSetMutationResolver: SalesmanSetMutationResolver) 
 //                val salesmanSetUtils = SalesmanSetUtils();
                 val salesmanSet = salesmanSetMutationResolver.upgradeSalesmanSet(id, 5);
                 println("!!!!!!!!!" + salesmanSet.paths[0].value)
-                emit(session, Message("value", salesmanSet.paths[0].value))
+                emit(session, Message("value", salesmanSet))
             }
         }
     }

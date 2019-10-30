@@ -2,6 +2,8 @@ import {
   deleteSalesmanSet,
   findSalesmanSetById,
   getAllSalesmanSets,
+  postSalesmanSet,
+  putSalesmanSet,
   upgradeSalesmanSet
 } from "../services/SalesmanSetService";
 import {history} from "../App";
@@ -38,27 +40,20 @@ export const setSalesmanSet = (salesmanSet) => dispatch => {
 };
 
 
-export const addNewSalesmanSet = () => (dispatch, getState) => {
-  // const mapSalesmanSet = getState().salesmanSetReducer.mapSalesmanSet;
-  // const sock = new SockJS('http://localhost:9000/chat');
-  //
-  // sock.onopen = () => {
-  //   console.log("onopen")
-  // }
-  //
-  //
-  // sock.onmessage = e => {
-  //   let data = JSON.parse(e.data).data
-  //   this.setState({messages: [data, ...this.state.messages]});
-  //   console.log("onmessage", e.data, data)
-  // };
-  //
-  // sock.onclose = () => {
-  //   console.log("onclose")
-  // }
-  //
-  // sock.send(JSON.stringify({type: "jul", data: "katia"}));
-
+export const addNewSalesmanSet = () => async (dispatch, getState) => {
+  const mapSalesmanSet = getState().salesmanSetReducer.mapSalesmanSet;
+  console.log("addNewSalesmanSet mapSalesmanSet", mapSalesmanSet);
+  if (mapSalesmanSet.id != null) {
+    return putSalesmanSet(mapSalesmanSet)
+      .then(response => {
+        dispatch(setSalesmanSet(response.data.updateSalesmanSet));
+      })
+  }
+  await postSalesmanSet(mapSalesmanSet)
+    .then(response => {
+        dispatch(setSalesmanSet(response.data.newSalesmanSet));
+      }
+    )
 };
 
 // export const addNewSalesmanSet = () => (dispatch, getState) => {

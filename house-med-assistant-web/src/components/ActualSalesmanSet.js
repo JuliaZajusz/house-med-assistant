@@ -103,8 +103,19 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
 
 
   const calculatePath = () => {
-    props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
-    // props.addNewSalesmanSet()
+    // if(props.mapSalesmanSet.id) {
+    //   props.addNewSalesmanSet()
+    //     .then((salesmanSet) =>
+    //       props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
+    //     )
+    //   // props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
+    // } else {
+    props.addNewSalesmanSet()
+      .then((salesmanSet) =>
+        props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
+      )
+
+    // }
   };
   return (
     <Grid
