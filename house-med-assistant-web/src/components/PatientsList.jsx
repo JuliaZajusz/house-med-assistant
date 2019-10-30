@@ -7,6 +7,7 @@ import {addPatientToSalesmanSet} from "../actions/salesmanSetActions";
 import PatientPaper from "./PatientPaper";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
+import {Scrollbars} from "react-custom-scrollbars";
 
 
 const useStyles = makeStyles(theme => ({
@@ -19,10 +20,11 @@ const useStyles = makeStyles(theme => ({
   side_panel__patients_list: {
     background: theme.palette.secondary.lightMedium,
     padding: "5px",
-    paddingBottom: 0,
-    height: '100%',
-    flexWrap: 'nowrap',
-    overflowY: 'scroll',
+    paddingRight: "13px",
+    // paddingBottom: 0,
+    // height: '100%',
+    // flexWrap: 'nowrap',
+    // overflowY: 'scroll',
   },
   patient_name: {
     margin: 0,
@@ -71,14 +73,23 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsLis
   return (
     <div
       className={classes.vertical_scroll_box_container}>
-      <Grid
-        item
-        container
-        direction="column"
-        justify="flex-start"
-        alignItems='stretch'
-        className={classes.side_panel__patients_list}
-      >
+      {/*<Grid*/}
+      {/*  item*/}
+      {/*  container*/}
+      {/*  direction="column"*/}
+      {/*  justify="flex-start"*/}
+      {/*  alignItems='stretch'*/}
+      {/*  className={classes.side_panel__patients_list}*/}
+      {/*>*/}
+      <Scrollbars style={{height: "100%"}}>
+        <div
+          // item
+          // container
+          // direction="column"
+          // justify="flex-start"
+          // alignItems='stretch'
+          className={classes.side_panel__patients_list}
+        >
         <Grid item className={classes.button_container}>
           <ButtonGroup size="small" aria-label="small outlined button group">
             <Button onClick={(e) => showModal(e)}>Dodaj pacjenta</Button>
@@ -94,7 +105,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsLis
           }}/>
         })
         }
-      </Grid>
+        </div>
+      </Scrollbars>
+      {/*</Grid>*/}
     </div>
   );
 })

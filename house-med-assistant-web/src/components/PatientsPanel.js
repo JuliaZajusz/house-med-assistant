@@ -16,6 +16,7 @@ import {
 } from "../actions/patientActions";
 import {connect} from "react-redux";
 import TransisionModal from "./TransisionModal";
+import {Scrollbars} from 'react-custom-scrollbars';
 
 
 const useStyles = makeStyles(theme => ({
@@ -62,10 +63,6 @@ const useStyles = makeStyles(theme => ({
     },
     marginLeft: 0,
     width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(1),
-      width: 'auto',
-    },
     border: '1px solid grey',
     overflow: 'hidden',
   },
@@ -105,7 +102,6 @@ const mapStateToProps = (state) => {
     activeTags: state.patientReducer.activeTags,
     coordinatesByAddress: state.patientReducer.coordinatesByAddress,
     patientModal: state.patientReducer.modal,
-
   }
 };
 
@@ -120,13 +116,6 @@ const mapDispatchToProps = dispatch => ({
 
 export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPanel(props) {
   const classes = useStyles();
-
-  // const [value, setValue] = useState("");
-  //
-  // const [addNewPatient, setAddNewPatient] = useState(
-  //   false
-  //   // true
-  // );
 
   let searchValue = "";
 
@@ -146,12 +135,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
     props.getTagsAction()
   }, []);
 
-
   return (
-    <Grid
-      className={classes.side_container}
-      // alignItems='stretch'
-    >
+    <Grid className={classes.side_container}>
       <Grid className={classes.search_panel}>
         <div className={classes.search}>
           <div className={classes.searchIcon}>
@@ -167,7 +152,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
             onChange={(e) => search(e)}
           />
         </div>
-        <div className={classes.horizontal_scroll_box_container}>
+        <Scrollbars style={{height: "40px"}}>
           <div className={classes.horizontal_scroll_box}>
             {
               props.tags && props.tags.map((tag) => {
@@ -189,7 +174,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
               })
             }
           </div>
-        </div>
+        </Scrollbars>
       </Grid>
       {props.patientModal.isOpen && <TransisionModal/>}
       {/*<AddNewPatient/>*/}

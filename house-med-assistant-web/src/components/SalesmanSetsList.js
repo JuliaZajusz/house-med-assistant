@@ -12,6 +12,7 @@ const useStyles = makeStyles(theme => ({
   side_panel__salesman_list: {
     background: "#ffffff",
     padding: "5px",
+    paddingRight: "13px",
   },
   salesmanSet_paper: {
     background: "#eeeeee",

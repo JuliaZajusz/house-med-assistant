@@ -52,7 +52,9 @@ const useStyles = theme => ({
     side_container_container: {
         height: '100%',
         maxHeight: '100%',
-        overflowY: 'auto'
+        overflowY: 'auto',
+        borderRight: "1px solid " + theme.palette.secondary.lightMediumBorder,
+        // boxShadow: "6px 0px 5px 0px rgba(0,0,0,0.75)"
     }
 });
 
@@ -132,4 +134,4 @@ class App extends Component {
     }
 }
 
-export default withStyles(useStyles)(App);
+export default withStyles(useStyles(theme))(App);

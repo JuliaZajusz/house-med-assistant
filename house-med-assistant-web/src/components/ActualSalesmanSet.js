@@ -19,7 +19,8 @@ const useStyles = makeStyles(theme => ({
     boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
   },
   top_side_panel: {
-    padding: '8px',
+    padding: '5px',
+    paddingRight: '13px',
     alignItems: 'stretch',
     background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
   },
