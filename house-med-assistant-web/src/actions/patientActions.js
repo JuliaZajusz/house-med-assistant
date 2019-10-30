@@ -55,9 +55,9 @@ export const setActiveTagsAction = (activeTags) => ({
 });
 
 
-export const getCoordinatesByAddress = (address) => dispatch => {
+export const getCoordinatesByAddress = (address) => async dispatch => {
   const addr = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&key=' + GOOGLE_API_KEY;
-  fetch(addr)
+  await fetch(addr)
     .then(res => res.json())
     .then(res => {
       if (res.status !== "OK") {

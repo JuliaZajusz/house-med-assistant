@@ -5,6 +5,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Fade from '@material-ui/core/Fade';
 import {hideModal} from "../actions/patientActions";
 import {connect} from "react-redux";
+import AddNewPatientModalContent from "./AddNewPatientModalContent";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -13,8 +14,8 @@ const useStyles = makeStyles(theme => ({
     justifyContent: 'center',
   },
   paper: {
-    backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
+    backgroundColor: theme.palette.background,
+    // border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
@@ -54,8 +55,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(function TransisionM
       >
         <Fade in={props.patientModal.isOpen}>
           <div className={classes.paper}>
+
+
             <h2 id="transition-modal-title">Transition modal</h2>
             <p id="transition-modal-description">react-transition-group animates me.</p>
+
+            <AddNewPatientModalContent/>
+
           </div>
         </Fade>
       </Modal>
