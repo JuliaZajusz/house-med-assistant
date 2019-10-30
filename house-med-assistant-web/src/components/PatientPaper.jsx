@@ -10,11 +10,9 @@ import {getContrastYIQ, hashCode, intToRGB} from "../utils/Utils";
 
 const useStyles = makeStyles(theme => ({
   paper: {
-    // paddingRight: "5px",
-    // paddingLeft: "5px",
+    background: theme.palette.background,
     padding: "5px",
     marginBottom: '8px',
-    // borderRadius: 0,
   },
   patient_name: {
     margin: 0,

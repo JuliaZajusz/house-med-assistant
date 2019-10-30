@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
 import MapWrapper from "./components/Map";
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import {createMuiTheme} from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
@@ -12,6 +11,7 @@ import {createBrowserHistory} from 'history';
 import PatientsPanel from "./components/PatientsPanel";
 import Header from "./components/Header";
 import SockJS from "sockjs-client"
+import {withStyles} from '@material-ui/styles';
 
 export const history = createBrowserHistory();
 
@@ -22,14 +22,17 @@ const theme = createMuiTheme({
             main: '#f44336',
             dark: '#424242',
             light: '#fefefe',
+          lightMedium: '#eeeeee',
+          lightMediumBorder: '#c0c0c0',
         },
+      background: '#ffffff',
     },
     shape: {
         borderRadius: '3px',
     }
 });
 
-const useStyles = makeStyles(theme => ({
+const useStyles = theme => ({
     app: {
         height: '100%',
         maxHeight: '100%',
@@ -51,11 +54,11 @@ const useStyles = makeStyles(theme => ({
         maxHeight: '100%',
         overflowY: 'auto'
     }
-}));
+});
 
-export default class App extends Component {
+class App extends Component {
     // classes = useStyles();
-    classes = {};
+  // classes = {};
 
     constructor(props) {
         super(props);
@@ -65,7 +68,6 @@ export default class App extends Component {
 
 
         const sock = new SockJS('http://localhost:9000/chat');
-        // const sock = new SockJS('https://chat-server.azurewebsites.net/chat');
 
         sock.onopen = () => {
             console.log("onopen")
@@ -89,27 +91,27 @@ export default class App extends Component {
     onSockSend = (e) => {
         // e.preventDefault();
         console.log("handleFormSubmit")
-        // this.sock.send(JSON.stringify({type: "say", data:e.target[0].value}));
         this.sock.send(JSON.stringify({type: "jul", data: e.target[0].value}));
     }
 
 
     render() {
+      const {classes} = this.props;
         console.log("render App");
         return (
-          <div className={this.classes.app}>
+          <div className={classes.app}>
           <BrowserRouter history={history}>
               <ThemeProvider theme={theme}>
                   <Header messages={this.state.messages} onSockSend={(e) => this.onSockSend(e)}/>
                   <Grid container
                         direction="row"
                         justify="center"
-                        className={this.classes.main_layout_box}
+                        className={classes.main_layout_box}
                         alignItems='stretch'
                   >
                       <Grid item xs={3}
                             flexgrow={1}
-                            className={this.classes.side_container_container}
+                            className={classes.side_container_container}
                       >
                           <SidePanel onSockSend={(e) => this.onSockSend(e)}/>
                       </Grid>
@@ -118,7 +120,7 @@ export default class App extends Component {
                       </Grid>
                       <Grid item xs={3}
                             flexgrow={1}
-                            className={this.classes.side_container_container}
+                            className={classes.side_container_container}
                       >
                           <PatientsPanel/>
                       </Grid>
@@ -130,3 +132,4 @@ export default class App extends Component {
     }
 }
 
+export default withStyles(useStyles)(App);

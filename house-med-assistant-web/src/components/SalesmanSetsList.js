@@ -10,14 +10,15 @@ import {Delete} from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
   side_panel__salesman_list: {
-    background: "pink",
+    background: "#ffffff",
     padding: "5px",
   },
   salesmanSet_paper: {
-    background: "gold",
+    background: "#eeeeee",
     padding: "5px",
     marginBottom: "10px",
     width: "calc(100% - 10px)",
+    border: "1px solid #c0c0c0"
   },
   flexWrapNowrap: {
     flexWrap: "nowrap"

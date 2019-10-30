@@ -15,17 +15,12 @@ const useStyles = makeStyles(theme => ({
 
   },
   side_panel__patients_list: {
-    background: "pink",
+    background: theme.palette.secondary.lightMedium,
     padding: "5px",
     paddingBottom: 0,
     height: '100%',
     flexWrap: 'nowrap',
     overflowY: 'scroll',
-  },
-  patient_paper: {
-    background: "white",
-    padding: "5px",
-    marginBottom: "5px"
   },
   patient_name: {
     margin: 0,
