@@ -67,7 +67,7 @@ export default (state = {
     }
   ],
   modal: {
-    isOpen: true,
+    isOpen: false,
     operation: null
   }
 }, action) => {

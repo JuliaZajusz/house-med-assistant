@@ -15,7 +15,6 @@ import {
   showModal
 } from "../actions/patientActions";
 import {connect} from "react-redux";
-import AddNewPatient from "./AddNewPatient";
 import TransisionModal from "./TransisionModal";
 
 
@@ -143,11 +142,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
     props.getPatientsAction(searchValue, props.activeTags);
   };
 
-  const showModal = (e) => {
-    console.log("showModal")
-    props.showModal("add")
-  }
-
   useEffect(() => {
     props.getTagsAction()
   }, []);
@@ -197,20 +191,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
           </div>
         </div>
       </Grid>
-      <button onClick={(e) => showModal(e)}>show modal</button>
       {props.patientModal.isOpen && <TransisionModal/>}
-      <AddNewPatient/>
-
-      {/*<Grid*/}
-      {/*    item*/}
-      {/*    container*/}
-      {/*    direction="column"*/}
-      {/*    justify="center"*/}
-      {/*    alignItems="center"*/}
-      {/*    className={classes.side_panel}*/}
-      {/*>*/}
-      {/*</Grid>*/}
-
+      {/*<AddNewPatient/>*/}
       <PatientsList/>
     </Grid>
   );

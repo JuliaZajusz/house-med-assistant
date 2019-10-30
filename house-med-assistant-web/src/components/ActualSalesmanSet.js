@@ -78,7 +78,12 @@ const useStyles = makeStyles(theme => ({
     flexWrap: "nowrap",
     marginTop: "5px",
     marginBottom: "5px",
-  }
+  },
+  button_container: {
+    marginBottom: "5px",
+    display: "flex",
+    justifyContent: "flex-end",
+  },
 }));
 
 const mapStateToProps = (state) => {
@@ -109,20 +114,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
       alignItems="center"
       className={classes.top_side_panel}
     >
-      <Grid container
-            direction="row"
-            justify="flex-start"
-            className={classes.flexWrapNowrap}
-            alignItems='stretch'
-      >
-        <Grid item>
+      <Grid item className={classes.button_container}>
           <ButtonGroup size="small" aria-label="small outlined button group">
             <Button onClick={() => props.setSalesmanSet()}>Wyczyść</Button>
             {/*<Button>Two</Button>*/}
             {/*<Button>Three</Button>*/}
           </ButtonGroup>
         </Grid>
-      </Grid>
       {props.mapSalesmanSet && props.mapSalesmanSet.id &&
       <Grid container
             direction="row"

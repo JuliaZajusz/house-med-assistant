@@ -82,8 +82,9 @@ export const addNewPatient = (patient) => (dispatch, getState) => {
       type: 'ADD_PATIENT',
       payload: res.data.newPatient
     });
+    dispatch(hideModal());
     console.log("przed ustawieniem tagów", getState())
-    dispatch(getTagsAction())
+    dispatch(getTagsAction());
     console.log("po ustawieniu tagów", getState())
   })
 };
