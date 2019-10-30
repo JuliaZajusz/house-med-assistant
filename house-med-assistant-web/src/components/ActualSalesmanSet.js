@@ -131,19 +131,16 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
 
   const saveName = (newName) => {
     setIsNameEditable(false);
-    console.log("saveName: ", newName);
     props.changeSalesmanSetName(newName)
   };
 
   const onDelete = (id) => {
-    console.log("onDelete", id);
     let salesmanSet = props.mapSalesmanSet;
     salesmanSet.places = [...salesmanSet.places.filter((place) => {
-      console.log(place.id !== id, place.id, id);
       return place.id !== id
     })];
-    console.log(salesmanSet.places);
-    props.setSalesmanSet(salesmanSet);
+    console.log(salesmanSet);
+    props.addNewSalesmanSet(salesmanSet);
     return true
   };
 

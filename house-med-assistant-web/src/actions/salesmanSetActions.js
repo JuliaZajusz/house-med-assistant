@@ -13,11 +13,12 @@ export const changeSalesmanSetName = (name) => (dispatch, getState) => {
   const state = getState();
   const mapSalesmanSet = state.salesmanSetReducer.mapSalesmanSet;
   if (mapSalesmanSet.id) {
-    setSalesmanSetName(mapSalesmanSet.id, name).then(res => {
+    setSalesmanSetName(mapSalesmanSet.id, name).then(() => {
         dispatch({
           type: 'SET_SALESMAN_SET_NAME',
           payload: name
         });
+      dispatch(loadAllSalesmanSets())
       }
     )
   }
@@ -65,11 +66,13 @@ export const addNewSalesmanSet = () => async (dispatch, getState) => {
     return putSalesmanSet(mapSalesmanSet)
       .then(response => {
         dispatch(setSalesmanSet(response.data.updateSalesmanSet));
+        dispatch(loadAllSalesmanSets());
       })
   }
   await postSalesmanSet(mapSalesmanSet)
     .then(response => {
         dispatch(setSalesmanSet(response.data.newSalesmanSet));
+      dispatch(loadAllSalesmanSets());
       }
     )
 };
