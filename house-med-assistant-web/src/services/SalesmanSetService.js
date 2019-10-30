@@ -1,9 +1,20 @@
 import {gql} from "apollo-boost";
 import {client} from "./DefaultService";
 
-// export const getSalesmanSet = (id) => {
-//     return null;
-// }
+export const setSalesmanSetName = (id, name) => {
+    return client
+    .mutate({
+          mutation: gql`
+              mutation setSalesmanSetName {
+                  setSalesmanSetName(
+                      id: "${id}",
+                      name: "${name}",
+                  )
+              }
+          `
+      }
+    );
+}
 
 export const getAllSalesmanSets = () => {
     return client
@@ -11,6 +22,7 @@ export const getAllSalesmanSets = () => {
           query: gql`{
               salesmanSets {
                   id,
+                  name,
                   places {
                       id,
                       firstName
@@ -57,6 +69,7 @@ export const findSalesmanSetById = (id) => {
       query: gql`{
           findSalesmanSetById(id: "${id}") {
               id,
+              name,
               places {
                   id,
                   firstName
@@ -117,6 +130,7 @@ export const upgradeSalesmanSet = (id,
                       parentPopulationSize: ${parentPopulationSize}
                   ) {
                       id,
+                      name,
                       places {
                           id,
                           firstName
@@ -160,11 +174,6 @@ export const upgradeSalesmanSet = (id,
 
 
 export const postSalesmanSet = (set) => {
-    // if (set.id != null) {
-    //     return putSalesmanSet(set)
-    // }
-    // ;
-
     let places = set.places.map((place) => {
         return {
             ...place,
@@ -172,11 +181,11 @@ export const postSalesmanSet = (set) => {
                 return tag.name
             })
         }
-    })
+    });
 
     let json = JSON.stringify(places).replace(/\"([^(\")"]+)\":/g, "$1:");
 
-    console.log("json", json)
+    console.log("json", json);
     return client
     .mutate({
           mutation: gql`
@@ -185,6 +194,7 @@ export const postSalesmanSet = (set) => {
                       patients: ${json}
                   ) {
                       id,
+                      name,
                       places {
                           id,
                           firstName
@@ -271,6 +281,7 @@ export const putSalesmanSet = (set) => {
                       salesmanSet: ${json}
                   ) {
                       id,
+                      name,
                       places {
                           id,
                           firstName

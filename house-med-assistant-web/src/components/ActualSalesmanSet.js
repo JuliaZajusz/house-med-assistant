@@ -1,13 +1,14 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Button from '@material-ui/core/Button';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import {fade} from "@material-ui/core/styles";
 import Fab from "@material-ui/core/Fab";
 import connect from "react-redux/es/connect/connect";
-import {addNewSalesmanSet, setSalesmanSet} from "../actions/salesmanSetActions";
+import {addNewSalesmanSet, changeSalesmanSetName, setSalesmanSet} from "../actions/salesmanSetActions";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import PatientPaper from "./PatientPaper";
+import TextField from "@material-ui/core/TextField";
 
 
 const useStyles = makeStyles(theme => ({
@@ -78,6 +79,9 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "flex-end",
   },
+  text_field: {
+    marginTop: 0,
+  }
 }));
 
 const mapStateToProps = (state) => {
@@ -89,11 +93,22 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
   addNewSalesmanSet: () => dispatch(addNewSalesmanSet()),
   setSalesmanSet: () => dispatch(setSalesmanSet()),
+  changeSalesmanSetName: (name) => dispatch(changeSalesmanSetName(name)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(function ActualSalesmanSet(props) {
   const classes = useStyles();
 
+  const [name, setName] = useState(() => {
+    return props.mapSalesmanSet && props.mapSalesmanSet.name
+      ? props.mapSalesmanSet.name : ""
+  });
+
+  const [isNameEditable, setIsNameEditable] = useState(false);
+
+  const handleNameChange = (e) => {
+    setName(e.target.value)
+  };
 
   const calculatePath = () => {
     props.addNewSalesmanSet()
@@ -101,6 +116,24 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
         props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
       )
   };
+
+  const handleTextFieldKeyDown = event => {
+    if (event.key === 'Enter') {
+      saveName();
+    }
+  };
+
+  React.useEffect(() => {
+    if (props.mapSalesmanSet) {
+      setName(props.mapSalesmanSet.name);
+    }
+  }, [props.mapSalesmanSet])
+
+  const saveName = () => {
+    setIsNameEditable(false);
+    props.changeSalesmanSetName(name)
+  };
+
   return (
     <Grid
       item
@@ -112,13 +145,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
     >
       <Grid item className={classes.button_container}>
           <ButtonGroup size="small" aria-label="small outlined button group">
+            <Button onClick={() => setIsNameEditable(true)}>Edytuj</Button>
             <Button
               // className={classes.outlined_button}
               onClick={() => props.setSalesmanSet()}>Wyczyść</Button>
-            {/*<Button>Two</Button>*/}
             {/*<Button>Three</Button>*/}
           </ButtonGroup>
         </Grid>
+
       {props.mapSalesmanSet && props.mapSalesmanSet.id &&
       <Grid container
             direction="row"
@@ -129,7 +163,22 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
         <div style={{fontSize: '10px', color: 'grey'}}>
           {props.mapSalesmanSet.id}
         </div>
+
       </Grid>
+      }
+      {props.mapSalesmanSet && props.mapSalesmanSet.id &&
+      <TextField
+        className={classes.text_field}
+        label="Nazwa"
+        id="name"
+        margin="normal"
+        value={name}
+        onChange={handleNameChange}
+        onKeyDown={handleTextFieldKeyDown}
+        onBlur={saveName}
+        disabled={!isNameEditable}
+      />
+
       }
       {props.mapSalesmanSet && props.mapSalesmanSet.places && props.mapSalesmanSet.places.map((place) =>
         <PatientPaper patient={place} onDelete={(id) => {

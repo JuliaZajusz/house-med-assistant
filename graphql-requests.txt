@@ -259,7 +259,8 @@ query findCoordinateByLocation {
 
 query getAllSalesmanSets {
   salesmanSets {
-    id
+    id,
+    name,
     places {
       id
       firstName
@@ -470,7 +471,7 @@ mutation updateSalesmanSet2 {
 mutation updateSalesmanSet3 {
   updateSalesmanSet(
     salesmanSet: {
-      id: "64166d5a-d1b3-4027-9bba-ce8d43a3ef98",
+      id: "d759abdc-19f6-40eb-831d-69e3b95c86a8",
       places: [{
         id: "12",
         lastName: "",
@@ -482,7 +483,7 @@ mutation updateSalesmanSet3 {
         },
         tags: []
       }, {
-        id: "12f",lastName: "", firstName: "", address: "", coordinate: {id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", location: [16.08, 50.18]}, tags: []}, {
+        id: "12f",lastName: "", firstName: "", address: "", coordinate: {id: "7fbed122-52b4-4e91-9e8f-eb17b506cdd6", location: [16.08, 50.18]}, tags: ["alak s kd"]}, {
           id: "142", lastName: "", firstName: "", address: "", coordinate: {id: "653aafbe-bbfa-4547-baf2-7f9b46d97c4a", location: [18.77, 47.92]}, tags: []}, {
           id: "162", lastName: "", firstName: "", address: "", coordinate: {id: "26014f50-fbed-4d94-b375-6aae8cf37b08", location: [16.988789, 51.065643]}, tags: []}],
       paths: [{places: [{
@@ -532,4 +533,9 @@ mutation updateSalesmanSet3 {
 
 mutation deleteSalesmanSet {
   deleteSalesmanSet(id: "c8e65d2b-d7a8-45df-9b61-efeffcb3fee8")
+}
+
+
+mutation setSalesmanSetName {
+  setSalesmanSetName(id: "1b8b2dff-d2ce-4216-b9cd-5fc0f057419f", name: "Zbiór moich ulubionych")
 }

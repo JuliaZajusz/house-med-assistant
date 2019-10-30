@@ -92,6 +92,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
                         onClick={(e) => deleteDalesmanSet(e, salesmanSet.id)}/>
               </div>
             </Grid>
+            {salesmanSet.name && <p>{salesmanSet.name}</p>}
             {salesmanSet && salesmanSet.places.map((patient) => <PatientPaper patient={patient}/>)}
           </Paper>
         }

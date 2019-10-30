@@ -4,9 +4,25 @@ import {
   getAllSalesmanSets,
   postSalesmanSet,
   putSalesmanSet,
+  setSalesmanSetName,
   upgradeSalesmanSet
 } from "../services/SalesmanSetService";
 import {history} from "../App";
+
+export const changeSalesmanSetName = (name) => (dispatch, getState) => {
+  const state = getState();
+  const mapSalesmanSet = state.salesmanSetReducer.mapSalesmanSet;
+  if (mapSalesmanSet.id) {
+    setSalesmanSetName(mapSalesmanSet.id, name).then(res => {
+        dispatch({
+          type: 'SET_SALESMAN_SET_NAME',
+          payload: name
+        });
+      }
+    )
+  }
+}
+
 
 export const getSalesmanSet = (salesmanSetId) => dispatch => {
   if (salesmanSetId != null && salesmanSetId !== "") {

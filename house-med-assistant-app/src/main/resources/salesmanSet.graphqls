@@ -11,6 +11,7 @@ type Distance {
 
 type SalesmanSet {
     id: ID!
+    name: String
     places: [Patient]
     paths: [Path]
     neighborhoodMatrix: [Distance]
@@ -30,6 +31,7 @@ extend type Mutation {
     deleteSalesmanSet(id: ID!) : Boolean
     upgradeSalesmanSet(id: ID, timeInSec: Float, populationSize: Float!, parentPopulationSize: Float!): SalesmanSet
     updateSalesmanSet(salesmanSet: SalesmanSetInput): SalesmanSet
+    setSalesmanSetName(id: String, name: String): Boolean
 }
 
 input PathInput {

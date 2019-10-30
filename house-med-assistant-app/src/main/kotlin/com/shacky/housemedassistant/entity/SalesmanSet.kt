@@ -10,6 +10,7 @@ data class SalesmanSet(
 ) {
     @Id
     var id: String = ""
+    var name: String = ""
     var paths: MutableList<Path> = mutableListOf<Path>()
     var population: MutableList<Path> = mutableListOf<Path>()
     var parentPopulation: List<Path> = mutableListOf<Path>()

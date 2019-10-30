@@ -16,6 +16,14 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
                                   val pathQueryResolver: PathQueryResolver,
                                   val tagMutationResolver: TagMutationResolver
 ) : GraphQLMutationResolver {
+
+    fun setSalesmanSetName(id: String, name: String): Boolean {
+        val salesmanSet = salesmanSetQueryResolver.findSalesmanSetById(id)
+        salesmanSet.name = name
+        salesmanSetRepository.save(salesmanSet)
+        return true
+    }
+
     fun newSalesmanSet(patients: List<Patient>): SalesmanSet? {
         var salesmanSet = salesmanSetQueryResolver.getSalesmanSetByPatients(patients)
         if (salesmanSet == null) {
