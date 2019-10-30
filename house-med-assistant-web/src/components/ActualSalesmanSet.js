@@ -8,7 +8,6 @@ import connect from "react-redux/es/connect/connect";
 import {addNewSalesmanSet, setSalesmanSet} from "../actions/salesmanSetActions";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import PatientPaper from "./PatientPaper";
-import {getContrastYIQ} from "../utils/Utils";
 
 
 const useStyles = makeStyles(theme => ({
@@ -79,10 +78,6 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     justifyContent: "flex-end",
   },
-  fab_button: {
-    background: theme.palette[theme.themeMotive].primary.main,
-    color: getContrastYIQ(theme.palette[theme.themeMotive].primary.main),
-  },
 }));
 
 const mapStateToProps = (state) => {
@@ -144,9 +139,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
       <Fab
         variant="extended"
         size="small"
-        // color="blueTheme.primary.main"
+        color="primary"
         aria-label="add"
-        className={classes.fab_button}
         onClick={calculatePath}
       >
         Wylicz trasę

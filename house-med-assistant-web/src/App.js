@@ -11,18 +11,14 @@ import PatientsPanel from "./components/PatientsPanel";
 import Header from "./components/Header";
 import SockJS from "sockjs-client"
 import {withStyles} from '@material-ui/styles';
+import {getContrastYIQ} from "./utils/Utils";
 
 export const history = createBrowserHistory();
 
-export const theme = createMuiTheme({
-    themeMotive: "blueTheme",
-    // themeMotive: "salmonTheme",
+const metaTheme = {
+    // themeMotive: "blueTheme",
+    themeMotive: "salmonTheme",
     palette: {
-        primary: {
-            main: '#292370',
-            light: '#463db8',
-            broken: '#3d89b8',
-        },
         secondary: {
             main: '#f44336',
             dark: '#424242',
@@ -35,19 +31,34 @@ export const theme = createMuiTheme({
             primary: {
                 main: "#a12049",
                 light: '#FE6B8B',
+                dark: '#61132c',
                 broken: "#FF8E53",
+                contrastText: getContrastYIQ("#a12049") === "black" ? "#000000" : "#ffffff",
             }
         },
         blueTheme: {
             primary: {
                 main: "#292370",
                 light: '#463db8',
+                dark: '#120e36',
                 broken: "#3d89b8",
+                contrastText: getContrastYIQ("#292370") === "black" ? "#000000" : "#ffffff"
             }
         }
     },
     shape: {
         borderRadius: '3px',
+    }
+};
+
+export const theme = createMuiTheme({
+    ...metaTheme,
+    palette: {
+        ...metaTheme.palette,
+        primary: metaTheme.palette[metaTheme.themeMotive].primary,
+        secondary: metaTheme.palette[metaTheme.themeMotive].secondary
+          ? metaTheme.palette[theme.themeMotive].secondary
+          : metaTheme.secondary,
     }
 });
 

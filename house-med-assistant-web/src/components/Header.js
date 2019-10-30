@@ -8,9 +8,6 @@ import {ReactComponent as Logo} from '../images/logo.svg';
 const useStyles = makeStyles(theme => ({
   title: {
     flexGrow: 1,
-  },
-  app_bar: {
-    background: theme.palette[theme.themeMotive].primary.main
   }
 }));
 
@@ -20,8 +17,7 @@ export default function Header(props, state) {
   console.log("render Header", props, state)
   return (
     <AppBar position="static"
-            className={classes.app_bar}
-      // color={`theme.palette.${theme.themeMotive}.primary.main`}
+            color="primary"
     >
       <Toolbar>
         <Logo style={{height: "40px", marginRight: "8px"}}/>
