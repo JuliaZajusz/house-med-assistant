@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import InputBase from "@material-ui/core/InputBase";
@@ -117,11 +117,11 @@ const mapDispatchToProps = dispatch => ({
 export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPanel(props) {
   const classes = useStyles();
 
-  let searchValue = "";
+  const [searchValue, setSearchValue] = useState("");
 
   const search = (e) => {
-    searchValue = e.target.value;
-    props.getPatientsAction(searchValue, props.activeTags)
+    setSearchValue(e.target.value);
+    props.getPatientsAction(e.target.value, props.activeTags)
   };
 
   const changeTagActivity = (tag) => {
@@ -143,7 +143,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsPan
             <SearchIcon/>
           </div>
           <InputBase
-            placeholder="Szukaj zapisanych pacjentów..."
+            placeholder="Szukaj pacjentów..."
             classes={{
               root: classes.inputRoot,
               input: classes.inputInput,
