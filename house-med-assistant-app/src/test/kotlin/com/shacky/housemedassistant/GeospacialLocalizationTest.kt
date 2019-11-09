@@ -72,14 +72,14 @@ class GeospatialLiveTest {
         }
         patientMutationResolver.newPatient("Kowalski", "Jan", "", listOf(-0.1268194f, 51.5007292f), listOf())
 
-        salesmanSetMutationResolver.newSalesmanSetByDistance(6, listOf(
-                0.0f, 20.0f, 30.0f, 31.0f, 28.0f, 40.0f,
-                30.0f, 0.0f, 10.0f, 14.0f, 20.0f, 44.0f,
-                40.0f, 20.0f, 0.0f, 10.0f, 22.0f, 50.0f,
-                41.0f, 24.0f, 20.0f, 0.0f, 14.0f, 42.0f,
-                38.0f, 30.0f, 32.0f, 24.0f, 0.0f, 28.0f,
-                50.0f, 54.0f, 60.0f, 52.0f, 38.0f, 0.0f
-        ))
+//        salesmanSetMutationResolver.newSalesmanSetByDistance(6, listOf(
+//                0.0f, 20.0f, 30.0f, 31.0f, 28.0f, 40.0f,
+//                30.0f, 0.0f, 10.0f, 14.0f, 20.0f, 44.0f,
+//                40.0f, 20.0f, 0.0f, 10.0f, 22.0f, 50.0f,
+//                41.0f, 24.0f, 20.0f, 0.0f, 14.0f, 42.0f,
+//                38.0f, 30.0f, 32.0f, 24.0f, 0.0f, 28.0f,
+//                50.0f, 54.0f, 60.0f, 52.0f, 38.0f, 0.0f
+//        ))
     }
 
     @Test
@@ -132,18 +132,18 @@ class GeospatialLiveTest {
         assertNotNull(salesmanSet)
     }
 
-    @Test
-    fun checkGetSalesmanSetByDistances() {
-        val salesmanSet = salesmanSetMutationResolver.newSalesmanSetByDistance(6, listOf(
-                0.0f, 20.0f, 30.0f, 31.0f, 28.0f, 40.0f,
-                30.0f, 0.0f, 10.0f, 14.0f, 20.0f, 44.0f,
-                40.0f, 20.0f, 0.0f, 10.0f, 22.0f, 50.0f,
-                41.0f, 24.0f, 20.0f, 0.0f, 14.0f, 42.0f,
-                38.0f, 30.0f, 32.0f, 24.0f, 0.0f, 28.0f,
-                50.0f, 54.0f, 60.0f, 52.0f, 38.0f, 0.0f
-        ))
-        assertNotNull(salesmanSet)
-    }
+//    @Test
+//    fun checkGetSalesmanSetByDistances() {
+//        val salesmanSet = salesmanSetMutationResolver.newSalesmanSetByDistance(6, listOf(
+//                0.0f, 20.0f, 30.0f, 31.0f, 28.0f, 40.0f,
+//                30.0f, 0.0f, 10.0f, 14.0f, 20.0f, 44.0f,
+//                40.0f, 20.0f, 0.0f, 10.0f, 22.0f, 50.0f,
+//                41.0f, 24.0f, 20.0f, 0.0f, 14.0f, 42.0f,
+//                38.0f, 30.0f, 32.0f, 24.0f, 0.0f, 28.0f,
+//                50.0f, 54.0f, 60.0f, 52.0f, 38.0f, 0.0f
+//        ))
+//        assertNotNull(salesmanSet)
+//    }
 
     @Test
     fun checkFindGreedyPath() {
@@ -254,20 +254,20 @@ class GeospatialLiveTest {
         assertEquals(path?.places!!.distinct().size, result?.places!!.distinct().size)
     }
 
-    @Test
-    fun check_6_1_datasetGreedyValue() {
-        val salesmanSet = salesmanSetMutationResolver.newSalesmanSetByDistance(6, listOf(
-                0.0f, 20.0f, 30.0f, 31.0f, 28.0f, 40.0f,
-                30.0f, 0.0f, 10.0f, 14.0f, 20.0f, 44.0f,
-                40.0f, 20.0f, 0.0f, 10.0f, 22.0f, 50.0f,
-                41.0f, 24.0f, 20.0f, 0.0f, 14.0f, 42.0f,
-                38.0f, 30.0f, 32.0f, 24.0f, 0.0f, 28.0f,
-                50.0f, 54.0f, 60.0f, 52.0f, 38.0f, 0.0f
-        ))
-
-        val result = salesmanSetMutationResolver.findGreedyPath(salesmanSet!!.id)
-        assertEquals(132.0f, result.value)
-    }
+//    @Test
+//    fun check_6_1_datasetGreedyValue() {
+//        val salesmanSet = salesmanSetMutationResolver.newSalesmanSetByDistance(6, listOf(
+//                0.0f, 20.0f, 30.0f, 31.0f, 28.0f, 40.0f,
+//                30.0f, 0.0f, 10.0f, 14.0f, 20.0f, 44.0f,
+//                40.0f, 20.0f, 0.0f, 10.0f, 22.0f, 50.0f,
+//                41.0f, 24.0f, 20.0f, 0.0f, 14.0f, 42.0f,
+//                38.0f, 30.0f, 32.0f, 24.0f, 0.0f, 28.0f,
+//                50.0f, 54.0f, 60.0f, 52.0f, 38.0f, 0.0f
+//        ))
+//
+//        val result = salesmanSetMutationResolver.findGreedyPath(salesmanSet!!.id)
+//        assertEquals(132.0f, result.value)
+//    }
 
     @Test
     fun check_burma14_datasetGreedyValue() {
@@ -334,10 +334,10 @@ class GeospatialLiveTest {
                 )
         )
 
-        val result = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 1, 200, 10)
-        val greedy = salesmanSetMutationResolver.findGreedyPath(salesmanSet.id)
-        println("check_burma14_dataseGenetictValue result: " + result.paths[0].value)
-        assertTrue(greedy.value.toDouble() >= result.paths[0].value.toDouble())
+        val result = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet!!, 10, 200, 10)
+        val greedy = salesmanSetMutationResolver.findGreedyPath(salesmanSet.id).value
+        println("check_burma14_dataseGenetictValue result: " + result.paths[0].value + "greedy:" + greedy)
+        assertTrue(greedy.toDouble() >= result.paths[0].value.toDouble())
         assertTrue(3323.0 <= result.paths[0].value.toDouble())
     }
 

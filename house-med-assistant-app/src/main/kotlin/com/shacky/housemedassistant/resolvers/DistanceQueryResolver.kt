@@ -19,7 +19,13 @@ class DistanceQueryResolver(val distanceRepository: DistanceRepository) : GraphQ
     }
 
     fun getDistanceByCoordinates(startCoordinate: Coordinate, endCoordinate: Coordinate): Distance? {
-        return distanceRepository.findDistanceByStartCoordinateIdAndEndCoordinateId(startCoordinate.id, endCoordinate.id)
+//        return distanceRepository.findDistanceByStartCoordinateIdAndEndCoordinateId(startCoordinate.id, endCoordinate.id)
+        val first = distanceRepository.findDistanceByStartCoordinateIdAndEndCoordinateId(startCoordinate.id, endCoordinate.id)
+        if (first != null) {
+            return first;
+        }
+        return distanceRepository.findDistanceByStartCoordinateIdAndEndCoordinateId(endCoordinate.id, startCoordinate.id);
+//        return Distance(startCoordinate.id, endCoordinate.id, findDistanceBetweenCoordinates(startCoordinate, endCoordinate).toFloat())
     }
 
 

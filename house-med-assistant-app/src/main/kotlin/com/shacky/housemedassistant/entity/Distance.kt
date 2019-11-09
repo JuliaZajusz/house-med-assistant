@@ -1,5 +1,6 @@
 package com.shacky.housemedassistant.entity
 
+import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -9,4 +10,7 @@ data class Distance(
         var startCoordinateId: String = "",
         var endCoordinateId: String = "",
         var value: Float = 0.0f
-)
+) {
+    @Id
+    var id: String = ""
+}

@@ -47,7 +47,10 @@ class DistanceMutationResolver(private val distanceRepository: DistanceRepositor
     }
 
     fun updateDistance(distance: Distance): Distance { //TODO, do sprawdzenia
+//        var oldDistance = distanceRepository.findById(distance.id)
+//        if(oldDistance.isPresent) {
         return distanceRepository.save(distance)
+//        }
     }
 
     fun deleteDistance(id: String): Boolean {

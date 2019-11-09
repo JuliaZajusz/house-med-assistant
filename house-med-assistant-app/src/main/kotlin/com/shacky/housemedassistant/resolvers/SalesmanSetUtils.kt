@@ -49,7 +49,7 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
         }
         //rob
         var i = 0;
-        while (true) {
+//        while (true) {
             println("while true $i")
             //jesli warunek konca nie zostal osiagniety
             if (i < 10) {
@@ -75,9 +75,9 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
                 newSalesmanSet.population = newSalesmanSet.population.sortedBy { it.value.toFloat() } as MutableList<Path>
 //        zwróc najlepszą ścieżkę (dodaj do paths)
                 newSalesmanSet.paths.add(newSalesmanSet.population.first())
-                break;
+//                break;
             }
-        }
+//        }
         return newSalesmanSet
     }
 
