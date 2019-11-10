@@ -36,9 +36,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SidePanel(p
     return (
       <Scrollbars style={{height: "100%"}}>
         <div className={classes.side_container}>
-          {/*{props.mapSalesmanSet && */}
+          {props.mapSalesmanSet &&
           <ActualSalesmanSet onSockSend={(e) => props.onSockSend(e)}/>
-          {/*}*/}
+          }
             <SalesmanSetsList/>
         </div>
       </Scrollbars>
