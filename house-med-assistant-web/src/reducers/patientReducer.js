@@ -1,4 +1,5 @@
 export default (state = {
+  patient: null,
   tags: [],
   activeTags: [],
   coordinatesByAddress: [],
@@ -12,6 +13,14 @@ export default (state = {
       return {
         ...state,
         patients: action.payload
+      };
+    case 'SET_PATIENT':
+      return {
+        ...state,
+        patient: {
+          ...action.payload,
+          tags: action.payload.tags.map((tag) => tag.name)
+        }
       };
     case 'SET_TAGS':
       return {
@@ -32,6 +41,16 @@ export default (state = {
       return {
         ...state,
         patients: [...state.patients, action.payload]
+      };
+    case 'UPDATE_PATIENT':
+      return {
+        ...state,
+        patients: [...state.patients.map((patient) => {
+          if (patient.id === action.payload.id) {
+            return action.payload;
+          }
+          return patient
+        })]
       };
     case 'SHOW_MODAL':
       return {

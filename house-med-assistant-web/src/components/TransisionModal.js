@@ -6,6 +6,7 @@ import Fade from '@material-ui/core/Fade';
 import {cleanCoordinates, hideModal} from "../actions/patientActions";
 import {connect} from "react-redux";
 import AddNewPatientModalContent from "./AddNewPatientModalContent";
+import EditPatientModalContent from "./EditPatientModalContent";
 
 const useStyles = makeStyles(theme => ({
   modal: {
@@ -60,9 +61,13 @@ export default connect(mapStateToProps, mapDispatchToProps)(function TransisionM
           <div className={classes.paper}>
 
 
-            <h2 id="transition-modal-title">Dodaj pacjenta</h2>
+            {props.patientModal.operation === "add" ?
+              <h2 id="transition-modal-title">Dodaj pacjenta</h2>
+              : <h2 id="transition-modal-title">Edytuj pacjenta</h2>
+            }
             {/*<p id="transition-modal-description">react-transition-group animates me.</p>*/}
-            <AddNewPatientModalContent/>
+            {props.patientModal.operation === "add" ? <AddNewPatientModalContent/>
+              : <EditPatientModalContent patientId={props.patientModal.operation}/>}
 
           </div>
         </Fade>

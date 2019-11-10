@@ -2,9 +2,9 @@ import Grid from "@material-ui/core/Grid";
 import Fab from "@material-ui/core/Fab";
 import TextField from "@material-ui/core/TextField";
 import {Paper} from "@material-ui/core";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {addNewPatient, getCoordinatesByAddress} from "../actions/patientActions";
+import {addNewPatient, getCoordinatesByAddress, getPatient, updatePatient} from "../actions/patientActions";
 import {connect} from "react-redux";
 // import Select, CreatableSelect from 'react-select';
 import CreatableSelect from 'react-select/creatable';
@@ -45,6 +45,7 @@ const useStyles = makeStyles(theme => ({
 
 const mapStateToProps = (state) => {
   return {
+    loadedPatient: state.patientReducer.patient,
     tags: state.patientReducer.tags,
     activeTags: state.patientReducer.activeTags,
     coordinatesByAddress: state.patientReducer.coordinatesByAddress,
@@ -55,25 +56,18 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
   getCoordinatesByAddress: (addr) => dispatch(getCoordinatesByAddress(addr)),
   addNewPatient: (patient) => dispatch(addNewPatient(patient)),
+  getPatient: (id) => dispatch(getPatient(id)),
+  updatePatient: (patient) => dispatch(updatePatient(patient)),
 });
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatientModalContent(props) {
+export default connect(mapStateToProps, mapDispatchToProps)(function EditPatientModalContent(props) {
     const classes = useStyles();
 
-    const [patient, setPatient] = useState({
-      address: "",
-      tags: []
-    });
+    const [patient, setPatient] = useState(props.loadedPatient);
 
-    const [addNewPatient, setAddNewPatient] = useState(
-      // false
-      true
-    );
-
-    const createNewPatient = () => {
-      props.addNewPatient(patient)
-      setAddNewPatient(false)
+    const editPatient = () => {
+      props.updatePatient(patient)
     };
 
     const handleChange = (e) => {
@@ -121,6 +115,12 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
       setPatient({...patient, tags: parsedTags.map((tag) => tag.value)})
     }
 
+    useEffect(() => {
+      // props.getAllSalesmanSets();
+      console.log("useEffect")
+      setPatient(props.loadedPatient)
+    }, [props.loadedPatient])
+
     return (
       <div className={classes.vertical_scroll_box}>
         <Grid>
@@ -132,7 +132,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
                 label="Nazwisko"
                 id="lastName"
                 margin="normal"
-                value={patient.lastName}
+                value={patient ? patient.lastName : ""}
                 onChange={handleChange}
               />
               <TextField
@@ -140,7 +140,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
                 label="Imię"
                 id="firstName"
                 margin="normal"
-                value={patient.firstName}
+                value={patient ? patient.firstName : ""}
                 onChange={(e) => handleChange(e)}
               />
             </div>
@@ -150,7 +150,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
               id="address"
               helperText="Podaj adres pacjenta"
               margin="normal"
-              value={patient.address}
+              value={patient ? patient.address : ""}
               onKeyDown={handleTextFieldKeyDown}
               onChange={handleChange}
               onBlur={() => {
@@ -176,9 +176,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
             </Grid>
             <CreatableSelect
               className={classes.multiselect}
-              value={patient.tags.map(tag => {
+              value={patient ? patient.tags.map(tag => {
                 return {value: tag, label: tag}
-              })}
+              }) : []}
               onChange={(tag) => addTag(tag)}
               options={props.tags.map(tag => {
                 return {value: tag.name, label: tag.name}
@@ -190,16 +190,16 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
           </Grid>
           {/*}*/}
           <div style={{display: "flex", justifyContent: "flex-end"}}>
-          <Fab size="small"
-               variant={"extended"}
-               color="primary"
-               aria-label="add"
-               className={classes.margin}
-               disabled={addNewPatient && !patient.coordinate}
-               onClick={() => createNewPatient()}
-          >
-            Zapisz
-          </Fab>
+            <Fab size="small"
+                 variant={"extended"}
+                 color="primary"
+                 aria-label="add"
+                 className={classes.margin}
+                 disabled={!(patient && patient.coordinate)}
+                 onClick={() => editPatient()}
+            >
+              Zapisz
+            </Fab>
           </div>
         </Grid>
       </div>

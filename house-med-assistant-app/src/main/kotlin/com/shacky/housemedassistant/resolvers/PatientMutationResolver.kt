@@ -46,14 +46,13 @@ class PatientMutationResolver(private val patientRepository: PatientRepository,
         return false;
     }
 
-//    fun updatePatient(id: String, coordinates: List<Coordinate>): Patient {
-//        val patient = patientRepository.findById(id)
-//        patient.ifPresent {
-//            it.coordinates = coordinates
-//            patientRepository.save(it)
-//        }
-//        return patient.get()
-//    }
+    fun updatePatient(patient: Patient): Patient {
+        val oldPatient = patientRepository.findById(patient.id)
+        oldPatient.ifPresent {
+            patientRepository.save(patient)
+        }
+        return patientRepository.findById(patient.id).get();
+    }
 
 //    fun updatePatient(id: String, location: List<Float> ): Patient {
 //        val patient = patientRepository.findById(id)

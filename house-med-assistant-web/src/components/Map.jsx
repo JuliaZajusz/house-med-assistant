@@ -26,7 +26,7 @@ const classes = theme => ({
         position: 'absolute',
         right: 0,
         top: 0,
-        zIndex: 10000,
+        zIndex: 1000,
         padding: '8px',
         // visibility: 'visible',
         // opacity: 1,
@@ -159,7 +159,7 @@ class MapWrapper extends Component {
                     // this.state.path.map((pathPoint, idx) =>{
                     //     if(this.state.path[idx+1])
                     //     return <Polyline color="lime" positions={this.state.path} />})
-                    <Polyline color="lime" positions={this.state.path}/>
+                    <Polyline color="pink" positions={this.state.path}/>
                     }
                     {this.state.path.length > 1 &&
                     <Polyline color="pink"
@@ -173,9 +173,7 @@ class MapWrapper extends Component {
                         <Marker key={`marker-${idx}`} position={markerPosition} onClick={() => console.log("a")}>
                             <Popup key={`popup-${idx}`}>
                             <span>
-                                A pretty CSS3 popup. <br/>
-                                Easily customizable.<br/>
-                                {markerPosition[0]}, {markerPosition[1]}
+                                {markerPosition[0].toFixed(2)}, {markerPosition[1].toFixed(2)}
                             </span>
                             </Popup>
                         </Marker>

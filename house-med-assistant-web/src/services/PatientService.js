@@ -28,6 +28,29 @@ export const getAllPatients = () => {
   );
 };
 
+export const getPatientById = (id) => {
+  return client
+  .query({
+      query: gql`{
+          getPatientById(id: "${id}") {
+              id,
+              lastName,
+              firstName,
+              address,
+              coordinate {
+                  id,
+                  location
+              },
+              tags {
+                  # id,
+                  name
+              }
+          }
+      }`
+    }
+  );
+};
+
 export const getAllPatientsTyText = (searchedText) => {
   if (searchedText && searchedText !== "") {
     return client
@@ -194,8 +217,47 @@ export const postPatient = (patient) => {
   );
 };
 
-export const putPatient = (id, patient) => {
-  //TODO
+export const putPatient = (patient) => {
+  const lastName = patient.lastName;
+  const firstName = patient.firstName;
+  const address = patient.address;
+  const location = JSON.stringify(patient.coordinate.location).replace(/\"([^(\")"]+)\":/g, "$1:");
+  const tags = JSON.stringify(patient.tags).replace(/\"([^(\")"]+)\":/g, "$1:");
+  console.log("update, tags", tags);
+  return client
+  .mutate({
+      mutation: gql`
+          mutation updatePatient {
+              updatePatient(
+                  patient: {
+                      id: "${patient.id}",
+                      lastName: "${lastName}",
+                      firstName: "${firstName}",
+                      address: "${address}",
+                      coordinate: {
+                          id: "${patient.coordinate.id}"
+                          location: ${location},
+                      }
+                      tags: ${tags}
+                  }
+              ) {
+                  id,
+                  lastName,
+                  firstName,
+                  address,
+                  coordinate {
+                      id,
+                      location
+                  },
+                  tags {
+                      id,
+                      name
+                  }
+              }
+          }
+      `
+    }
+  );
 };
 
 export const deletePatient = (id) => {

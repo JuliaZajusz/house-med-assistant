@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import {connect} from "react-redux";
-import {getPatientsAction, showModal} from "../actions/patientActions";
+import {getPatient, getPatientsAction, showModal} from "../actions/patientActions";
 import {addPatientToSalesmanSet} from "../actions/salesmanSetActions";
 import PatientPaper from "./PatientPaper";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
@@ -46,6 +46,7 @@ const mapDispatchToProps = dispatch => ({
   getPatientsAction: (text, tags) => dispatch(getPatientsAction(text, tags)),
   addPatientToSalesmanSet: (patient) => dispatch(addPatientToSalesmanSet(patient)),
   showModal: (action) => dispatch(showModal(action)),
+  getPatient: (id) => dispatch(getPatient(id)),
 });
 
 
@@ -59,6 +60,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsLis
   const editPatient = (e, id) => {
     e.stopPropagation();
     //TODO
+    props.getPatient(id);
+    console.log("showModal", id);
+    props.showModal(id)
   };
 
   const showModal = (e) => {

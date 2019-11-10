@@ -17,6 +17,10 @@ class PatientQueryResolver(val patientRepository: PatientRepository,
         return patientRepository.findAll()
     }
 
+    fun getPatientById(id: String): Patient {
+        return patientRepository.findById(id).orElseThrow { NoSuchElementException(id) }
+    }
+
     fun findPatientsByLastNameAndFirstName(lastName: String, firstName: String): List<Patient> {
         val query = Query()
         query.addCriteria(Criteria.where("lastName").`is`(lastName).and("firstName").`is`(firstName))

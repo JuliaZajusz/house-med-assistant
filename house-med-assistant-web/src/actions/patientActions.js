@@ -1,8 +1,10 @@
 import {
   getAllPatients,
   getAllPatientsTyText,
+  getPatientById,
   getPatientsByNameAndAddressRespectingTags,
-  postPatient
+  postPatient,
+  putPatient
 } from "../services/PatientService";
 import {getAllTags} from "../services/TagService";
 import {GOOGLE_API_KEY} from "../secret/secret";
@@ -30,6 +32,16 @@ export const getPatientsAction = (text, tags) => async (dispatch, getState) => {
     }
   }
 };
+
+export const getPatient = (id) => (dispatch) => {
+  getPatientById(id).then((res) => {
+    dispatch({
+      type: 'SET_PATIENT',
+      payload: res.data.getPatientById
+    })
+  })
+
+}
 
 
 //nieużywane, być może przenieść do salesmanSetActions
@@ -83,17 +95,25 @@ export const getCoordinatesByAddress = (address) => async dispatch => {
 };
 
 
-export const addNewPatient = (patient) => (dispatch, getState) => {
-  console.log("addNewPatient", patient)
+export const addNewPatient = (patient) => (dispatch) => {
   postPatient(patient).then((res) => {
     dispatch({
       type: 'ADD_PATIENT',
       payload: res.data.newPatient
     });
     dispatch(hideModal());
-    console.log("przed ustawieniem tagów", getState())
     dispatch(getTagsAction());
-    console.log("po ustawieniu tagów", getState())
+  })
+};
+
+export const updatePatient = (patient) => (dispatch) => {
+  putPatient(patient).then((res) => {
+    dispatch({
+      type: 'UPDATE_PATIENT',
+      payload: res.data.updatePatient
+    });
+    dispatch(hideModal());
+    dispatch(getTagsAction());
   })
 };
 

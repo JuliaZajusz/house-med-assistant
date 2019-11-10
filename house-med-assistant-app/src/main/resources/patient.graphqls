@@ -1,6 +1,7 @@
 type Query {
     patients: [Patient]
     patientByCoordinate(coordinateId: ID!): [Patient]
+    getPatientById(id: ID!): Patient
     findPatientsByLastNameAndFirstName(lastName: String, firstName: String): [Patient]
     findPatientsByTags(tags: [String]): [Patient]
     findPatientsByTextRespectingTags(searchedText: String, tags: [String]): [Patient]
@@ -28,6 +29,7 @@ input PatientInput {
 type Mutation {
     newPatient(lastName: String, firstName: String, address: String, location: [Float], tags: [String]) : Patient!
     deletePatient(id: ID!) : Boolean
+    updatePatient(patient: PatientInput): Patient
     #    updatePlace(id:ID!, location: [Float]) : Place!
 }
 
