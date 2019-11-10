@@ -26,6 +26,9 @@ export const changeSalesmanSetName = (name) => (dispatch, getState) => {
 
 
 export const getSalesmanSet = (salesmanSetId) => dispatch => {
+  history.push({
+    pathname: `/${salesmanSetId}`
+  });
   if (salesmanSetId != null && salesmanSetId !== "") {
     findSalesmanSetById(salesmanSetId).then(res => {
         dispatch({
@@ -53,6 +56,7 @@ export const setSalesmanSet = (salesmanSet) => dispatch => {
   history.push({
     pathname: `/${(salesmanSet && salesmanSet.id) ? salesmanSet.id : ""}`
   });
+
   dispatch({
     type: 'SET_SALESMAN_SET',
     payload: salesmanSet

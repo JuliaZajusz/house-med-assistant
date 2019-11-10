@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import {loadAllSalesmanSets, removeSalesmanSet, setSalesmanSet} from "../actions/salesmanSetActions";
+import {getSalesmanSet, loadAllSalesmanSets, removeSalesmanSet, setSalesmanSet} from "../actions/salesmanSetActions";
 import connect from "react-redux/es/connect/connect";
 import PatientPaper from "./PatientPaper";
 import {Delete} from "@material-ui/icons";
@@ -19,13 +19,19 @@ const useStyles = makeStyles(theme => ({
     padding: "5px",
     marginBottom: "10px",
     width: "calc(100% - 10px)",
-    border: "1px solid #c0c0c0"
+    border: "1px solid #c0c0c0",
+    cursor: "pointer",
   },
   flexWrapNowrap: {
     flexWrap: "nowrap"
   },
   deleteButton: {
-    cursor: "pointer"
+    cursor: "pointer",
+    opacity: "10%",
+    transition: "opacity .5s ease-out",
+    '&:hover': {
+      opacity: "100%",
+    }
   }
 }));
 
@@ -37,6 +43,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = dispatch => ({
+  getSalesmanSet: (salesmanSet) => dispatch(getSalesmanSet(salesmanSet.id)),
   setSalesmanSet: (salesmanSet) => dispatch(setSalesmanSet(salesmanSet)),
   getAllSalesmanSets: () => dispatch(loadAllSalesmanSets()),
   removeSalesmanSet: (id) => dispatch(removeSalesmanSet(id)),
@@ -76,7 +83,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
           return <Paper
             key={salesmanSet.id}
             className={classes.salesmanSet_paper}
-            onClick={() => props.setSalesmanSet(salesmanSet)}
+            onClick={() => props.getSalesmanSet(salesmanSet)}
           >
             <Grid container
                   direction="row"
@@ -93,7 +100,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(function SalesmanSet
               </div>
             </Grid>
             {salesmanSet.name && <p>{salesmanSet.name}</p>}
-            {salesmanSet && salesmanSet.places.map((patient) => <PatientPaper patient={patient}/>)}
+            {salesmanSet && salesmanSet.places && salesmanSet.places.map((patient) => <PatientPaper
+              key={patient.id + patient.coordinate.id} patient={patient}/>)}
           </Paper>
         }
       )

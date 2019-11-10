@@ -1,6 +1,5 @@
 import Grid from "@material-ui/core/Grid";
 import Fab from "@material-ui/core/Fab";
-import {Add} from "@material-ui/icons";
 import TextField from "@material-ui/core/TextField";
 import {Paper} from "@material-ui/core";
 import React, {useState} from "react";
@@ -37,9 +36,10 @@ const useStyles = makeStyles(theme => ({
   },
   text_fields__row__text_field: {
     marginRight: "10px",
-    ":last-child": {
-      marginRight: 0,
-    }
+    width: "100%",
+  },
+  text_fields__row__text_field_last: {
+    marginRight: 0,
   }
 }));
 
@@ -98,7 +98,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
 
     const searchForCoordinates = (addr) => {
       props.getCoordinatesByAddress(addr)
-        .then(() => {
+        .then((res) => {
           if (props.coordinatesByAddress.length === 1) {
             let result = props.coordinatesByAddress[0];
             setPatientCoordinates(result.geometry.location.lng, result.geometry.location.lat)
@@ -117,13 +117,15 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
     };
 
     const addTag = (tags) => {
-      setPatient({...patient, tags: tags.map((tag) => tag.value)})
+      let parsedTags = tags ? tags : [];
+      setPatient({...patient, tags: parsedTags.map((tag) => tag.value)})
     }
 
     return (
       <div className={classes.vertical_scroll_box}>
         <Grid>
-          {addNewPatient && <Grid>
+          {/*{addNewPatient && */}
+          <Grid>
             <div className={classes.text_fields__row}>
               <TextField
                 className={classes.text_fields__row__text_field}
@@ -134,6 +136,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
                 onChange={handleChange}
               />
               <TextField
+                className={classes.text_fields__row__text_field + " " + classes.text_fields__row__text_field_last}
                 label="Imię"
                 id="firstName"
                 margin="normal"
@@ -166,7 +169,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
                   >
                     {result.formatted_address}
                     <br/>
-                    {result.geometry.location.lng} {result.geometry.location.lat}
+                    {result.geometry.location.lng.toFixed(2)} {result.geometry.location.lat.toFixed(2)}
                   </Paper>
                 )
               })}
@@ -184,9 +187,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
               placeholder={"Tagi"}
               formatCreateLabel={(tag) => `Dodaj tag: ${tag}`}
             />
-          </Grid>}
+          </Grid>
+          {/*}*/}
+          <div style={{display: "flex", justifyContent: "flex-end"}}>
           <Fab size="small"
-               variant={addNewPatient ? "extended" : "round"}
+               variant={"extended"}
                color="primary"
                aria-label="add"
                className={classes.margin}
@@ -195,9 +200,9 @@ export default connect(mapStateToProps, mapDispatchToProps)(function AddNewPatie
                  addNewPatient ? createNewPatient() : setAddNewPatient(true)
                }}
           >
-            {addNewPatient ? "Dodaj nowego pacjenta"
-              : <Add/>}
+            Dodaj nowego pacjenta
           </Fab>
+          </div>
         </Grid>
       </div>
     )

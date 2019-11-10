@@ -19,6 +19,14 @@ const useStyles = makeStyles(theme => ({
   },
   flexWrapNowrap: {
     flexWrap: 'nowrap',
+  },
+  button: {
+    cursor: "pointer",
+    opacity: "10%",
+    transition: "opacity .5s ease-out",
+    '&:hover': {
+      opacity: "100%",
+    }
   }
 }));
 
@@ -31,7 +39,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({});
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(function PatientPaper({patient, onDelete, onEdit, onSelect}) {
+export default connect(mapStateToProps, mapDispatchToProps)(function PatientPaper({patient, isDeletable, onDelete, onEdit, onSelect}) {
   const classes = useStyles();
   return (
     <Paper
@@ -49,7 +57,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientPape
           {patient.id}
         </div>
         <div>
-          {onDelete && <Delete fontSize="small" onClick={() => onDelete(patient.id)}/>}
+          {isDeletable && onDelete &&
+          <Delete className={classes.button} fontSize="small" onClick={() => onDelete(patient.id)}/>}
           {onEdit && <Edit style={{color: "grey", cursor: "pointer"}} fontSize="small"
                            onClick={(e) => onEdit(e, patient.id)}/>}
         </div>

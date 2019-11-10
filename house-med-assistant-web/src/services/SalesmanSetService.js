@@ -24,40 +24,7 @@ export const getAllSalesmanSets = () => {
               salesmanSets {
                   id,
                   name,
-                  places {
-                      id,
-                      firstName
-                      lastName
-                      address
-                      coordinate {
-                          id
-                          location
-                      }
-                      tags {
-                          name
-                      }
-                  }
-                  paths {
-                      places {
-                          id,
-                          firstName
-                          lastName
-                          address
-                          coordinate {
-                              id
-                              location
-                          }
-                          tags {
-                              name
-                          }
-                      },
-                      value
-                  }
-                  neighborhoodMatrix {
-                      startCoordinateId,
-                      endCoordinateId,
-                      value
-                  }
+
               }
           }`,
       fetchPolicy: 'network-only'

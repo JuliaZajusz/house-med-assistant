@@ -63,6 +63,7 @@ export const cleanCoordinates = () => dispatch => {
 
 export const getCoordinatesByAddress = (address) => async dispatch => {
   const addr = 'https://maps.google.com/maps/api/geocode/json?address=' + address + '&key=' + GOOGLE_API_KEY;
+  let result = [];
   await fetch(addr)
     .then(res => res.json())
     .then(res => {
@@ -73,11 +74,12 @@ export const getCoordinatesByAddress = (address) => async dispatch => {
         type: 'SET_COORDINATES_BY_ADDRESS',
         payload: res.results
       });
-      console.log(res.results);
+      result = res.results;
     })
     .catch(error => {
       console.log(error);
     });
+  return result;
 };
 
 
