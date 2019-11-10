@@ -140,7 +140,7 @@ class MapWrapper extends Component {
                             console.log("USTAWIAM INDEX NA ", idx)
                             this.setState({...this.state, selectedPathIndex: idx, path: path})
                         }}>
-                            {idx}: {path.value}
+                            {path.value} km
                         </div>
                     })
                     }

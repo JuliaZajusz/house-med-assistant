@@ -27,6 +27,9 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       opacity: "100%",
     }
+  },
+  clickable: {
+    cursor: "pointer"
   }
 }));
 
@@ -39,12 +42,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({});
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(function PatientPaper({patient, isDeletable, onDelete, onEdit, onSelect}) {
+export default connect(mapStateToProps, mapDispatchToProps)(function PatientPaper({patient, isDeletable, onDelete, onEdit, onSelect, clickable}) {
   const classes = useStyles();
   return (
     <Paper
       key={patient.id}
-      className={classes.paper}
+      className={classes.paper + ` ${clickable ? classes.clickable : ""}`}
       onClick={(e) => onSelect && onSelect(e)}
     >
       <Grid container
@@ -70,7 +73,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientPape
         {patient.address}
       </div>
       <div>
-        {patient.coordinate.location[0]}, {patient.coordinate.location[1]}
+        {patient.coordinate.location[0].toFixed(2)}, {patient.coordinate.location[1].toFixed(2)}
       </div>
       {patient.tags.map((tag, tagIdx) => {
         let backgroundColor = '#' + intToRGB(hashCode(tag.name));

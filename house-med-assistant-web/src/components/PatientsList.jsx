@@ -87,6 +87,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function PatientsLis
             return <PatientPaper patient={patient}
                                  key={patient.id}
                                  onEdit={(e, id) => editPatient(e, id)}
+                                 clickable={true}
                                  onSelect={(e) => {
                                    e.stopPropagation();
                                    props.addPatientToSalesmanSet(patient)
