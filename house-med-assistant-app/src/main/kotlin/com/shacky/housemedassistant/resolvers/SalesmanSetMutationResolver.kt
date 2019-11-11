@@ -52,7 +52,7 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         var changedList = mutableListOf<Patient>()
         if (!sizeChanged) {
             oldSalesmanSet.places.forEachIndexed { i, patient ->
-                if (updatedSet.places[i].id != patient.id) {
+                if (updatedSet.places[i].coordinate.id != patient.coordinate.id) {
                     changedList.add(updatedSet.places[i])
                 }
             }

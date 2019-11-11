@@ -75,7 +75,7 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
         var s: String = "";
         newSalesmanSet.population[0].places.map { patient -> patient.lastName }
                 .forEach { s += ", " + it }
-        println("pierwsza w posortowanej populacji: ${newSalesmanSet.population[0].value}: $s")
+//        println("pierwsza w posortowanej populacji: ${newSalesmanSet.population[0].value}: $s")
 //        zwróc najlepszą ścieżkę (dodaj do paths)
                 newSalesmanSet.paths.add(newSalesmanSet.population.first())
         newSalesmanSet.paths = newSalesmanSet.paths.sortedBy { it.value.toFloat() }.toMutableList()
@@ -85,7 +85,7 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
             var p: String = "";
             path.places.map { patient -> patient.lastName }
                     .forEach { p += ", " + it }
-            println("$index ::aktualne paths: ${path.value}: $p")
+//            println("$index ::aktualne paths: ${path.value}: $p")
         }
 
         return newSalesmanSet
@@ -116,7 +116,7 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
 
             var duplicates = a.places.map { patient -> patient.lastName }
                     .groupingBy { it }.eachCount().filter { it.value > 1 }
-            println("Iteracja $i:")
+//            println("Iteracja $i:")
             if (duplicates.size > 0) {
 //                var p1: String = "";
 //                parentOneGenom.places.map { patient -> patient.lastName }
@@ -162,15 +162,15 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
     }
 
     private fun crossover(parentOneGenom: Path, parentTwoGenom: Path, crossPoint1: Int, crossPoint2: Int): Path {
-        var p1: String = "";
-        parentOneGenom.places.map { patient -> patient.lastName }
-                .forEach { p1 += ", " + it }
-        println("parent1: ${parentOneGenom.value}: $p1")
-        var p2: String = "";
-        parentTwoGenom.places.map { patient -> patient.lastName }
-                .forEach { p2 += ", " + it }
-        println("parent2: ${parentTwoGenom.value}: $p2")
-        println("crossPoint1: ${crossPoint1}, crossPoint2 $crossPoint2")
+//        var p1: String = "";
+//        parentOneGenom.places.map { patient -> patient.lastName }
+//                .forEach { p1 += ", " + it }
+//        println("parent1: ${parentOneGenom.value}: $p1")
+//        var p2: String = "";
+//        parentTwoGenom.places.map { patient -> patient.lastName }
+//                .forEach { p2 += ", " + it }
+//        println("parent2: ${parentTwoGenom.value}: $p2")
+//        println("crossPoint1: ${crossPoint1}, crossPoint2 $crossPoint2")
 
 
         val pathSize = parentTwoGenom.places.size
@@ -182,54 +182,51 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
             newPath.add(null)
         }
 
-        println("srodek")
+//        println("srodek")
         for (i in crossPoint1 until crossPoint2)                //srodek
         {
 //            checkForRepeat.add(parentTwoGenom.places[i])
             newPath[i] = parentTwoGenom.places[i]  //środek
-            println("newPath[$i]=${parentTwoGenom.places[i].lastName}")
+//            println("newPath[$i]=${parentTwoGenom.places[i].lastName}")
         }
 
-        println("pocztek")
+//        println("pocztek")
         for (i in 0 until crossPoint1)                //poczatek
         {
             val zm = parentOneGenom.places[i];
 
-            if (!newPath.filterNotNull().map { patient -> patient!!.id }.contains(zm.id)) {
+            if (!newPath.filterNotNull().map { patient -> patient!!.coordinate.id }.contains(zm.coordinate.id)) {
                 newPath[i] = zm;
-                println("newPath[$i]=${zm.lastName}")
-//                checkForRepeat.add(zm);
+//                println("newPath[$i]=${zm.lastName}")
             } else {
                 notUsed.add(zm)
-                println("$i notUsed.add(${zm.lastName})")
+//                println("$i notUsed.add(${zm.lastName})")
             }
         }
 
-        println("koniec")
+//        println("koniec")
         for (i in crossPoint2 until pathSize)                //koniec
         {
             val zm = parentOneGenom.places[i];
 
-            if (!newPath.filterNotNull().map { patient -> patient.id }.contains(zm.id)) {
+            if (!newPath.filterNotNull().map { patient -> patient.coordinate.id }.contains(zm.coordinate.id)) {
                 newPath[i] = zm;
-                println("newPath[$i]=${zm.lastName}")
-//                checkForRepeat.add(zm);
+//                println("newPath[$i]=${zm.lastName}")
             } else {
                 notUsed.add(zm)
-                println("$i notUsed.add(${zm.lastName})")
+//                println("$i notUsed.add(${zm.lastName})")
             }
         }
         notUsed = parentTwoGenom.places.toMutableList();
-        println("notUsed1---------")
-        notUsed.forEach { patient -> println(patient!!.lastName) }
-        notUsed = notUsed.filter { patient -> !newPath.filterNotNull().map { patient -> patient.id }.contains(patient.id) }.toMutableList()
-        println("notUsed2---------")
-        notUsed.forEach { patient -> println(patient!!.lastName) }
-        println("newPath---------")
-        newPath.forEach { patient -> println(patient == null) }
-        newPath.filterNotNull().forEach { patient -> println(patient.lastName) }
+//        println("notUsed1---------")
+//        notUsed.forEach { patient -> println(patient!!.lastName) }
+        notUsed = notUsed.filter { patient -> !newPath.filterNotNull().map { patient -> patient.coordinate.id }.contains(patient.coordinate.id) }.toMutableList()
+//        println("notUsed2---------")
+//        notUsed.forEach { patient -> println(patient!!.lastName) }
+//        println("newPath---------")
+//        newPath.forEach { patient -> println(patient == null) }
+//        newPath.filterNotNull().forEach { patient -> println(patient.lastName) }
 
-//        checkForRepeat = checkForRepeat.sortBy { patient.id }
         for (index in 0 until newPath.size)            //wypelnienie pustych pozostałymi
         {
             val patient = newPath[index]
@@ -241,7 +238,7 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
         }
 
         val pathValue: Float = pathQueryResolver.calcPathValue(newPath.filterNotNull().map { patient -> patient.coordinate })
-        println("pathValue: $pathValue")
+//        println("pathValue: $pathValue")
         val child: Path = Path(newPath.filterNotNull(), pathValue);
         return child;
     }

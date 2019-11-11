@@ -117,6 +117,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
     return true
   };
 
+  const clear = () => {
+    props.setSalesmanSet();
+    props.onSockSendStop(props.mapSalesmanSet.id);
+  }
+
   return (
     <Grid
       item
@@ -131,7 +136,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
             {/*<Button onClick={() => setIsNameEditable(true)}>Edytuj</Button>*/}
             <Button
               // className={classes.outlined_button}
-              onClick={() => props.setSalesmanSet()}>Wyczyść</Button>
+              onClick={() => clear()}>Wyczyść</Button>
             {/*<Button>Three</Button>*/}
           </ButtonGroup>
         </Grid>

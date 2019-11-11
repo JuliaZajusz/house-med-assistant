@@ -135,10 +135,14 @@ export default withStyles(useStyles(theme))(connect(mapStateToProps, mapDispatch
     }
 
     onSockSend = (e) => {
-        // e.preventDefault();
-        console.log("handleFormSubmit")
+        console.log("onSockSend")
         this.sock.send(JSON.stringify({type: "jul", data: e.target[0].value}));
     }
+
+      onSockSendStop = (id) => {
+          console.log("onSockSendStop")
+          this.sock.send(JSON.stringify({type: "stopJul", data: id}));
+      }
 
 
     render() {
@@ -159,7 +163,8 @@ export default withStyles(useStyles(theme))(connect(mapStateToProps, mapDispatch
                                 flexgrow={1}
                                 className={classes.side_container_container}
                           >
-                              <SidePanel onSockSend={(e) => this.onSockSend(e)}/>
+                              <SidePanel onSockSend={(e) => this.onSockSend(e)}
+                                         onSockSendStop={(id) => this.onSockSendStop(id)}/>
                           </Grid>
                           <Grid item xs={6}>
                               <MapWrapper/>

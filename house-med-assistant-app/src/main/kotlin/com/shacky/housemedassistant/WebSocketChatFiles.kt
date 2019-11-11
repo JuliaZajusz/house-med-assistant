@@ -21,6 +21,7 @@ class Message(val msgType: String, val data: Any)
 class ChatHandler(val salesmanSetMutationResolver: SalesmanSetMutationResolver) : TextWebSocketHandler() {
 
     val sessionList = HashMap<WebSocketSession, User>()
+    var calculatedSetsIds = listOf<String>()
     var uids = AtomicLong(0)
 
     @Throws(Exception::class)
@@ -45,12 +46,30 @@ class ChatHandler(val salesmanSetMutationResolver: SalesmanSetMutationResolver) 
             "say" -> {
                 broadcast(Message("say", json.get("data").asText()))
             }
-            "jul" -> {
+            "stopJul" -> {
+                println("############# stopJul ${Thread.currentThread().getId()}")
+
                 val dataId = json.get("data")
                 if (dataId != null) {
                     val id = dataId.asText();
-//                val salesmanSetUtils = SalesmanSetUtils();
-                    val salesmanSetA = salesmanSetMutationResolver.upgradeSalesmanSet(id, 5);
+//                    calculatedSetsIds = calculatedSetsIds.toMutableList().remove(dataId);
+                    calculatedSetsIds = calculatedSetsIds.filter { savedId -> savedId != id }.toList();
+                    println("calculatedSetsIds $calculatedSetsIds")
+                    Thread.currentThread().interrupt();
+                }
+            }
+            "jul" -> {
+                println("******* jul ${Thread.currentThread().getId()}")
+                val dataId = json.get("data")
+                if (dataId != null) {
+                    val id = dataId.asText();
+                    val tmp = calculatedSetsIds.toMutableList()
+                    tmp.add(id);
+                    calculatedSetsIds = tmp;
+                    println("calculatedSetsIds $calculatedSetsIds")
+//                    for ( i in 0 until 5) {
+//                        if(calculatedSetsIds.contains(id)) {
+                    val salesmanSetA = salesmanSetMutationResolver.upgradeSalesmanSet(id, 3);
                     var s: String = "";
                     salesmanSetA.paths[0].places.map { patient -> patient.lastName }
                             .forEach { s += ", " + it }
@@ -58,6 +77,8 @@ class ChatHandler(val salesmanSetMutationResolver: SalesmanSetMutationResolver) 
 
                     println("!!!!!!!!!" + salesmanSetA.paths[0].value)
                     emit(session, Message("value", salesmanSetA))
+//                        }
+//                    }
                 }
             }
         }
