@@ -25,17 +25,17 @@ export default function Header(props, state) {
         <Typography variant="h6" className={classes.title}>
           house med assistant
         </Typography>
-        {/*<div>*/}
-        {/*  <form onSubmit={(e) => props.onSockSend(e)}>*/}
-        {/*    <input type="text" placeholder="Type here to chat..."/>*/}
-        {/*    <button type="submit">Send</button>*/}
-        {/*  </form>*/}
-        {/*  {*/}
-        {/*    props.messages.map((message, index) => {*/}
-        {/*      return <div key={index}>{message}</div>*/}
-        {/*    })*/}
-        {/*  }*/}
-        {/*</div>*/}
+        <div>
+          <form onSubmit={(e) => props.onSockSend(e)}>
+            <input type="text" placeholder="Type here to chat..."/>
+            <button type="submit">Send</button>
+          </form>
+          {
+            props.messages.map((message, index) => {
+              return <div key={index}>{message}</div>
+            })
+          }
+        </div>
       </Toolbar>
     </AppBar>
   );

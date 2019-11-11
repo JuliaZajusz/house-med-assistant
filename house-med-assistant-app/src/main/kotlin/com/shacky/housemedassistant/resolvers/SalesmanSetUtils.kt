@@ -48,15 +48,18 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
             newSalesmanSet.population.add(Path(genomPath, value))
         }
         //rob
-        var i = 0;
-//        while (true) {
-            println("while true $i")
             //jesli warunek konca nie zostal osiagniety
-            if (i < 10) {
                 newSalesmanSet.population = newSalesmanSet.population.distinct().toMutableList()
                 //        sortuj populację
                 newSalesmanSet.population = newSalesmanSet.population.sortedBy { it.value.toFloat() }.toMutableList()
-                //        jesli jest za duża to usuń część osobników
+        println("while true")
+//        for (entity in newSalesmanSet.population) {
+//            var s:String = "";
+//            entity.places.map{ patient -> patient.lastName}
+//                    .forEach { s+= ", " + it }
+//            println("${entity.value}: $s")
+//        }
+        //        jesli jest za duża to usuń część osobników
                 if (newSalesmanSet.population.size > populationSize) {
                     newSalesmanSet.population = newSalesmanSet.population.subList(0, populationSize - 1)
                 }
@@ -65,19 +68,26 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
 //        krzyżuj
                 newSalesmanSet = reproducePopulation(newSalesmanSet, mutationsProbability, swapsInMutation)
 //        mutuj
-//                for (i in 0 until newSalesmanSet.population.size) {
-//
-//                }
 
-                i++;
-            } else { //jesli zostal osiagniety
+
 //        sortuj populację
                 newSalesmanSet.population = newSalesmanSet.population.sortedBy { it.value.toFloat() } as MutableList<Path>
+        var s: String = "";
+        newSalesmanSet.population[0].places.map { patient -> patient.lastName }
+                .forEach { s += ", " + it }
+        println("pierwsza w posortowanej populacji: ${newSalesmanSet.population[0].value}: $s")
 //        zwróc najlepszą ścieżkę (dodaj do paths)
                 newSalesmanSet.paths.add(newSalesmanSet.population.first())
-//                break;
-            }
-//        }
+        newSalesmanSet.paths = newSalesmanSet.paths.sortedBy { it.value.toFloat() }.toMutableList()
+//        for (path in newSalesmanSet.paths) {
+        for (index in 0 until newSalesmanSet.paths.size) {
+            val path = newSalesmanSet.paths[index]
+            var p: String = "";
+            path.places.map { patient -> patient.lastName }
+                    .forEach { p += ", " + it }
+            println("$index ::aktualne paths: ${path.value}: $p")
+        }
+
         return newSalesmanSet
     }
 

@@ -230,13 +230,21 @@ export const putSalesmanSet = (set) => {
         }
     })
 
+    let neighborhoodMatrix = set.neighborhoodMatrix.map((distance) => {
+        return {
+            startCoordinateId: distance.startCoordinateId,
+            endCoordinateId: distance.endCoordinateId,
+            value: distance.value
+        }
+    })
+
     console.log("updateSalesmanSet", set.id)
     // console.log("updateSalesmanSet places: ", places)
     // console.log("updateSalesmanSet paths: ", paths)
     let mappedSet = {
         id: set.id,
         paths: paths,
-        neighborhoodMatrix: set.neighborhoodMatrix,
+        neighborhoodMatrix: neighborhoodMatrix,
         places: places
     }
     let json = JSON.stringify(mappedSet).replace(/\"([^(\")"]+)\":/g, "$1:");

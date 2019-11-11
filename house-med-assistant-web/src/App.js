@@ -12,6 +12,8 @@ import Header from "./components/Header";
 import SockJS from "sockjs-client"
 import {withStyles} from '@material-ui/styles';
 import {getContrastYIQ} from "./utils/Utils";
+import {setSalesmanSet} from "./actions/salesmanSetActions";
+import connect from "react-redux/es/connect/connect";
 
 export const history = createBrowserHistory();
 
@@ -88,7 +90,18 @@ const useStyles = theme => ({
     }
 });
 
-class App extends Component {
+
+const mapStateToProps = (state) => {
+    return {
+        // mapSalesmanSet: state.salesmanSetReducer.mapSalesmanSet,
+    }
+};
+
+const mapDispatchToProps = dispatch => ({
+    setSalesmanSet: (salesmanSet) => dispatch(setSalesmanSet(salesmanSet)),
+});
+
+export default withStyles(useStyles(theme))(connect(mapStateToProps, mapDispatchToProps)(class App extends Component {
     // classes = useStyles();
   // classes = {};
 
@@ -110,6 +123,7 @@ class App extends Component {
             let data = JSON.parse(e.data).data
             this.setState({messages: [data.paths[0].value, ...this.state.messages]});
             console.log("onmessage", data, data.paths[0].value)
+            props.setSalesmanSet(data)
         };
 
         sock.onclose = () => {
@@ -163,5 +177,5 @@ class App extends Component {
         )
     }
 }
-
-export default withStyles(useStyles(theme))(App);
+  )
+);

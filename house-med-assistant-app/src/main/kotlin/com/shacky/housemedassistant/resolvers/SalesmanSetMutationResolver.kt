@@ -65,9 +65,15 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
 
     fun upgradeSalesmanSet(id: String, timeInSec: Int, populationSize: Int = 200, parentPopulationSize: Int = 20): SalesmanSet {
         val salesmanSet: SalesmanSet = salesmanSetQueryResolver.findSalesmanSetById(id);
-        val updatedSalesmanSet = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet, timeInSec, populationSize, parentPopulationSize)
-        updateSalesmanSet(updatedSalesmanSet)
-        return updatedSalesmanSet;
+        var updatedSalesmanSet = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet, timeInSec, populationSize, parentPopulationSize)
+        var s: String = "";
+        updatedSalesmanSet.paths[0].places.map { patient -> patient.lastName }
+                .forEach { s += ", " + it }
+        println("PO UPGRADE, najlepsza sciezka: ${updatedSalesmanSet.paths[0].value}: $s")
+
+//        return updateSalesmanSet(updatedSalesmanSet)
+        return salesmanSetRepository.save(updatedSalesmanSet)
+//        return updatedSalesmanSet;
 //        return salesmanSetQueryResolver.findSalesmanSetById(id);
     }
 
