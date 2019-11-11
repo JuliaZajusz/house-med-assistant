@@ -47,7 +47,16 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         println("updateSalesmanSet")
         val oldSalesmanSet = salesmanSetRepository.findById(salesmanSet.id).get();
         val updatedSet = salesmanSet
-        if (oldSalesmanSet.places != updatedSet.places) {
+        var changedList = mutableListOf<Patient>()
+        oldSalesmanSet.places.forEachIndexed { i, patient ->
+            if (updatedSet.places[i].id != patient.id) {
+                changedList.add(updatedSet.places[i])
+            };
+        };
+        val size = oldSalesmanSet.places.size != updatedSet.places.size;
+
+        if (changedList.isNotEmpty() || size) {
+            println("updateSalesmanSet if")
             val newCoordinates = updatedSet.places.map { patient -> patient.coordinate };
 
             updatedSet.neighborhoodMatrix = calcNeighborhoodMatrix(newCoordinates)
@@ -64,6 +73,11 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
     }
 
     fun upgradeSalesmanSet(id: String, timeInSec: Int, populationSize: Int = 200, parentPopulationSize: Int = 20): SalesmanSet {
+//        val words = listOf("Włodyczka", "Pietryga", "Pietryga", "Nowaczek")
+//        val duplicates = words.groupingBy { it }.eachCount().filter { it.value > 1 }
+//        println("Counting first letters:")
+//        println(duplicates.size>0) // {o=1, t=3, f=2, s=2, e=1, n=1}
+
         val salesmanSet: SalesmanSet = salesmanSetQueryResolver.findSalesmanSetById(id);
         var updatedSalesmanSet = SalesmanSetUtils(pathQueryResolver).findBestPathUsingGeneticAlgorythm(salesmanSet, timeInSec, populationSize, parentPopulationSize)
         var s: String = "";

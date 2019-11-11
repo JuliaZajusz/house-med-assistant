@@ -79,8 +79,8 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
 //        zwróc najlepszą ścieżkę (dodaj do paths)
                 newSalesmanSet.paths.add(newSalesmanSet.population.first())
         newSalesmanSet.paths = newSalesmanSet.paths.sortedBy { it.value.toFloat() }.toMutableList()
-//        for (path in newSalesmanSet.paths) {
-        for (index in 0 until newSalesmanSet.paths.size) {
+//        for (index in 0 until newSalesmanSet.paths.size) {
+        for (index in 0 until 1) {
             val path = newSalesmanSet.paths[index]
             var p: String = "";
             path.places.map { patient -> patient.lastName }
@@ -103,8 +103,10 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
             val crossPoint1: Int = ThreadLocalRandom.current().nextInt(0, pathSize - 1)
             val crossPoint2: Int = ThreadLocalRandom.current().nextInt(crossPoint1, pathSize - 1)
 
-            var a = crossover(salesmanSet.parentPopulation[2 * i], salesmanSet.parentPopulation[2 * i + 1], crossPoint1, crossPoint2)  //dziecko1
-            var b = crossover(salesmanSet.parentPopulation[2 * i + 1], salesmanSet.parentPopulation[2 * i], crossPoint1, crossPoint2)  //dziecko2
+            val parentOneGenom = salesmanSet.parentPopulation[2 * i]
+            val parentTwoGenom = salesmanSet.parentPopulation[2 * i + 1]
+            var a = crossover(parentOneGenom, parentTwoGenom, crossPoint1, crossPoint2)  //dziecko1
+            var b = crossover(parentTwoGenom, parentOneGenom, crossPoint1, crossPoint2)  //dziecko2
             a = mutate(a, mutationsProbability, swapsInMutation)
             b = mutate(b, mutationsProbability, swapsInMutation)
             if (a.places.size != salesmanSet.places.size || b.places.size != salesmanSet.places.size || a.places.distinct().size < salesmanSet.places.size || b.places.distinct().size < salesmanSet.places.size) {
@@ -112,69 +114,195 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
                 throw Exception()
             }
 
-            updatedSalesmanSet.population.add(a)
-            updatedSalesmanSet.population.add(b)
+            var duplicates = a.places.map { patient -> patient.lastName }
+                    .groupingBy { it }.eachCount().filter { it.value > 1 }
+            println("Iteracja $i:")
+            if (duplicates.size > 0) {
+//                var p1: String = "";
+//                parentOneGenom.places.map { patient -> patient.lastName }
+//                        .forEach { p1 += ", " + it }
+//                println("parent1: ${parentOneGenom.value}: $p1")
+//                var p2: String = "";
+//                parentTwoGenom.places.map { patient -> patient.lastName }
+//                        .forEach { p2 += ", " + it }
+//                println("parent2: ${parentTwoGenom.value}: $p2")
+//                println("crossPoint1: ${crossPoint1}, crossPoint2 $crossPoint2")
+//                var p: String = "";
+//                a.places.map { patient -> patient.lastName }
+//                        .forEach { p += ", " + it }
+//                println("a: ${a.value}: $p")
+            } else {
+                updatedSalesmanSet.population.add(a)
+            }
+
+            duplicates = b.places.map { patient -> patient.lastName }
+                    .groupingBy { it }.eachCount().filter { it.value > 1 }
+//            println("Counting first letters:")
+            if (duplicates.size > 0) {
+//                var p1: String = "";
+//                parentOneGenom.places.map { patient -> patient.lastName }
+//                        .forEach { p1 += ", " + it }
+//                println("parent1: ${parentOneGenom.value}: $p1")
+//                var p2: String = "";
+//                parentTwoGenom.places.map { patient -> patient.lastName }
+//                        .forEach { p2 += ", " + it }
+//                println("parent2: ${parentTwoGenom.value}: $p2")
+//                println("crossPoint1: ${crossPoint1}, crossPoint2 $crossPoint2")
+//                var p: String = "";
+//                b.places.map { patient -> patient.lastName }
+//                        .forEach { p += ", " + it }
+//                println("b: ${b.value}: $p")
+            } else {
+                updatedSalesmanSet.population.add(b)
+            }
+
+
         }
         return updatedSalesmanSet;
     }
 
     private fun crossover(parentOneGenom: Path, parentTwoGenom: Path, crossPoint1: Int, crossPoint2: Int): Path {
-        val pathSize = parentTwoGenom.places.size
-        val childListOfCoordinates: MutableList<Patient?> = parentTwoGenom.places.toMutableList()  //środek
-        val checkForRepeat = mutableListOf<Patient>()
+        var p1: String = "";
+        parentOneGenom.places.map { patient -> patient.lastName }
+                .forEach { p1 += ", " + it }
+        println("parent1: ${parentOneGenom.value}: $p1")
+        var p2: String = "";
+        parentTwoGenom.places.map { patient -> patient.lastName }
+                .forEach { p2 += ", " + it }
+        println("parent2: ${parentTwoGenom.value}: $p2")
+        println("crossPoint1: ${crossPoint1}, crossPoint2 $crossPoint2")
 
-        for (i in crossPoint1 until crossPoint2)                //srodek
-        {
-            checkForRepeat.add(parentTwoGenom.places[i])
+
+        val pathSize = parentTwoGenom.places.size
+        val newPath: MutableList<Patient?> = mutableListOf<Patient?>();
+        val checkForRepeat = mutableListOf<Patient>()
+        var notUsed = mutableListOf<Patient>()
+
+        for (i in 0 until pathSize) { //wypelnij pustymi
+            newPath.add(null)
         }
 
+        println("srodek")
+        for (i in crossPoint1 until crossPoint2)                //srodek
+        {
+//            checkForRepeat.add(parentTwoGenom.places[i])
+            newPath[i] = parentTwoGenom.places[i]  //środek
+            println("newPath[$i]=${parentTwoGenom.places[i].lastName}")
+        }
+
+        println("pocztek")
         for (i in 0 until crossPoint1)                //poczatek
         {
             val zm = parentOneGenom.places[i];
 
-            if (!checkForRepeat.contains(zm)) {
-                childListOfCoordinates[i] = zm;
-                checkForRepeat.add(zm);
+            if (!newPath.filterNotNull().map { patient -> patient!!.id }.contains(zm.id)) {
+                newPath[i] = zm;
+                println("newPath[$i]=${zm.lastName}")
+//                checkForRepeat.add(zm);
             } else {
-                childListOfCoordinates[i] = null;
+                notUsed.add(zm)
+                println("$i notUsed.add(${zm.lastName})")
             }
         }
 
-        for (i in crossPoint2 until pathSize)            //koniec
+        println("koniec")
+        for (i in crossPoint2 until pathSize)                //koniec
         {
-            var zm: Patient? = null;
-            try {
-                zm = parentOneGenom.places[i];
-            } catch (e: IndexOutOfBoundsException) {
-                println("" + parentOneGenom + parentTwoGenom + crossPoint1 + crossPoint2)
-            }
+            val zm = parentOneGenom.places[i];
 
-            if (!checkForRepeat.contains(zm)) {
-                childListOfCoordinates[i] = zm;
-                if (zm != null) {
-                    checkForRepeat.add(zm)
-                };
+            if (!newPath.filterNotNull().map { patient -> patient.id }.contains(zm.id)) {
+                newPath[i] = zm;
+                println("newPath[$i]=${zm.lastName}")
+//                checkForRepeat.add(zm);
             } else {
-                childListOfCoordinates[i] = null;
+                notUsed.add(zm)
+                println("$i notUsed.add(${zm.lastName})")
+            }
+        }
+        notUsed = parentTwoGenom.places.toMutableList();
+        println("notUsed1---------")
+        notUsed.forEach { patient -> println(patient!!.lastName) }
+        notUsed = notUsed.filter { patient -> !newPath.filterNotNull().map { patient -> patient.id }.contains(patient.id) }.toMutableList()
+        println("notUsed2---------")
+        notUsed.forEach { patient -> println(patient!!.lastName) }
+        println("newPath---------")
+        newPath.forEach { patient -> println(patient == null) }
+        newPath.filterNotNull().forEach { patient -> println(patient.lastName) }
+
+//        checkForRepeat = checkForRepeat.sortBy { patient.id }
+        for (index in 0 until newPath.size)            //wypelnienie pustych pozostałymi
+        {
+            val patient = newPath[index]
+            if (patient == null) {
+                val foundedPatient = notUsed[0]
+                notUsed.removeAt(0)
+                newPath[index] = foundedPatient;
             }
         }
 
-        for (i in 0 until pathSize) {
-            if (childListOfCoordinates[i] == null) {
-                for (j in 0 until pathSize) {
-                    if (!checkForRepeat.contains(parentOneGenom.places[j])) {
-                        childListOfCoordinates[i] = parentOneGenom.places[j];
-                        checkForRepeat.add(parentOneGenom.places[j]);
-                        break;
-                    }
-                }
-
-            }
-        }
-        val pathValue: Float = pathQueryResolver.calcPathValue(childListOfCoordinates.filterNotNull().map { patient -> patient.coordinate })
-        val child: Path = Path(childListOfCoordinates.filterNotNull(), pathValue);
+        val pathValue: Float = pathQueryResolver.calcPathValue(newPath.filterNotNull().map { patient -> patient.coordinate })
+        println("pathValue: $pathValue")
+        val child: Path = Path(newPath.filterNotNull(), pathValue);
         return child;
     }
+
+//    private fun crossover(parentOneGenom: Path, parentTwoGenom: Path, crossPoint1: Int, crossPoint2: Int): Path {
+//        val pathSize = parentTwoGenom.places.size
+//        val childListOfCoordinates: MutableList<Patient?> = parentTwoGenom.places.toMutableList()  //środek
+//        val checkForRepeat = mutableListOf<Patient>()
+//
+//        for (i in crossPoint1 until crossPoint2)                //srodek
+//        {
+//            checkForRepeat.add(parentTwoGenom.places[i])
+//        }
+//
+//        for (i in 0 until crossPoint1)                //poczatek
+//        {
+//            val zm = parentOneGenom.places[i];
+//
+//            if (!checkForRepeat.contains(zm)) {
+//                childListOfCoordinates[i] = zm;
+//                checkForRepeat.add(zm);
+//            } else {
+//                childListOfCoordinates[i] = null;
+//            }
+//        }
+//
+//        for (i in crossPoint2 until pathSize)            //koniec
+//        {
+//            var zm: Patient? = null;
+//            try {
+//                zm = parentOneGenom.places[i];
+//            } catch (e: IndexOutOfBoundsException) {
+//                println("" + parentOneGenom + parentTwoGenom + crossPoint1 + crossPoint2)
+//            }
+//
+//            if (!checkForRepeat.contains(zm)) {
+//                childListOfCoordinates[i] = zm;
+//                if (zm != null) {
+//                    checkForRepeat.add(zm)
+//                };
+//            } else {
+//                childListOfCoordinates[i] = null;
+//            }
+//        }
+//
+//        for (i in 0 until pathSize) {
+//            if (childListOfCoordinates[i] == null) {
+//                for (j in 0 until pathSize) {
+//                    if (!checkForRepeat.contains(parentOneGenom.places[j])) {
+//                        childListOfCoordinates[i] = parentOneGenom.places[j];
+//                        checkForRepeat.add(parentOneGenom.places[j]);
+//                        break;
+//                    }
+//                }
+//
+//            }
+//        }
+//        val pathValue: Float = pathQueryResolver.calcPathValue(childListOfCoordinates.filterNotNull().map { patient -> patient.coordinate })
+//        val child: Path = Path(childListOfCoordinates.filterNotNull(), pathValue);
+//        return child;
+//    }
 
     fun mutate(genomPath: Path, mutationsProbability: Int, swapsInMutation: Int): Path {
         val chance = ThreadLocalRandom.current().nextInt(0, 100)

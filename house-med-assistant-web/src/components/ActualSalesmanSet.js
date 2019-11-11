@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Button from '@material-ui/core/Button';
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import Grid from "@material-ui/core/Grid";
@@ -71,11 +71,24 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
   };
 
   const calculatePath = () => {
+    // if(props.mapSalesmanSet.id) {
+    //   props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
+    // } else {
     props.addNewSalesmanSet()
-      .then(() =>
-        props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
+      .then((res) => {
+          //   console.log("res", res);
+          props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
+        }
       )
+    // }
+
   };
+
+  useEffect(() => {
+      console.log("id się zmieniło", props.mapSalesmanSet.id)
+      // props.onSockSend({target: [{value: props.mapSalesmanSet.id}]})
+    }, [props.mapSalesmanSet.id]
+  )
 
   const handleTextFieldKeyDown = event => {
     if (event.key === 'Enter') {
@@ -151,7 +164,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(function ActualSales
 
       }
       {props.mapSalesmanSet && props.mapSalesmanSet.places && props.mapSalesmanSet.places.map((place) =>
-        <PatientPaper patient={place} onDelete={isNameEditable && onDelete} isDeletable={isNameEditable}/>)}
+        <PatientPaper key={place.id + place.coordinate.id} patient={place} onDelete={isNameEditable && onDelete}
+                      isDeletable={isNameEditable}/>)}
       <Fab
         variant="extended"
         size="small"

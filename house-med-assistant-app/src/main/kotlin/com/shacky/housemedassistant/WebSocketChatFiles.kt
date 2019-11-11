@@ -46,16 +46,19 @@ class ChatHandler(val salesmanSetMutationResolver: SalesmanSetMutationResolver) 
                 broadcast(Message("say", json.get("data").asText()))
             }
             "jul" -> {
-                val id = json.get("data").asText();
+                val dataId = json.get("data")
+                if (dataId != null) {
+                    val id = dataId.asText();
 //                val salesmanSetUtils = SalesmanSetUtils();
-                val salesmanSetA = salesmanSetMutationResolver.upgradeSalesmanSet(id, 5);
-                var s: String = "";
-                salesmanSetA.paths[0].places.map { patient -> patient.lastName }
-                        .forEach { s += ", " + it }
-                println("UPDATE, najlepsza sciezka: ${salesmanSetA.paths[0].value}: $s")
+                    val salesmanSetA = salesmanSetMutationResolver.upgradeSalesmanSet(id, 5);
+                    var s: String = "";
+                    salesmanSetA.paths[0].places.map { patient -> patient.lastName }
+                            .forEach { s += ", " + it }
+                    println("UPDATE, najlepsza sciezka: ${salesmanSetA.paths[0].value}: $s")
 
-                println("!!!!!!!!!" + salesmanSetA.paths[0].value)
-                emit(session, Message("value", salesmanSetA))
+                    println("!!!!!!!!!" + salesmanSetA.paths[0].value)
+                    emit(session, Message("value", salesmanSetA))
+                }
             }
         }
     }
