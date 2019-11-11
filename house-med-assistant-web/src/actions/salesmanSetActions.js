@@ -77,6 +77,7 @@ export const addNewSalesmanSet = () => async (dispatch, getState) => {
     .then(response => {
         dispatch(setSalesmanSet(response.data.newSalesmanSet));
       dispatch(loadAllSalesmanSets());
+      return response.data.newSalesmanSet.id  //niepotrzebne chyba
       }
     )
 };

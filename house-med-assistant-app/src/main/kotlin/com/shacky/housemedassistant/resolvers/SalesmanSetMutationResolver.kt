@@ -47,15 +47,20 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         println("updateSalesmanSet")
         val oldSalesmanSet = salesmanSetRepository.findById(salesmanSet.id).get();
         val updatedSet = salesmanSet
+        val sizeChanged = oldSalesmanSet.places.size != updatedSet.places.size;
+        println("sizeChanged $sizeChanged")
         var changedList = mutableListOf<Patient>()
-        oldSalesmanSet.places.forEachIndexed { i, patient ->
-            if (updatedSet.places[i].id != patient.id) {
-                changedList.add(updatedSet.places[i])
-            };
-        };
-        val size = oldSalesmanSet.places.size != updatedSet.places.size;
+        if (!sizeChanged) {
+            oldSalesmanSet.places.forEachIndexed { i, patient ->
+                if (updatedSet.places[i].id != patient.id) {
+                    changedList.add(updatedSet.places[i])
+                }
+            }
+        }
 
-        if (changedList.isNotEmpty() || size) {
+        println("changedList.isNotEmpty() ${changedList.isNotEmpty()}")
+
+        if (changedList.isNotEmpty() || sizeChanged) {
             println("updateSalesmanSet if")
             val newCoordinates = updatedSet.places.map { patient -> patient.coordinate };
 

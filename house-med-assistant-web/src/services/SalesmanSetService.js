@@ -238,7 +238,6 @@ export const putSalesmanSet = (set) => {
         }
     })
 
-    console.log("updateSalesmanSet", set.id)
     // console.log("updateSalesmanSet places: ", places)
     // console.log("updateSalesmanSet paths: ", paths)
     let mappedSet = {
@@ -248,6 +247,7 @@ export const putSalesmanSet = (set) => {
         places: places
     }
     let json = JSON.stringify(mappedSet).replace(/\"([^(\")"]+)\":/g, "$1:");
+    console.log("updateSalesmanSet", mappedSet, json)
 
     // console.log("updateSalesmanSet json", json)
     return client
