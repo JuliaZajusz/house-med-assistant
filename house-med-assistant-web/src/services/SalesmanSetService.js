@@ -74,7 +74,8 @@ export const findSalesmanSetById = (id) => {
                   value
               }
           }
-      }`
+      }`,
+        fetchPolicy: 'network-only'
     }
   );
 }

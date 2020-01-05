@@ -173,7 +173,7 @@ class MapWrapper extends Component {
                         <Marker key={`marker-${idx}`} position={markerPosition} onClick={() => console.log("a")}>
                             <Popup key={`popup-${idx}`}>
                             <span>
-                                {markerPosition[0].toFixed(2)}, {markerPosition[1].toFixed(2)}
+                                {markerPosition[1].toFixed(2)}, {markerPosition[0].toFixed(2)}
                             </span>
                             </Popup>
                         </Marker>

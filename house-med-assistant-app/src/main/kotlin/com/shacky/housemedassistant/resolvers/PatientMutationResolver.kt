@@ -11,6 +11,8 @@ import java.util.*
 class PatientMutationResolver(private val patientRepository: PatientRepository,
                               val coordinateMutationResolver: CoordinateMutationResolver,
                               val patientQueryResolver: PatientQueryResolver,
+                              val salesmanSetQueryResolver: SalesmanSetQueryResolver,
+                              val salesmanSetMutationResolver: SalesmanSetMutationResolver,
                               val tagQueryResolver: TagQueryResolver,
                               val tagMutationResolver: TagMutationResolver) : GraphQLMutationResolver {
 
@@ -47,11 +49,23 @@ class PatientMutationResolver(private val patientRepository: PatientRepository,
     }
 
     fun updatePatient(patient: Patient): Patient {
-        val oldPatient = patientRepository.findById(patient.id)
+        val updatedPatientId = patient.id
+        val oldPatient = patientRepository.findById(updatedPatientId)
         oldPatient.ifPresent {
+            //update salesmansets with this patient
+            val salesmanSetsToReset = salesmanSetQueryResolver.getSalesmansetsContainingGivenPatient(updatedPatientId);
+            salesmanSetsToReset.forEach { salesmanSet ->
+                var salesmanSetPlaces = salesmanSet.places
+                salesmanSetPlaces = salesmanSetPlaces.filter { patient -> patient.id != updatedPatientId }
+                salesmanSetPlaces = salesmanSetPlaces.toMutableList()
+                salesmanSetPlaces.add(patient)
+                salesmanSet.places = salesmanSetPlaces
+                salesmanSetMutationResolver.updateSalesmanSet(salesmanSet);
+            }
+            //update patient
             patientRepository.save(patient)
         }
-        return patientRepository.findById(patient.id).get();
+        return patientRepository.findById(updatedPatientId).get();
     }
 
 //    fun updatePatient(id: String, location: List<Float> ): Patient {

@@ -1,6 +1,7 @@
 extend type Query {
     salesmanSets: [SalesmanSet]
     findSalesmanSetById(id: ID!) : SalesmanSet
+    getSalesmansetsContainingGivenPatient(patientId: ID!): [SalesmanSet]
 }
 
 type Distance {

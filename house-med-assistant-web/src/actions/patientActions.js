@@ -8,6 +8,8 @@ import {
 } from "../services/PatientService";
 import {getAllTags} from "../services/TagService";
 import {GOOGLE_API_KEY} from "../secret/secret";
+import {getSalesmanSet} from "./salesmanSetActions";
+import {history} from "../App";
 
 export const getPatientsAction = (text, tags) => async (dispatch, getState) => {
   if (tags && tags.length > 0) {
@@ -33,8 +35,11 @@ export const getPatientsAction = (text, tags) => async (dispatch, getState) => {
   }
 };
 
-export const getPatient = (id) => (dispatch) => {
+export const getPatient = (id) => (dispatch, getState) => {
+  const state = getState();
+  console.log(state);
   getPatientById(id).then((res) => {
+    console.log(res.data.getPatientById);
     dispatch({
       type: 'SET_PATIENT',
       payload: res.data.getPatientById
@@ -114,6 +119,10 @@ export const updatePatient = (patient) => (dispatch) => {
     });
     dispatch(hideModal());
     dispatch(getTagsAction());
+    let id = history.location.pathname.length > 0 ? history.location.pathname.substring(1) : "";
+    if (id !== "") {
+      dispatch(getSalesmanSet(id));
+    }
   })
 };
 

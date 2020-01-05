@@ -6,7 +6,6 @@ import com.shacky.housemedassistant.repository.SalesmanSetRepository
 import org.springframework.stereotype.Component
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
-import kotlin.streams.asSequence
 
 @Component
 class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSetRepository,
@@ -43,13 +42,13 @@ class SalesmanSetMutationResolver(private val salesmanSetRepository: SalesmanSet
         return salesmanSet
     }
 
-    fun updateSalesmanSet(salesmanSet: SalesmanSet): SalesmanSet { //chyba tylko ostatnia linijka jest potrzebna
-        println("updateSalesmanSet")
+    fun updateSalesmanSet(salesmanSet: SalesmanSet): SalesmanSet {
+        println("updateSalesmanSet $salesmanSet")
         val oldSalesmanSet = salesmanSetRepository.findById(salesmanSet.id).get();
         val updatedSet = salesmanSet
         val sizeChanged = oldSalesmanSet.places.size != updatedSet.places.size;
         println("sizeChanged $sizeChanged")
-        var changedList = mutableListOf<Patient>()
+        val changedList = mutableListOf<Patient>()
         if (!sizeChanged) {
             oldSalesmanSet.places.forEachIndexed { i, patient ->
                 if (updatedSet.places[i].coordinate.id != patient.coordinate.id) {

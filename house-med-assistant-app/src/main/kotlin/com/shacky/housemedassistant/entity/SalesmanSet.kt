@@ -12,7 +12,7 @@ data class SalesmanSet(
     var id: String = ""
     var name: String = ""
     var paths: MutableList<Path> = mutableListOf<Path>()
-    var population: MutableList<Path> = mutableListOf<Path>()
-    var parentPopulation: List<Path> = mutableListOf<Path>()
+    var population: MutableList<Path> = mutableListOf<Path>() //TODO do usuniecia, niepotzrebne
+    var parentPopulation: List<Path> = mutableListOf<Path>() //TODO do usuniecia, niepotzrebne
 
 }

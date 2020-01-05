@@ -13,6 +13,7 @@ const useStyles = makeStyles(theme => ({
     background: theme.palette.background,
     padding: "5px",
     marginBottom: '8px',
+    width: '100%',
   },
   patient_name: {
     margin: 0,

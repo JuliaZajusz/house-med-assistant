@@ -4,7 +4,7 @@ import TextField from "@material-ui/core/TextField";
 import {Paper} from "@material-ui/core";
 import React, {useEffect, useState} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {addNewPatient, getCoordinatesByAddress, getPatient, updatePatient} from "../actions/patientActions";
+import {addNewPatient, getCoordinatesByAddress, updatePatient} from "../actions/patientActions";
 import {connect} from "react-redux";
 // import Select, CreatableSelect from 'react-select';
 import CreatableSelect from 'react-select/creatable';
@@ -56,7 +56,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => ({
   getCoordinatesByAddress: (addr) => dispatch(getCoordinatesByAddress(addr)),
   addNewPatient: (patient) => dispatch(addNewPatient(patient)),
-  getPatient: (id) => dispatch(getPatient(id)),
   updatePatient: (patient) => dispatch(updatePatient(patient)),
 });
 
@@ -117,7 +116,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(function EditPatient
 
     useEffect(() => {
       // props.getAllSalesmanSets();
-      console.log("useEffect")
+      // console.log("useEffect", props.loadedPatient)
       setPatient(props.loadedPatient)
     }, [props.loadedPatient])
 

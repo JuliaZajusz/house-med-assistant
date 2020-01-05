@@ -194,7 +194,10 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
         for (i in 0 until crossPoint1)                //poczatek
         {
             val zm = parentOneGenom.places[i];
-
+//            println("")
+//            println(zm.coordinate.id)
+//            newPath.forEach { newPathElement -> println("newPathElement $newPathElement") }
+//            println("")
             if (!newPath.filterNotNull().map { patient -> patient!!.coordinate.id }.contains(zm.coordinate.id)) {
                 newPath[i] = zm;
 //                println("newPath[$i]=${zm.lastName}")
@@ -208,7 +211,10 @@ class SalesmanSetUtils(val pathQueryResolver: PathQueryResolver) {
         for (i in crossPoint2 until pathSize)                //koniec
         {
             val zm = parentOneGenom.places[i];
-
+//            println("")
+//            println(zm.coordinate.id)
+//            newPath.forEach { newPathElement -> println("newPathElement $newPathElement") }
+//            println("")
             if (!newPath.filterNotNull().map { patient -> patient.coordinate.id }.contains(zm.coordinate.id)) {
                 newPath[i] = zm;
 //                println("newPath[$i]=${zm.lastName}")

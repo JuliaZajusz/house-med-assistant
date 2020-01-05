@@ -46,7 +46,8 @@ export const getPatientById = (id) => {
                   name
               }
           }
-      }`
+      }`,
+      fetchPolicy: 'network-only'
     }
   );
 };

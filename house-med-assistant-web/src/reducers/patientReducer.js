@@ -45,6 +45,10 @@ export default (state = {
     case 'UPDATE_PATIENT':
       return {
         ...state,
+        patient: {
+          ...action.payload,
+          tags: action.payload.tags.map((tag) => tag.name)
+        },
         patients: [...state.patients.map((patient) => {
           if (patient.id === action.payload.id) {
             return action.payload;

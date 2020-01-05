@@ -4,12 +4,15 @@ import com.coxautodev.graphql.tools.GraphQLQueryResolver
 import com.shacky.housemedassistant.entity.Distance
 import com.shacky.housemedassistant.entity.Patient
 import com.shacky.housemedassistant.entity.SalesmanSet
-import com.shacky.housemedassistant.repository.CoordinateRepository
 import com.shacky.housemedassistant.repository.SalesmanSetRepository
+import org.springframework.data.mongodb.core.MongoOperations
+import org.springframework.data.mongodb.core.query.Criteria
+import org.springframework.data.mongodb.core.query.Query
 import org.springframework.stereotype.Component
 
 @Component
-class SalesmanSetQueryResolver(val salesmanSetRepository: SalesmanSetRepository, val coordinateRepository: CoordinateRepository) : GraphQLQueryResolver {
+class SalesmanSetQueryResolver(val salesmanSetRepository: SalesmanSetRepository,
+                               private val mongoOperations: MongoOperations) : GraphQLQueryResolver {
     fun salesmanSets(): List<SalesmanSet> {
         val list = salesmanSetRepository.findAll()
         return list;
@@ -38,5 +41,12 @@ class SalesmanSetQueryResolver(val salesmanSetRepository: SalesmanSetRepository,
 
     fun getSalesmanSetByDistances(neighborhoodMatrix: List<Distance>): SalesmanSet? {
         return salesmanSetRepository.findSalesmanSetByNeighborhoodMatrix(neighborhoodMatrix)
+    }
+
+    fun getSalesmansetsContainingGivenPatient(patientId: String): List<SalesmanSet> {
+        val query = Query()
+        query.addCriteria(Criteria.where("places.id").`is`(patientId))
+        val patients = mongoOperations.find(query, SalesmanSet::class.java)
+        return patients;
     }
 }
